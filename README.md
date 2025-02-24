@@ -22,25 +22,28 @@ A **React + TypeScript** dashboard built with **Vite** and **Yarn**, based on gi
 
 ```yarn install```
 
-🚀 Running the Project
+##🚀 Running the Project
 
-▶️ Start Development Server
+### ▶️ Start Development Server
 
-yarn dev
+```yarn dev```
 
-The app will be available at http://localhost:5173/
+The app will be available at ```http://localhost:5173/```
 
-🔨 Build for Production
+### 🔨 Build for Production
 
-yarn build
+```yarn build```
 
-✅ Lint & Format Code
+### ✅ Lint & Format Code
 
+```
 yarn lint
 yarn format
+```
 
-📂 Project Structure
+##📂 Project Structure
 
+```
 providerdashboard/
 │── src/                # Source code  
 │   ├── components/     # Reusable UI components  
@@ -56,9 +59,10 @@ providerdashboard/
 │── tailwind.config.js  # TailwindCSS config  
 │── vite.config.ts      # Vite config  
 │── package.json        # Project metadata  
-│── README.md           # Project documentation  
+│── README.md           # Project documentation
+ ```
 
-🛠 Technologies Used
+##🛠 Technologies Used
 
 React.js (with Vite)
 
@@ -70,36 +74,36 @@ React Router
 
 ESLint & Prettier
 
-📌 Environment Variables
+##📌 Environment Variables
 
-Create a .env file in the root directory and add necessary variables:
+Create a ``.env`` file in the root directory and add necessary variables:
 
-VITE_API_URL=https://your-api.com
+``VITE_API_URL=https://your-api.com``
 
-🤝 Contributing
+##🤝 Contributing
 
 Fork the repository
 
 Clone your fork
 
-git clone https://github.com/YOUR_USERNAME/providerdashboard.git
+``git clone https://github.com/aplicy-com/gigmosaic-provider-dashboard.git``
 
 Create a new branch
 
-git checkout -b feature-name
+``git checkout -b feature-name``
 
 Commit changes
 
-git commit -m "Add new feature"
+``git commit -m "Add new feature"``
 
 Push and create a pull request
 
-git push origin feature-name
+``git push origin feature-name``
 
-📜 License
+##📜 License
 
 This project is licensed under the MIT License.
 
-⭐ Show Your Support
+##⭐ Show Your Support
 
 If you like this project, please ⭐ the repository! 🚀

@@ -64,15 +64,15 @@ providerdashboard/
 
 ## 🛠 Technologies Used
 
-React.js (with Vite)
+- React.js (with Vite)
 
-TypeScript
+- TypeScript
 
-TailwindCSS
+- TailwindCSS
 
-React Router
+- React Router
 
-ESLint & Prettier
+- ESLint & Prettier
 
 ## 📌 Environment Variables
 

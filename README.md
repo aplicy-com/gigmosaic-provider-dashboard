@@ -22,7 +22,7 @@ A **React + TypeScript** dashboard built with **Vite** and **Yarn**, based on gi
 
 ```yarn install```
 
-##🚀 Running the Project
+## 🚀 Running the Project
 
 ### ▶️ Start Development Server
 
@@ -41,7 +41,7 @@ yarn lint
 yarn format
 ```
 
-##📂 Project Structure
+## 📂 Project Structure
 
 ```
 providerdashboard/
@@ -62,7 +62,7 @@ providerdashboard/
 │── README.md           # Project documentation
  ```
 
-##🛠 Technologies Used
+## 🛠 Technologies Used
 
 React.js (with Vite)
 
@@ -74,13 +74,13 @@ React Router
 
 ESLint & Prettier
 
-##📌 Environment Variables
+## 📌 Environment Variables
 
 Create a ``.env`` file in the root directory and add necessary variables:
 
 ``VITE_API_URL=https://your-api.com``
 
-##🤝 Contributing
+## 🤝 Contributing
 
 Fork the repository
 
@@ -100,10 +100,10 @@ Push and create a pull request
 
 ``git push origin feature-name``
 
-##📜 License
+## 📜 License
 
 This project is licensed under the MIT License.
 
-##⭐ Show Your Support
+## ⭐ Show Your Support
 
 If you like this project, please ⭐ the repository! 🚀

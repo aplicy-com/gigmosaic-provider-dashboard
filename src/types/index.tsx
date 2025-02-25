@@ -1,3 +1,18 @@
+export interface IFaqProps {
+  question: string;
+  answer: string;
+}
+
+export interface ILocationProps {
+  address: string;
+  country: string;
+  city: string;
+  state: string;
+  pincode: string;
+  latitude: string;
+  longitude: string;
+  googleMapId: string;
+}
 export interface IServiceProps {
   serviceId: string;
   serviceTitle: string;
@@ -41,4 +56,11 @@ export interface IServiceProps {
     Saturday?: { from: string; to: string }[];
     Sunday?: { from: string; to: string }[];
   };
+  seo: [
+    {
+      metaTitle: string;
+      metaKeywords: string[];
+      metaDescription: string;
+    }
+  ];
 }

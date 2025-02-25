@@ -46,34 +46,35 @@ const CustomAutocomplete = ({
       onSelectionChange(key as string | null);
     }
   };
-
   return (
-    <Autocomplete
-      className={`${width === "sm" ? "max-w-xs" : ""} ${
-        width === "none" ? "w-full" : ""
-      }`}
-      label={label}
-      size={size}
-      defaultItems={defaultItems}
-      defaultSelectedKey={defaultSelectedKey}
-      placeholder={placeholder}
-      disabledKeys={disabledKeys}
-      isDisabled={isDisabled}
-      isRequired={isRequired}
-      variant={variant}
-      labelPlacement={labelPlacement}
-      allowsCustomValue={true}
-      description={description}
-      errorMessage={errorMessage}
-      isInvalid={isInvalid}
-      onInputChange={onInputChange}
-      onSelectionChange={handleSelectionChange}
-      {...props}
-    >
-      {(item) => (
-        <AutocompleteItem key={item.id}>{item.label}</AutocompleteItem>
-      )}
-    </Autocomplete>
+    <>
+      <Autocomplete
+        className={`${width === "sm" ? "max-w-xs" : ""} ${
+          width === "none" ? "w-full" : ""
+        }`}
+        label={label}
+        size={size}
+        defaultItems={defaultItems}
+        defaultSelectedKey={defaultSelectedKey}
+        placeholder={placeholder}
+        disabledKeys={disabledKeys}
+        isDisabled={isDisabled}
+        isRequired={isRequired}
+        variant={variant}
+        labelPlacement={labelPlacement}
+        allowsCustomValue={true}
+        description={description}
+        errorMessage={errorMessage}
+        isInvalid={isInvalid}
+        onInputChange={onInputChange}
+        onSelectionChange={handleSelectionChange}
+        {...props}
+      >
+        {(item) => (
+          <AutocompleteItem key={item.id}>{item.label}</AutocompleteItem>
+        )}
+      </Autocomplete>
+    </>
   );
 };
 

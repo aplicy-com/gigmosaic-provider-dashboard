@@ -1,15 +1,23 @@
 import { useState } from "react";
-import { Editor } from "primereact/editor";
 import { useForm, Controller, SubmitHandler } from "react-hook-form";
 import CustomInput from "../components/ui/CustomInput";
 import CustomNumberInput from "../components/ui/CustomNumberInput";
-import CustomTextArea from "../components/ui/CustomTextArea";
 import { Card, CardBody, CardHeader, Divider } from "@heroui/react";
 import CustomAutocomplete from "../components/ui/CustomAutocomplete";
 import { IServiceProps } from "../types";
 import CustomMultiselectDropdown from "../components/ui/CustomMultiselectDropdown";
 import SingleMultipleInput from "../components/ui/SingleMultipleInput";
 import MultipleInput from "../components/ui/MultipleInput";
+import TextEdior from "../components/ui/TextEdior";
+import CustomAvailabilityInput from "../components/ui/CustomAvailabilityInput";
+import CustomTextArea from "../components/ui/CustomTextArea";
+import CustomDubbleInput from "../components/ui/CustomDubbleInput";
+import GallaryInput from "../components/ui/GallaryInput";
+import LocationInputs from "../components/LocationInputs";
+import { ILocationProps, IFaqProps } from "../types";
+import { convertToTagsArray, formatServiceData } from "../utils/serviceUtils";
+import { useSumbitServiceMutation } from "../hooks/mutations/usePostData";
+import CustomCheckbox from "../components/ui/CustomCheckbox";
 
 const AddService = () => {
   const { handleSubmit, register, control, setValue, watch } =
@@ -19,10 +27,30 @@ const AddService = () => {
     { name: string; price: number; image: File | null }[]
   >([]);
   const [include, setInclude] = useState<string[]>([]);
-  const [text, setText] = useState("");
+  const [serviceOverview, setServiceOverview] = useState<string>("");
+  const [faq, setFaq] = useState<IFaqProps[]>([]);
+  const [metaKeyword, setMetaKeyword] = useState<string>("");
+  const [location, setlocation] = useState<ILocationProps>();
+  const [images, setImages] = useState<File[]>([]);
 
-  const onSubmit: SubmitHandler<IServiceProps> = (data: IServiceProps) => {
-    console.log("Form Data:", data);
+  const { mutate, isLoading, isError, isSuccess, error } =
+    useSumbitServiceMutation();
+
+  const convertToMetaKeyword = convertToTagsArray(metaKeyword);
+
+  const onSubmit: SubmitHandler<IServiceProps> = (data) => {
+    const formatedData = formatServiceData(
+      data,
+      staff,
+      addtionalInfo,
+      include,
+      serviceOverview,
+      faq,
+      convertToMetaKeyword,
+      location,
+      images
+    );
+    mutate(formatedData);
   };
 
   const dropdownItems = [
@@ -38,6 +66,10 @@ const AddService = () => {
   console.log("Staff: ", staff);
   console.log("Include: ", include);
   console.log("Addtional Info: ", addtionalInfo);
+  console.log("Service Overview: ", serviceOverview);
+  console.log("Faq: ", faq);
+  console.log("Location: ", location);
+  console.log("Gallary: ", images);
 
   return (
     <>
@@ -110,6 +142,7 @@ const AddService = () => {
                   isRequired={true}
                   {...register("price")}
                 />
+
                 {/* Staff */}
                 <Divider className="my-1" />
                 <p className="text-md font-medium -mt-3">Staffs</p>
@@ -119,127 +152,54 @@ const AddService = () => {
                   options={dropdownItems}
                   handleChnagevalue={setStaff}
                 />
-                {/* </div> */}
 
                 {/* Include */}
                 <Divider className="my-1" />
                 <p className="text-md font-medium -mt-3">Includes</p>
                 <SingleMultipleInput onChangeValude={setInclude} />
-                {/* <CustomInput
-                  label="Service Title"
-                  isRequired={true}
-                  type="text"
-                  placeholder="Enter title"
-                  onValueChange={() => {}}
-                />
-                <CustomInput
-                  label="Service Slug"
-                  isRequired={true}
-                  type="text"
-                  placeholder="Enter slug"
-                  onValueChange={() => {}}
-                /> */}
-                {/* Addtional information */}
                 <Divider className="my-1" />
+
+                {/* Addtional information */}
                 <p className="text-md font-medium -mt-3">
                   Addtional information{" "}
                 </p>
-                {/* <CustomInput
-                  label="Service Title"
-                  isRequired={true}
-                  type="text"
-                  placeholder="Enter title"
-                  onValueChange={() => {}}
-                />
-                <CustomInput
-                  label="Service Slug"
-                  isRequired={true}
-                  type="text"
-                  placeholder="Enter slug"
-                  onValueChange={() => {}}
-                /> */}
-                {/* <SingleMultipleInput /> */}
-                {/*Service Overview */}
                 <MultipleInput onChangeValude={setAddtionalInfo} />
+
+                {/* Service Overview */}
                 <Divider className="my-1" />
                 <p className="text-md font-medium -mt-3">Service Overview </p>
-                <Editor
-                  value={text}
-                  onTextChange={(e) => setText(e.htmlValue)}
-                  style={{ height: "320px" }}
+                <TextEdior
+                  onChangeValue={setServiceOverview}
+                  value={serviceOverview}
+                  {...register("serviceOverview")}
                 />
               </CardBody>
             </Card>
 
+            {/* Gallary */}
             <Card className="px-3 py-3 mb-5">
               <CardHeader>
-                <p className="text-md font-medium">Location</p>
+                <p className="text-md font-medium">Gallary</p>
               </CardHeader>
 
-              {/* Location */}
               <CardBody className="gap-6">
                 <Divider className="-my-2" />
-                <CustomInput
-                  label="Address"
-                  isRequired={true}
-                  type="text"
-                  placeholder="Enter adrress"
-                  onValueChange={() => {}}
-                />
+                <GallaryInput onChangeValue={setImages} />
+              </CardBody>
+            </Card>
 
-                <div className="grid lg:grid-cols-2 gap-6">
-                  <CustomInput
-                    label="Country"
-                    isRequired={true}
-                    type="text"
-                    placeholder="Enter country"
-                    onValueChange={() => {}}
-                  />
-                  <CustomInput
-                    label="City"
-                    isRequired={true}
-                    type="text"
-                    placeholder="Enter city"
-                    onValueChange={() => {}}
-                  />
-                </div>
-                <div className="grid lg:grid-cols-2 gap-6">
-                  <CustomInput
-                    label="State"
-                    isRequired={true}
-                    type="text"
-                    placeholder="Enter state"
-                    onValueChange={() => {}}
-                  />
-                  <CustomInput
-                    label="pincode"
-                    isRequired={true}
-                    type="text"
-                    placeholder="Enter pincode"
-                    onValueChange={() => {}}
-                  />
-                </div>
-                <CustomInput
-                  label="Google Maps Place ID"
-                  isRequired={true}
-                  type="text"
-                  placeholder="Enter maps place id"
-                  onValueChange={() => {}}
+            {/* Active Service */}
+            <Card className="px-3 py-3 mb-5">
+              <CardHeader>
+                <p className="text-md font-medium">Active Service</p>
+              </CardHeader>
+
+              <CardBody>
+                <CustomCheckbox
+                  label="Active"
+                  // isSelected={allDay}
+                  // onValueChange={setAllDay}
                 />
-                <div className="grid lg:grid-cols-2 gap-6">
-                  <CustomNumberInput
-                    label="Latitude"
-                    isRequired={true}
-                    placeholder="Enter latitude"
-                    onValueChange={() => {}}
-                  />
-                  <CustomNumberInput
-                    label="Longitude"
-                    isRequired={true}
-                    placeholder="Enter latitude"
-                    onValueChange={() => {}}
-                  />
-                </div>
               </CardBody>
             </Card>
           </div>
@@ -254,25 +214,7 @@ const AddService = () => {
               {/* Availability */}
               <CardBody className="gap-6">
                 <Divider className="-my-2" />
-                <CustomInput
-                  label="Service Title"
-                  isRequired={true}
-                  type="text"
-                  placeholder="Enter title"
-                  onValueChange={() => {}}
-                />
-                <CustomInput
-                  label="Service Slug"
-                  isRequired={true}
-                  type="text"
-                  placeholder="Enter slug"
-                  onValueChange={() => {}}
-                />
-                <CustomNumberInput
-                  label="Price"
-                  isRequired={true}
-                  onValueChange={() => {}}
-                />
+                <CustomAvailabilityInput />
               </CardBody>
             </Card>
 
@@ -284,19 +226,7 @@ const AddService = () => {
 
               <CardBody className="gap-6">
                 <Divider className="-my-2" />
-                <CustomInput
-                  label="Email"
-                  type="email"
-                  placeholder="Enter email"
-                  onValueChange={() => {}}
-                />
-                <CustomInput
-                  size="md"
-                  label="Password"
-                  type="password"
-                  placeholder="Enter password"
-                  onValueChange={() => {}}
-                />
+                <CustomDubbleInput onChangeValue={setFaq} />
               </CardBody>
             </Card>
 
@@ -312,51 +242,51 @@ const AddService = () => {
                   label="Meta Title"
                   type="text"
                   placeholder="Enter meta title"
-                  onValueChange={() => {}}
+                  isRequired={true}
+                  {...register("seo.0.metaTitle")}
                 />
                 <CustomInput
                   size="md"
-                  label="Password"
-                  type="password"
-                  placeholder="Enter password"
-                  onValueChange={() => {}}
+                  label="Meta Tag"
+                  type="text"
+                  placeholder="Enter Tags"
+                  description="Enter comma separated tags (Ex: tag1, tag2, tag3)"
+                  isRequired={true}
+                  onValueChange={setMetaKeyword}
                 />
 
-                <CustomInput
-                  size="md"
+                <CustomTextArea
                   label="Meta Description"
-                  type="text"
                   placeholder="Enter meta description"
-                  onValueChange={() => {}}
+                  isRequired={true}
+                  {...register("seo.0.metaDescription")}
                 />
               </CardBody>
             </Card>
 
             {/* Gallary */}
-            <Card className="px-3 py-3 mb-5">
+            {/* <Card className="px-3 py-3 mb-5">
               <CardHeader>
                 <p className="text-md font-medium">Gallary</p>
               </CardHeader>
 
               <CardBody className="gap-6">
                 <Divider className="-my-2" />
-                <CustomInput
-                  label="Email"
-                  type="email"
-                  placeholder="Enter email"
-                  onValueChange={() => {}}
-                />
-                <CustomInput
-                  size="md"
-                  label="Password"
-                  type="password"
-                  placeholder="Enter password"
-                  onValueChange={() => {}}
-                />
+                <GallaryInput />
               </CardBody>
+            </Card> */}
+
+            <Card className="px-3 py-3 mb-5">
+              <CardHeader>
+                <p className="text-md font-medium">Location</p>
+              </CardHeader>
+
+              <LocationInputs onChangeValue={setlocation} />
             </Card>
           </div>
         </div>
+
+        <button type="submit">Submit</button>
       </form>
     </>
   );

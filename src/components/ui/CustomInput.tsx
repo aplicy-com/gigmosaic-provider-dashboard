@@ -2,6 +2,7 @@ import { Input } from "@heroui/react";
 import { ReactNode } from "react";
 
 interface CustomInputProps {
+  id?: string;
   label: string;
   type: "text" | "email" | "password" | "number" | "tel" | "url";
   placeholder?: string;
@@ -30,6 +31,7 @@ interface CustomInputProps {
 }
 
 const CustomInput = ({
+  id,
   label = "Enter label",
   placeholder = "Enter placeholder",
   size = "md",
@@ -51,6 +53,7 @@ const CustomInput = ({
 }: CustomInputProps) => {
   return (
     <Input
+      id={id}
       label={label}
       type={type}
       placeholder={placeholder}

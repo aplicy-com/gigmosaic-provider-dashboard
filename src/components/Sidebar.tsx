@@ -6,7 +6,7 @@ const userRole = "Admin";
 
 const Sidebar = () => {
   return (
-    <aside className="fixed h-full w-64 z-50 md:shadow transform -translate-x-full md:translate-x-0 transition-transform duration-150 ease-in bg-[#101828] ">
+    <aside className="fixed h-full w-64 z-50 md:shadow transform -translate-x-full md:translate-x-0 transition-transform duration-150 ease-in bg-[#252E3E] ">
       <div className="sidebar-header flex items-center justify-center py-4">
         <Link to={"/dashboard"}>
           <img src="/src/assets/Logo.png" alt="Logo" />

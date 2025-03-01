@@ -21,10 +21,10 @@ const Loading = ({
 }: LoadingProps) => {
   return (
     <>
-      {/* <div className="fixed inset-0 flex items-center justify-center backdrop-blur-sm"> */}
-      <div className="flex items-center justify-center w-full h-full">
+      {/* <div className="flex items-center justify-center w-full h-full"> */}
+      <div className="fixed inset-0 flex items-center justify-center bg-black/50 backdrop-blur-sm z-40">
         <Spinner
-          classNames={{ label: "text-foreground text-sm" }}
+          classNames={{ label: " text-sm text-white" }}
           label={label}
           variant={variant}
           color={color}

@@ -4,6 +4,7 @@ import { ReactNode } from "react";
 interface CustomButtonProps {
   label?: string;
   size?: "sm" | "md" | "lg";
+  type?: "button" | "submit" | "reset";
   radius?: "none" | "sm" | "md" | "lg" | "full";
   color?:
     | "default"
@@ -32,7 +33,8 @@ interface CustomButtonProps {
 const CustomButton = ({
   label = "Button",
   size = "sm",
-  radius = "md",
+  type = "button",
+  radius = "sm",
   color = "default",
   variant = "solid",
   isLoading = false,
@@ -51,6 +53,7 @@ const CustomButton = ({
         size={size}
         radius={radius}
         color={color}
+        type={type}
         variant={variant}
         isLoading={isLoading}
         isDisabled={isDisabled}

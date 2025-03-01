@@ -1,15 +1,34 @@
 import { useEffect, useState } from "react";
 import CustomInput from "./CustomInput";
 import CustomButton from "./CustomButton";
-import { IoTrashBin } from "react-icons/io5";
+import { RiDeleteBin4Line } from "react-icons/ri";
 import { IoIosAddCircleOutline } from "react-icons/io";
 
 interface SingleMultipleInputProps {
   onChangeValude: (values: string[]) => void;
+  value: string[];
 }
 
-const SingleMultipleInput = ({ onChangeValude }: SingleMultipleInputProps) => {
+const SingleMultipleInput = ({
+  onChangeValude,
+  value,
+}: SingleMultipleInputProps) => {
   const [fields, setFields] = useState([{ id: Date.now(), value: "" }]);
+
+  // console.log("Value include00", value);
+  useEffect(() => {
+    // if (value?.length < 0) return;
+    if (value?.length && fields[0]?.value === "") {
+      // console.log(
+      //   "Empty field-----------------------------------------------------------------------------------"
+      // );
+      setFields(
+        value.map((item, index) => ({ id: Date.now() + index, value: item }))
+      );
+    }
+  }, [value]);
+
+  // console.log("Field00: ", fields);
 
   const handleAddField = () => {
     setFields([...fields, { id: Date.now(), value: "" }]);
@@ -57,7 +76,7 @@ const SingleMultipleInput = ({ onChangeValude }: SingleMultipleInputProps) => {
                 variant="light"
                 onPress={() => handleRemoveField(field.id)}
               >
-                <IoTrashBin size={20} className="text-red-400" />
+                <RiDeleteBin4Line size={20} className="text-red-400" />
               </CustomButton>
             </div>
           )}

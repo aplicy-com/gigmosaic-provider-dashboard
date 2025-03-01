@@ -1,3 +1,45 @@
+import { TimeInputValue } from "@heroui/react";
+
+export interface IFaqProps {
+  question: string;
+  answer: string;
+}
+
+export interface IGallaryProps {
+  images?: File[];
+  videoLink?: string;
+}
+
+export interface IAvailabilityField {
+  id: number;
+  day: string | null;
+  from: TimeInputValue | null;
+  fromFormatted?: string;
+  to: TimeInputValue | null;
+  toFormatted?: string;
+  slot: number | null;
+}
+
+export interface IAvailabilityProps {
+  day: string;
+  available: boolean;
+  timeSlots: {
+    from: string;
+    to: string;
+    maxBookings: number;
+  }[];
+}
+
+export interface ILocationProps {
+  address: string;
+  country: string;
+  city: string;
+  state: string;
+  pinCode: string;
+  latitude: string;
+  longitude: string;
+  googleMapsPlaceId: string;
+}
 export interface IServiceProps {
   serviceId: string;
   serviceTitle: string;
@@ -41,4 +83,11 @@ export interface IServiceProps {
     Saturday?: { from: string; to: string }[];
     Sunday?: { from: string; to: string }[];
   };
+  seo: [
+    {
+      metaTitle: string;
+      metaKeywords: string[];
+      metaDescription: string;
+    }
+  ];
 }

@@ -2,7 +2,9 @@ import { Input } from "@heroui/react";
 import { ReactNode } from "react";
 
 interface CustomInputProps {
-  label: string;
+  id?: string;
+  label?: string;
+  name?: string;
   type: "text" | "email" | "password" | "number" | "tel" | "url";
   placeholder?: string;
   size?: "sm" | "md" | "lg";
@@ -27,32 +29,38 @@ interface CustomInputProps {
   startContent?: ReactNode;
   onValueChange?: (value: string) => void;
   value?: string;
+  className?: string;
 }
 
 const CustomInput = ({
-  label = "Enter label",
+  id,
+  label = "",
   placeholder = "Enter placeholder",
   size = "md",
-  radius = "md",
+  radius = "sm",
   type = "text",
   color = "default",
-  variant = "flat",
+  variant = "bordered",
   labelPlacement = "outside",
   description = "",
   errorMessage = "",
   isDisabled = false,
   isInvalid = false,
   defaultValue = "",
+  name = "",
   startContent,
   endContent,
   onValueChange,
   value,
+  className,
   ...props
 }: CustomInputProps) => {
   return (
     <Input
+      id={id}
       label={label}
       type={type}
+      name={name}
       placeholder={placeholder}
       size={size}
       radius={radius}
@@ -68,6 +76,9 @@ const CustomInput = ({
       onValueChange={onValueChange}
       startContent={startContent}
       endContent={endContent}
+      className={className}
+      minLength={5}
+      maxLength={150}
       {...props}
     />
   );

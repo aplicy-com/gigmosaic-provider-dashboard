@@ -18,18 +18,18 @@ interface CustomTextAreaProps {
   isInvalid?: boolean;
   endContent?: ReactNode;
   startContent?: ReactNode;
-  onValueChange: (value: string) => void;
+  onValueChange?: (value: string) => void;
   value?: string;
 }
 
 const CustomTextArea = ({
   label = "Enter label",
   placeholder = "Enter placeholder",
-  variant = "flat",
+  variant = "bordered",
   labelPlacement = "outside",
   description = "",
   errorMessage = "",
-  minRows = 2,
+  minRows = 4,
   maxRows = 4,
   isClearable = false,
   isDisabled = false,

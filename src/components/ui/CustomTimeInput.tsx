@@ -42,6 +42,7 @@ const CustomTimeInput = ({
       onChange={onChange}
       startContent={startContent}
       endContent={endContent}
+      className="bg-transparent"
     />
   );
 };

@@ -25,7 +25,7 @@ interface CustomTextAreaProps {
 const CustomTextArea = ({
   label = "Enter label",
   placeholder = "Enter placeholder",
-  variant = "flat",
+  variant = "bordered",
   labelPlacement = "outside",
   description = "",
   errorMessage = "",

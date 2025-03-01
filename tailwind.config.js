@@ -9,6 +9,9 @@ export default {
   ],
   theme: {
     extend: {
+      fontFamily: {
+        // sans: ["Roboto", "sans-serif"],
+      },
       colors: {
         primary: "#12BBB5",
         secondary: "#323232",

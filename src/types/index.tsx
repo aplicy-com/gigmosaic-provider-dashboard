@@ -1,6 +1,33 @@
+import { TimeInputValue } from "@heroui/react";
+
 export interface IFaqProps {
   question: string;
   answer: string;
+}
+
+export interface IGallaryProps {
+  images: File[];
+  videoLink: string;
+}
+
+export interface IAvailabilityField {
+  id: number;
+  day: string | null;
+  from: TimeInputValue | null;
+  fromFormatted?: string;
+  to: TimeInputValue | null;
+  toFormatted?: string;
+  slot: number | null;
+}
+
+export interface IAvailabilityProps {
+  day: string;
+  available: boolean;
+  timeSlots: {
+    from: string;
+    to: string;
+    maxBookings: number;
+  }[];
 }
 
 export interface ILocationProps {
@@ -8,10 +35,10 @@ export interface ILocationProps {
   country: string;
   city: string;
   state: string;
-  pincode: string;
+  pinCode: string;
   latitude: string;
   longitude: string;
-  googleMapId: string;
+  googleMapsPlaceId: string;
 }
 export interface IServiceProps {
   serviceId: string;

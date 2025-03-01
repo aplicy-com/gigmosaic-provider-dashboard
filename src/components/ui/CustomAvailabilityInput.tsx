@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import CustomTimeInput from "./CustomTimeInput";
-import { TimeInputValue } from "@heroui/react";
 import { convertTimeToReadble } from "../../utils/convertTime";
 import { FaRegClock } from "react-icons/fa";
 import { CiCalendar } from "react-icons/ci";
@@ -11,20 +10,17 @@ import { days } from "../../data/sampleData";
 import { IoIosAddCircleOutline } from "react-icons/io";
 import CustomButton from "./CustomButton";
 import { IoTrashBin } from "react-icons/io5";
+import { IAvailabilityField } from "../../types";
+import { formatAvailabilityPayload } from "../../utils/serviceUtils";
 
-interface AvailabilityField {
-  id: number;
-  day: string | null;
-  from: TimeInputValue | null;
-  fromFormatted?: string;
-  to: TimeInputValue | null;
-  toFormatted?: string;
-  slot: number | null;
+interface AvailabilityInputProps {
+  onChangeValue: (value: IAvailabilityField[]) => void;
 }
 
-const CustomAvailabilityInput = () => {
+const CustomAvailabilityInput = ({ onChangeValue }: AvailabilityInputProps) => {
   const [allDay, setAllDay] = useState<boolean>(false);
-  const [fields, setFields] = useState<AvailabilityField[]>([
+  const [errors, setErrors] = useState<string>("");
+  const [fields, setFields] = useState<IAvailabilityField[]>([
     {
       id: Date.now(),
       day: null,
@@ -55,7 +51,7 @@ const CustomAvailabilityInput = () => {
 
   const handleUpdateField = (
     id: number,
-    updatedField: Partial<AvailabilityField>
+    updatedField: Partial<IAvailabilityField>
   ) => {
     setFields((prevFields) =>
       prevFields.map((field) =>
@@ -76,7 +72,17 @@ const CustomAvailabilityInput = () => {
     ]);
   }, [allDay]);
 
-  console.log("Data Array: ", fields);
+  const formattedPayload = formatAvailabilityPayload(fields);
+
+  useEffect(() => {
+    if (!Array.isArray(formattedPayload) && "error" in formattedPayload) {
+      setErrors(formattedPayload.error);
+      onChangeValue([]);
+    } else {
+      setErrors("");
+      onChangeValue(formattedPayload);
+    }
+  }, [fields]);
 
   return (
     <>
@@ -96,7 +102,7 @@ const CustomAvailabilityInput = () => {
                 <CustomAutocomplete
                   label="Day"
                   placeholder="All Day"
-                  defaultItems={[{ label: "All Day", id: "allday" }]}
+                  defaultItems={[{ label: "All Day", id: "all-date" }]}
                   startContent={<CiCalendar size={20} />}
                   onSelectionChange={(value) =>
                     handleUpdateField(field.id, { day: value as string })
@@ -107,6 +113,7 @@ const CustomAvailabilityInput = () => {
               <div className="max-w-[125px]">
                 <CustomTimeInput
                   label="From"
+                  // isRequired
                   value={field.from}
                   onChange={(value) =>
                     handleUpdateField(field.id, {
@@ -132,7 +139,6 @@ const CustomAvailabilityInput = () => {
                   startContent={<FaRegClock />}
                 />
               </div>
-
               <div className="max-w-[125px]">
                 <CustomNumberInput
                   label="Slot"
@@ -195,7 +201,6 @@ const CustomAvailabilityInput = () => {
               </div>
             </>
           )}
-
           {fields.length > 1 && (
             <div className="mt-6 cursor-pointer">
               <CustomButton
@@ -210,20 +215,24 @@ const CustomAvailabilityInput = () => {
         </div>
       ))}
 
-      <div className="-mt-3">
-        <CustomButton
-          label="Add New"
-          className="text-green-600"
-          startContent={
-            <IoIosAddCircleOutline
-              size={20}
-              className="text-green-600 cursor-pointer"
-            />
-          }
-          variant="light"
-          onPress={handleAddField}
-        />
-      </div>
+      {errors && <small className="text-error -mt-4">{errors}</small>}
+
+      {!errors && (
+        <div className="-mt-3">
+          <CustomButton
+            label="Add New"
+            className="text-green-600"
+            startContent={
+              <IoIosAddCircleOutline
+                size={20}
+                className="text-green-600 cursor-pointer"
+              />
+            }
+            variant="light"
+            onPress={handleAddField}
+          />
+        </div>
+      )}
     </>
   );
 };

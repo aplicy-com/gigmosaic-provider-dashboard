@@ -10,14 +10,20 @@ import "../css/location.css";
 
 interface LocationInputsProps {
   onChangeValue: (location: ILocationProps) => void;
+  data: ILocationProps;
 }
 
-const LocationInputs = ({ onChangeValue }: LocationInputsProps) => {
+const LocationInputs = ({ onChangeValue, data }: LocationInputsProps) => {
   const myAPIKey = "03c625d7d60347ef9d650e23be28760f";
   const mapRef = useRef<L.Map | null>(null);
   const markerRef = useRef<L.Marker | null>(null);
   const autocompleteRef = useRef<HTMLDivElement | null>(null);
   const [location, setLocation] = useState<ILocationProps>();
+
+  useEffect(() => {
+    console.log("Loca: ", data);
+    setLocation(data);
+  }, [data]);
 
   useEffect(() => {
     if (!mapRef.current) {
@@ -101,20 +107,20 @@ const LocationInputs = ({ onChangeValue }: LocationInputsProps) => {
                   country: country || "",
                   city: city || "",
                   state: state || "",
-                  pincode: postcode || "",
+                  pinCode: postcode || "",
                   latitude: lat,
                   longitude: lon,
-                  googleMapId: placeId,
+                  googleMapsPlaceId: placeId,
                 });
                 setLocation({
                   address: formatted || "",
                   country: country || "",
                   city: city || "",
                   state: state || "",
-                  pincode: postcode || "",
+                  pinCode: postcode || "",
                   latitude: lat,
                   longitude: lon,
-                  googleMapId: placeId,
+                  googleMapsPlaceId: placeId,
                 });
               }
             })
@@ -143,6 +149,7 @@ const LocationInputs = ({ onChangeValue }: LocationInputsProps) => {
         <div>
           <div
             ref={autocompleteRef}
+            defaultValue={location?.address}
             className="relative geoapify-autocomplete-input"
           ></div>
         </div>
@@ -173,11 +180,11 @@ const LocationInputs = ({ onChangeValue }: LocationInputsProps) => {
             value={location?.state}
           />
           <CustomInput
-            label="Pincode"
+            label="pinCode"
             isRequired={true}
             type="text"
-            placeholder="Enter pincode"
-            value={location?.pincode}
+            placeholder="Enter pinCode"
+            value={location?.pinCode}
           />
         </div>
 
@@ -186,7 +193,7 @@ const LocationInputs = ({ onChangeValue }: LocationInputsProps) => {
           isRequired={true}
           type="text"
           placeholder="Enter maps place id"
-          value={location?.googleMapId}
+          value={location?.googleMapsPlaceId}
         />
 
         <div className="grid lg:grid-cols-2 gap-6">
@@ -195,27 +202,27 @@ const LocationInputs = ({ onChangeValue }: LocationInputsProps) => {
             type="number"
             isRequired={true}
             placeholder="Enter latitude"
-            value={location?.latitude}
+            value={location?.coordinates?.latitude}
           />
           <CustomInput
             label="Longitude"
             type="number"
             isRequired={true}
             placeholder="Enter longitude"
-            value={location?.longitude}
+            value={location?.coordinates?.longitude}
           />
         </div>
 
         {/* Map Container */}
         <div
           id="map"
-          style={{ height: "400px", width: "100%", border: "2px solid #ccc" }}
+          style={{
+            height: "400px",
+            width: "100%",
+            border: "2px solid #ccc",
+            zIndex: 0,
+          }}
         ></div>
-
-        {/* Geocoder Autocomplete */}
-        {/* <div className="absolute top-10 left-10 z-1000 w-[400px]">
-          <div ref={autocompleteRef} className="relative"></div>
-        </div> */}
       </CardBody>
     </>
   );

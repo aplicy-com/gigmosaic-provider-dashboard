@@ -1,7 +1,9 @@
 import ProtectedRoute from "./ProtectedRoute";
 import Dashboard from "./pages/Dashboard";
 import Error404Page from "./pages/Error404Page";
-import AddService from "./pages/AddService";
+import AddService from "./pages/service/AddService";
+import AllService from "./pages/service/AllService";
+import EditService from "./pages/service/EditService";
 
 const userRole = "Admin";
 
@@ -31,11 +33,35 @@ const routes = [
   // },
 
   {
+    path: "/service/all",
+    name: "All Service",
+    element: (
+      <ProtectedRoute
+        element={AllService}
+        allowedRoles={["Admin"]}
+        userRole={userRole}
+      />
+    ),
+  },
+
+  {
     path: "/service/add",
     name: "Add Service",
     element: (
       <ProtectedRoute
         element={AddService}
+        allowedRoles={["Admin"]}
+        userRole={userRole}
+      />
+    ),
+  },
+
+  {
+    path: "/service/edit",
+    name: "Update Service",
+    element: (
+      <ProtectedRoute
+        element={EditService}
         allowedRoles={["Admin"]}
         userRole={userRole}
       />

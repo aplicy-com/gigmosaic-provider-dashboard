@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import CustomInput from "./CustomInput";
 import CustomButton from "./CustomButton";
-import { IoTrashBin } from "react-icons/io5";
+import { RiDeleteBin4Line } from "react-icons/ri";
 import { IoIosAddCircleOutline } from "react-icons/io";
 
 interface FAQ {
@@ -11,11 +11,24 @@ interface FAQ {
 
 interface SingleMultipleInputProps {
   onChangeValue: (faq: FAQ[]) => void;
+  value: FAQ[];
+  isUpdate: boolean;
 }
 
-const CustomDoubleInput = ({ onChangeValue }: SingleMultipleInputProps) => {
+const CustomDoubleInput = ({
+  onChangeValue,
+  value,
+  isUpdate = false,
+}: SingleMultipleInputProps) => {
   const [fields, setFields] = useState<FAQ[]>([{ question: "", answer: "" }]);
+  console.log("FAQ--------------FAQ: ", value);
 
+  useEffect(() => {
+    onChangeValue(fields);
+    if (!isUpdate) return;
+    setFields(value);
+  }, [value]);
+  console.log("FAQ00--------------FAQ00: ", fields);
   const handleAddField = () => {
     setFields([...fields, { question: "", answer: "" }]);
   };
@@ -77,7 +90,7 @@ const CustomDoubleInput = ({ onChangeValue }: SingleMultipleInputProps) => {
                 variant="light"
                 onPress={() => handleRemoveField(index)}
               >
-                <IoTrashBin size={20} className="text-red-400" />
+                <RiDeleteBin4Line size={20} className="text-red-400" />
               </CustomButton>
             </div>
           )}

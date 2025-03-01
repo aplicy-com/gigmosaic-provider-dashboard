@@ -4,6 +4,7 @@ import { ReactNode } from "react";
 interface CustomInputProps {
   id?: string;
   label?: string;
+  name?: string;
   type: "text" | "email" | "password" | "number" | "tel" | "url";
   placeholder?: string;
   size?: "sm" | "md" | "lg";
@@ -46,6 +47,7 @@ const CustomInput = ({
   isDisabled = false,
   isInvalid = false,
   defaultValue = "",
+  name = "",
   startContent,
   endContent,
   onValueChange,
@@ -58,6 +60,7 @@ const CustomInput = ({
       id={id}
       label={label}
       type={type}
+      name={name}
       placeholder={placeholder}
       size={size}
       radius={radius}
@@ -74,6 +77,8 @@ const CustomInput = ({
       startContent={startContent}
       endContent={endContent}
       className={className}
+      minLength={5}
+      maxLength={150}
       {...props}
     />
   );

@@ -11,8 +11,8 @@ interface FAQ {
 
 interface SingleMultipleInputProps {
   onChangeValue: (faq: FAQ[]) => void;
-  value: FAQ[];
-  isUpdate: boolean;
+  value?: FAQ[];
+  isUpdate?: boolean;
 }
 
 const CustomDoubleInput = ({
@@ -21,14 +21,16 @@ const CustomDoubleInput = ({
   isUpdate = false,
 }: SingleMultipleInputProps) => {
   const [fields, setFields] = useState<FAQ[]>([{ question: "", answer: "" }]);
-  console.log("FAQ--------------FAQ: ", value);
+  // console.log("FAQ--------------FAQ: ", value);
 
   useEffect(() => {
     onChangeValue(fields);
     if (!isUpdate) return;
-    setFields(value);
+    if (value) {
+      setFields(value);
+    }
   }, [value]);
-  console.log("FAQ00--------------FAQ00: ", fields);
+  // console.log("FAQ00--------------FAQ00: ", fields);
   const handleAddField = () => {
     setFields([...fields, { question: "", answer: "" }]);
   };

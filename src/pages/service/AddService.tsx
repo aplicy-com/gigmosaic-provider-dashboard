@@ -32,31 +32,58 @@ import {
 import CustomButton from "../../components/ui/CustomButton";
 
 const AddService = () => {
-  const { handleSubmit, register, control } = useForm<IServiceProps>({});
+  const { handleSubmit } = useForm<IServiceProps>({});
   const [staff, setStaff] = useState<string[]>([]);
   const [addtionalInfo, setAddtionalInfo] = useState<
     { serviceItem: string; price: number; images: File | null }[]
   >([]);
   const [include, setInclude] = useState<string[]>([]);
-  const [displayStaff, setDisplayStaff] = useState<string[]>([]);
-  const [serviceOverview, setServiceOverview] = useState<string>("");
+  const [displayStaff, setDisplayStaff] = useState<
+    { label: string; id: number }[]
+  >([]);
+  // const [serviceOverview, setServiceOverview] = useState<string>("");
   const [faq, setFaq] = useState<IFaqProps[]>([]);
-  const [metaKeyword, setMetaKeyword] = useState<string>("");
   const [location, setlocation] = useState<ILocationProps>();
   const [isActive, setIsActive] = useState<boolean>(true);
   const [loading, setLoading] = useState<boolean>(false);
   const [gallaryData, setGallaryData] = useState<IGallaryProps>();
   const [availability, setAvailability] = useState<IAvailabilityProps[]>();
-  const [displayCategory, setDisplayCategory] = useState();
-  const [displaySubCategory, setDisplaySubCategory] = useState();
+  const [displayCategory, setDisplayCategory] = useState<
+    { label: string; id: number }[]
+  >([]);
+  const [displaySubCategory, setDisplaySubCategory] = useState<
+    { label: string; id: number }[]
+  >([]);
+  const [basicInfo, setBasicInfo] = useState({
+    serviceTitle: "",
+    slug: "",
+    categoryId: "",
+    subCategoryId: "",
+    serviceOverview: "",
+    price: 0,
+  });
 
-  const { mutate, error } = useSumbitServiceMutation();
+  const [metaDetails, setMetaDetails] = useState<{
+    metaTitle: string;
+    metaKeywords: string[];
+    metaDescription: string;
+  }>({
+    metaTitle: "",
+    metaKeywords: [],
+    metaDescription: "",
+  });
+
+  // const [locationDetails, setLocationDetails] = useState<ILocationProps>()
+
+  const { mutate } = useSumbitServiceMutation();
   const { data: staffData } = useFetchStaff();
   const { data: categoryData } = useFetchCategory();
   const { data: subCategoryData } = useFetchSubCategory();
 
   console.log("categoryData: ", categoryData);
-  console.log("subCategoryData: ", subCategoryData);
+  console.log("AVi------------------: ", availability);
+  console.log("BASIC INFO------------------: ", basicInfo);
+  console.log("META INFO------------------: ", metaDetails);
 
   useEffect(() => {
     setApiData();
@@ -85,13 +112,19 @@ const AddService = () => {
     setDisplaySubCategory(formtedSubCategory);
   };
 
-  console.log("categoryData displayCategory: ", displayCategory);
-  console.log("subCategoryData displaySubCategory: ", displaySubCategory);
-  // console.log("api error: ", error);
-  const convertToMetaKeyword = convertToTagsArray(metaKeyword);
+  const convertMetaKeyword = async (keyword: string) => {
+    console.log("Keyaword: ", keyword);
+    const convertToMetaKeyword = convertToTagsArray(keyword);
+    console.log("991: ", convertToMetaKeyword);
+    setMetaDetails((prevDetails) => ({
+      ...prevDetails,
+      metaKeywords: convertToMetaKeyword,
+    }));
+  };
 
-  const onSubmit: SubmitHandler<IServiceProps> = async (data) => {
+  const onSubmit: SubmitHandler<IServiceProps> = async () => {
     setLoading(true);
+    console.log("VAI-----:", availability);
     try {
       if (!gallaryData?.images || gallaryData.images.length === 0) {
         console.log("No images found in gallery data.");
@@ -123,13 +156,14 @@ const AddService = () => {
       );
 
       const formatedData = await formatServiceData(
-        data,
+        basicInfo,
         staff,
         updatedAdditionalInfo,
         include,
-        serviceOverview,
+        // serviceOverview,
         faq,
-        convertToMetaKeyword,
+        // convertToMetaKeyword,
+        metaDetails,
         location,
         // imageUrls,
         // gallaryData.videoLink,
@@ -165,60 +199,65 @@ const AddService = () => {
                   isRequired={true}
                   type="text"
                   placeholder="Enter title"
-                  {...register("serviceTitle")}
+                  name={basicInfo.serviceTitle}
+                  onValueChange={(e) => {
+                    setBasicInfo({
+                      ...basicInfo,
+                      serviceTitle: e,
+                    });
+                  }}
                 />
                 <CustomInput
                   label="Service Slug"
                   isRequired={true}
                   type="text"
                   placeholder="Enter slug"
-                  {...register("slug")}
+                  name={basicInfo.slug}
+                  onValueChange={(e) => {
+                    setBasicInfo({
+                      ...basicInfo,
+                      slug: e,
+                    });
+                  }}
                 />
                 <div className="grid grid-cols-2 gap-4">
-                  <Controller
-                    name="categoryId"
-                    control={control}
-                    render={({ field }) => (
-                      <CustomAutocomplete
-                        label="Category"
-                        placeholder="Select category"
-                        // defaultItems={[
-                        //   { label: "Category 1", id: "1" },
-                        //   { label: "Category 2", id: "2" },
-                        //   { label: "Category 3", id: "3" },
-                        // ]}
-                        defaultItems={displayCategory}
-                        width="none"
-                        onSelectionChange={(id) => field.onChange(id)}
-                        isRequired={true}
-                      />
-                    )}
+                  <CustomAutocomplete
+                    label="Category"
+                    placeholder="Select category"
+                    defaultItems={displayCategory}
+                    width="none"
+                    onSelectionChange={(id) => {
+                      setBasicInfo({
+                        ...basicInfo,
+                        categoryId: id,
+                      });
+                    }}
+                    isRequired={true}
                   />
-
-                  <Controller
-                    name="subCategoryId"
-                    control={control}
-                    render={({ field }) => (
-                      <CustomAutocomplete
-                        label="Sub Category"
-                        placeholder="Select subcategory"
-                        // defaultItems={[
-                        //   { label: "Category 1", id: "1" },
-                        //   { label: "Category 2", id: "2" },
-                        //   { label: "Category 3", id: "3" },
-                        // ]}
-                        defaultItems={displaySubCategory}
-                        width="none"
-                        onSelectionChange={(id) => field.onChange(id)}
-                        isRequired={true}
-                      />
-                    )}
+                  <CustomAutocomplete
+                    label="Sub Category"
+                    placeholder="Select subcategory"
+                    defaultItems={displaySubCategory}
+                    width="none"
+                    onSelectionChange={(id) => {
+                      setBasicInfo({
+                        ...basicInfo,
+                        subCategoryId: id,
+                      });
+                    }}
+                    isRequired={true}
                   />
                 </div>
                 <CustomNumberInput
                   label="Price"
                   isRequired={true}
-                  {...register("price")}
+                  name={basicInfo.price}
+                  onValueChange={(e) => {
+                    setBasicInfo({
+                      ...basicInfo,
+                      price: e,
+                    });
+                  }}
                 />
 
                 {/* Staff */}
@@ -247,9 +286,24 @@ const AddService = () => {
                 <Divider className="my-1" />
                 <p className="text-md font-medium -mt-3">Service Overview </p>
                 <TextEdior
-                  onChangeValue={setServiceOverview}
-                  value={serviceOverview}
-                  {...register("serviceOverview")}
+                  // onChangeValue={setServiceOverview}
+                  // value={serviceOverview}
+                  name={basicInfo.serviceOverview}
+                  // onChange={setBasicInfo}
+                  // {...register("serviceOverview")}
+                  // onChange={(e) => {
+                  //   setBasicInfo({
+                  //     ...basicInfo,
+                  //     serviceOverview: e.target.value,
+                  //   });
+                  // }}
+                  onChangeValue={(value) =>
+                    setBasicInfo((prev) => ({
+                      ...prev,
+                      serviceOverview: value,
+                    }))
+                  }
+                  value={basicInfo.serviceOverview}
                 />
               </CardBody>
             </Card>
@@ -262,7 +316,11 @@ const AddService = () => {
 
               <CardBody className="gap-6">
                 <Divider className="-my-2" />
-                <GallaryInput onChangeValue={setGallaryData} />
+                <GallaryInput
+                  onChangeValue={(value) =>
+                    setGallaryData(value as IGallaryProps)
+                  }
+                />
               </CardBody>
             </Card>
 
@@ -321,7 +379,14 @@ const AddService = () => {
                   type="text"
                   placeholder="Enter meta title"
                   isRequired={true}
-                  {...register("seo.0.metaTitle")}
+                  // {...register("seo.0.metaTitle")}
+                  name={metaDetails.metaTitle}
+                  onValueChange={(e) => {
+                    setMetaDetails({
+                      ...metaDetails,
+                      metaTitle: e,
+                    });
+                  }}
                 />
                 <CustomInput
                   size="md"
@@ -330,14 +395,23 @@ const AddService = () => {
                   placeholder="Enter Tags"
                   description="Enter comma separated tags (Ex: tag1, tag2, tag3)"
                   isRequired={true}
-                  onValueChange={setMetaKeyword}
+                  // onValueChange={setMetaKeyword}
+                  name={metaDetails.metaKeywords}
+                  onValueChange={(value) => convertMetaKeyword(value)}
                 />
 
                 <CustomTextArea
                   label="Meta Description"
                   placeholder="Enter meta description"
                   isRequired={true}
-                  {...register("seo.0.metaDescription")}
+                  // {...register("seo.0.metaDescription")}
+                  name={metaDetails.metaDescription}
+                  onValueChange={(e) => {
+                    setMetaDetails({
+                      ...metaDetails,
+                      metaDescription: e,
+                    });
+                  }}
                 />
               </CardBody>
             </Card>

@@ -237,8 +237,8 @@ interface GallaryInputProps {
     images: (string | File)[];
     videoLink: string;
   }) => void;
-  value: string[]; // Array of image URLs from backend
-  link: string; // Video link from backend
+  value?: string[];
+  link?: string;
 }
 
 const GallaryInput = ({ onChangeValue, value, link }: GallaryInputProps) => {
@@ -250,7 +250,8 @@ const GallaryInput = ({ onChangeValue, value, link }: GallaryInputProps) => {
     setImages(value || []);
     setVideoLink(link || "");
   }, [value, link]);
-
+  console.log("Link---------------- ", videoLink);
+  console.log("Linklink ", link);
   // Trigger parent update when images/videoLink changes
   useEffect(() => {
     onChangeValue({ images, videoLink });

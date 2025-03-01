@@ -31,19 +31,29 @@ import {
   useFetchSubCategory,
 } from "../../hooks/queries/useFetchData";
 import CustomButton from "../../components/ui/CustomButton";
+import { serviceInfo } from "../../data/sampleData";
+import { IoCodeSlashOutline } from "react-icons/io5";
 
 const EditService = () => {
   const { handleSubmit, register, control } = useForm<IServiceProps>({});
   const [staff, setStaff] = useState<string[]>([]);
-  const [displayStaff, setDisplayStaff] = useState<{ label: any; id: any }[]>(
+  const [displayStaff, setDisplayStaff] = useState<
+    { label: string; id: number }[]
+  >([]);
+  const [addtionalInfo, setAddtionalInfo] = useState<ItemField[]>([]);
+  // const [displayAddtionalInfo, setADisplayddtionalInfo] = useState<
+  //   {
+  //     serviceItem: string;
+  //     price: number;
+  //     image: File | null;
+  //     id: number;
+  //     images: string | File;
+  //   }[]
+  // >([]);
+  const [displayAddtionalInfo, setADisplayddtionalInfo] = useState<ItemField[]>(
     []
   );
-  const [addtionalInfo, setAddtionalInfo] = useState<
-    { serviceItem: string; price: number; images: File | null }[]
-  >([]);
-  const [displayAddtionalInfo, setADisplayddtionalInfo] = useState<
-    { serviceItem: string; price: number; image: File | null }[]
-  >([]);
+
   const [include, setInclude] = useState<string[]>([]);
   const [serviceOverview, setServiceOverview] = useState<string>("");
   const [faq, setFaq] = useState<IFaqProps[]>([]);
@@ -54,31 +64,89 @@ const EditService = () => {
   const [loading, setLoading] = useState<boolean>(false);
   const [gallaryData, setGallaryData] = useState<IGallaryProps>();
   const [displayGallaryData, setDisplayGallaryData] = useState<string[]>();
-  const [link, setLink] = useState<string[]>();
+  const [link, setLink] = useState<string | undefined>();
   const [availability, setAvailability] = useState<IAvailabilityProps[]>();
+  const [displayAvailability, setDisplayAvailability] =
+    useState<IAvailabilityProps[]>();
   const [data, setData] = useState<IServiceProps>();
+  const [isAllDay, setIsAllDay] = useState<boolean>(false);
 
   const [displayCategory, setDisplayCategory] = useState();
   const [displaySubCategory, setDisplaySubCategory] = useState();
+  const [basicInfo, setBasicInfo] = useState({
+    serviceTitle: "",
+    slug: "",
+    categoryId: "",
+    subCategoryId: "",
+    serviceOverview: "",
+    price: 0,
+  });
+
+  const [metaDetails, setMetaDetails] = useState<{
+    metaTitle: string;
+    metaKeywords: string[];
+    metaDescription: string;
+  }>({
+    metaTitle: "",
+    metaKeywords: [],
+    metaDescription: "",
+  });
+
+  const isUpdate = true;
 
   const { mutate } = useSumbitServiceMutation();
-  const convertToMetaKeyword = convertToTagsArray(metaKeyword);
+  // const convertToMetaKeyword = convertToTagsArray(metaKeyword);
 
-  const { data: apiData } = useFetchServiceDataById("SID_48");
+  const [apiData, setApiDataback] = useState<any>([]);
+
+  useEffect(() => {
+    let isMounted = true;
+    fetch("http://localhost:3001/api/test-api")
+      .then((response) => response.json())
+      .then((data) => {
+        if (isMounted) {
+          console.log(data);
+          setApiDataback(data);
+        }
+      });
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
+  useEffect(() => {
+    if (apiData) {
+      (async () => {
+        await setApiData();
+      })();
+    }
+  }, [apiData]);
+
+  // useEffect(() => {
+  //   fetchDataFromApi();
+  // }, []);
+  // const apiData = serviceInfo;
+
+  // const { data: apiData } = useFetchServiceDataById("SID_48");   /// backend api call
   const { data: staffData } = useFetchStaff();
   const { data: categoryData } = useFetchCategory();
   const { data: subCategoryData } = useFetchSubCategory();
 
-  // console.log("apiData: ", apiData);
-  // console.log("setAddtionalInfo+++++++++: ", addtionalInfo);
-  console.log("FAQ: ", faq);
+  // example data fetch by id but
 
-  const handleAdditionalInfoChange = (updatedValues: typeof addtionalInfo) => {
-    setAddtionalInfo([...updatedValues]); // Ensure a fresh update
-  };
+  // console.log("API BACKEND DATA: ", apiData);
+  // console.log("apiData: ", form);
+  // return;
+  interface ItemField {
+    id: number;
+    serviceItem: string;
+    price: number;
+    images: string | File | null;
+  }
 
-  const handleGalleryChange = (newFiles: (string | File)[]) => {
-    setGallaryData(newFiles); // Store both URLs and new files
+  const handleAdditionalInfoChange = (updatedValues: ItemField[]) => {
+    setAddtionalInfo([...updatedValues]);
   };
 
   useEffect(() => {
@@ -88,9 +156,22 @@ const EditService = () => {
   }, [apiData]);
 
   const setApiData = async () => {
-    // console.log("API INCLUDE:  ", apiData?.serviceInfo?.includes);
-    // setAddtionalInfo(apiData?.serviceInfo?.additionalServices);
-    setADisplayddtionalInfo(apiData?.serviceInfo?.additionalServices);
+    setBasicInfo({
+      serviceTitle: apiData?.serviceInfo?.serviceTitle,
+      slug: apiData?.serviceInfo?.slug,
+      categoryId: apiData?.serviceInfo?.categoryId,
+      subCategoryId: apiData?.serviceInfo?.subCategoryId,
+      serviceOverview: apiData?.serviceInfo?.serviceOverview,
+      price: apiData?.serviceInfo?.price,
+    });
+    setMetaDetails({
+      metaTitle: apiData?.serviceInfo?.seo?.[0]?.metaTitle,
+      metaDescription: apiData?.serviceInfo?.seo?.[0]?.metaDescription,
+      metaKeywords: apiData?.serviceInfo?.seo?.[0]?.metaKeywords,
+    });
+    setDisplayAvailability(apiData?.serviceInfo?.availability);
+    setIsAllDay(false);
+    setADisplayddtionalInfo(apiData?.serviceInfo?.additionalService);
     setData(apiData?.serviceInfo);
     setInclude(apiData?.serviceInfo?.includes);
     setServiceOverview(apiData?.serviceInfo?.serviceOverview);
@@ -110,63 +191,58 @@ const EditService = () => {
     setDisplayStaff(formatStaff);
     setDisplayGallaryData(apiData?.serviceInfo?.gallery[0].serviceImages);
     setLink(apiData?.serviceInfo?.gallery[0].videoLink);
+    console.log("Edit link: ", apiData?.serviceInfo?.gallery[0].videoLink);
     console.log(
       "GALLERY DATA: ",
       apiData?.serviceInfo?.gallery[0].serviceImages
     );
 
-    const formtedCategory = await formateDataForDropdown(
+    const formtedCategory = formateDataForDropdown(
       categoryData?.categories,
       "categoryName",
       "categoryId"
     );
 
     setDisplayCategory(formtedCategory);
+    console.log("formtedCategory111111111111111111", formtedCategory);
 
-    const formtedSubCategory = await formateDataForDropdown(
+    const formtedSubCategory = formateDataForDropdown(
       subCategoryData?.subCategories,
       "subCategoryName",
       "subCategoryId"
     );
+    // console.log("formtedSubCategory1111111111111111111111", formtedSubCategory);
     setDisplaySubCategory(formtedSubCategory);
   };
-  console.log("2222222222222222222222: ", link);
+
+  const convertMetaKeyword = async (keyword: string) => {
+    console.log("Keyaword: ", keyword);
+    const convertToMetaKeyword = convertToTagsArray(keyword);
+    console.log("991: ", convertToMetaKeyword);
+    setMetaDetails((prevDetails) => ({
+      ...prevDetails,
+      metaKeywords: convertToMetaKeyword,
+    }));
+  };
+
   const onSubmit: SubmitHandler<IServiceProps> = async (data) => {
+    console.log("Location in edit parent: ", location);
     setLoading(true);
-    console.log("$$$$$$$$$$$$$$$: ", gallaryData);
+    // console.log("$$$$$$$$$$$$$$$: ", gallaryData);
     try {
       if (!gallaryData?.images || gallaryData.images.length === 0) {
         console.log("No images found in gallery data.");
         return;
       }
       const formatGallary = await uploadImages(gallaryData);
-      console.log("GALLARY]]]]]]]]]]]]]]]]]]: ", formatGallary);
-      // const imageUrls: string[] = await Promise.all(
-      //   (gallaryData?.images ?? []).map((image) => uploadToS3(image, "service"))
-      // );
-
-      // Upload images inside addtionalInfo
-      // const updatedAdditionalInfo = await Promise.all(
-      //   addtionalInfo.map(async (item, index) => {
-      //     if (item.images) {
-      //       const uploadedImageUrl = await uploadToS3(
-      //         item.images,
-      //         "service-addtional-infomation"
-      //       );
-      //       return { ...item, images: uploadedImageUrl, id: index + 1 };
-      //     }
-      //     return { ...item, images: "", id: index + 1 };
-      //   })
-      // );
+      // console.log("GALLARY]]]]]]]]]]]]]]]]]]: ", formatGallary);
 
       const updatedAdditionalInfo = await Promise.all(
         addtionalInfo.map(async (item, index) => {
-          // ✅ If the image is already a URL, keep it as is
           if (typeof item.images === "string") {
             return { ...item, id: index + 1 };
           }
 
-          // ✅ If the image is a File, upload it
           if (item.images instanceof File) {
             const uploadedImageUrl = await uploadToS3(
               item.images,
@@ -175,25 +251,37 @@ const EditService = () => {
             return { ...item, images: uploadedImageUrl, id: index + 1 };
           }
 
-          // ✅ If there's no image, set it to an empty string
           return { ...item, images: "", id: index + 1 };
         })
       );
 
       const formatedData = await formatServiceData(
-        data,
+        // data,
+        // staff,
+        // updatedAdditionalInfo,
+        // include,
+        // serviceOverview,
+        // faq,
+        // convertToMetaKeyword,
+        // location,
+        // formatGallary,
+        // availability,
+        // isActive
+        basicInfo,
         staff,
         updatedAdditionalInfo,
         include,
-        serviceOverview,
+        // serviceOverview,
         faq,
-        convertToMetaKeyword,
+        // convertToMetaKeyword,
+        metaDetails,
         location,
-        formatGallary,
         // imageUrls,
         // gallaryData.videoLink,
+        formatGallary,
         availability,
-        isActive
+        isActive,
+        isUpdate
       );
       await console.log("FINAL PAYLOAD UPDATE------: ", formatedData);
       mutate(formatedData);
@@ -203,7 +291,7 @@ const EditService = () => {
       setLoading(false);
     }
   };
-
+  console.log("LoL: ", location);
   const uploadImages = async (gallaryData: {
     images: (string | File)[];
     videoLink: string;
@@ -231,7 +319,8 @@ const EditService = () => {
       videoLink: gallaryData.videoLink, // Keep video link as it is
     };
   };
-  console.log("Loading..............: ", loading);
+  // console.log("Category..............: ", formtedCategory);
+  console.log("BASIC data------------: ", metaDetails);
   return (
     <>
       {loading ? <Loading label="Submitting..." /> : <></>}
@@ -252,63 +341,71 @@ const EditService = () => {
                   isRequired={true}
                   type="text"
                   placeholder="Enter title"
-                  value={data?.serviceTitle}
-                  {...register("serviceTitle")}
+                  name={basicInfo.serviceTitle}
+                  value={basicInfo.serviceTitle}
+                  onValueChange={(e) => {
+                    setBasicInfo({
+                      ...basicInfo,
+                      serviceTitle: e,
+                    });
+                  }}
                 />
                 <CustomInput
                   label="Service Slug"
                   isRequired={true}
                   type="text"
                   placeholder="Enter slug"
-                  value={data?.slug}
-                  {...register("slug")}
+                  name={basicInfo.slug}
+                  value={basicInfo.slug}
+                  onValueChange={(e) => {
+                    setBasicInfo({
+                      ...basicInfo,
+                      slug: e,
+                    });
+                  }}
                 />
                 <div className="grid grid-cols-2 gap-4">
-                  <Controller
-                    name="categoryId"
-                    control={control}
-                    render={({ field }) => (
-                      <CustomAutocomplete
-                        label="Category"
-                        placeholder="Select category"
-                        // defaultItems={[
-                        //   { label: "Category 1", id: "1" },
-                        //   { label: "Category 2", id: "2" },
-                        //   { label: "Category 3", id: "3" },
-                        // ]}
-                        defaultItems={displayCategory}
-                        width="none"
-                        onSelectionChange={(id) => field.onChange(id)}
-                        isRequired={true}
-                      />
-                    )}
+                  <CustomAutocomplete
+                    label="Category"
+                    placeholder="Select category"
+                    defaultItems={displayCategory}
+                    selectedKey={basicInfo?.categoryId}
+                    width="none"
+                    onSelectionChange={(id) => {
+                      setBasicInfo({
+                        ...basicInfo,
+                        categoryId: id,
+                      });
+                    }}
+                    isRequired={true}
                   />
-
-                  <Controller
-                    name="subCategoryId"
-                    control={control}
-                    render={({ field }) => (
-                      <CustomAutocomplete
-                        label="Sub Category"
-                        placeholder="Select subcategory"
-                        // defaultItems={[
-                        //   { label: "Category 1", id: "1" },
-                        //   { label: "Category 2", id: "2" },
-                        //   { label: "Category 3", id: "3" },
-                        // ]}
-                        defaultItems={displaySubCategory}
-                        width="none"
-                        onSelectionChange={(id) => field.onChange(id)}
-                        isRequired={true}
-                      />
-                    )}
+                  <CustomAutocomplete
+                    label="Sub Category"
+                    placeholder="Select subcategory"
+                    defaultItems={displaySubCategory}
+                    selectedKey={basicInfo?.subCategoryId}
+                    defaultSelectedKey={basicInfo.subCategoryId}
+                    width="none"
+                    onSelectionChange={(id) => {
+                      setBasicInfo({
+                        ...basicInfo,
+                        subCategoryId: id,
+                      });
+                    }}
+                    isRequired={true}
                   />
                 </div>
                 <CustomNumberInput
-                  value={data?.price}
                   label="Price"
                   isRequired={true}
-                  {...register("price")}
+                  name={basicInfo.price}
+                  value={basicInfo.price}
+                  onValueChange={(e) => {
+                    setBasicInfo({
+                      ...basicInfo,
+                      price: e,
+                    });
+                  }}
                 />
 
                 {/* Staff */}
@@ -364,9 +461,12 @@ const EditService = () => {
                 <GallaryInput
                   link={link}
                   value={displayGallaryData}
-                  onChangeValue={setGallaryData}
-                  // value={displayGallaryData}
-                  // onChangeValue={handleGalleryChange}
+                  onChangeValue={(value) =>
+                    setGallaryData({
+                      images: value.images as File[],
+                      videoLink: value.videoLink,
+                    })
+                  }
                 />
               </CardBody>
             </Card>
@@ -397,7 +497,11 @@ const EditService = () => {
               {/* Availability */}
               <CardBody className="gap-6">
                 <Divider className="-my-2" />
-                <CustomAvailabilityInput onChangeValue={setAvailability} />
+                <CustomAvailabilityInput
+                  isAllDay={isAllDay}
+                  value={displayAvailability}
+                  onChangeValue={setAvailability}
+                />
               </CardBody>
             </Card>
 
@@ -430,8 +534,16 @@ const EditService = () => {
                   type="text"
                   placeholder="Enter meta title"
                   isRequired={true}
-                  value={data?.seo?.[0]?.metaTitle}
-                  {...register("seo.0.metaTitle")}
+                  // value={data?.seo?.[0]?.metaTitle}
+                  // {...register("seo.0.metaTitle")}
+                  name={metaDetails.metaTitle}
+                  value={metaDetails.metaTitle}
+                  onValueChange={(e) => {
+                    setMetaDetails({
+                      ...metaDetails,
+                      metaTitle: e,
+                    });
+                  }}
                 />
                 <CustomInput
                   size="md"
@@ -440,16 +552,26 @@ const EditService = () => {
                   placeholder="Enter Tags"
                   description="Enter comma separated tags (Ex: tag1, tag2, tag3)"
                   isRequired={true}
-                  value={metaKeyword}
-                  onValueChange={setMetaKeyword}
+                  name={metaDetails.metaKeywords}
+                  value={metaDetails.metaKeywords}
+                  onValueChange={(value) => convertMetaKeyword(value)}
+                  // onValueChange={setMetaKeyword}
                 />
 
                 <CustomTextArea
                   label="Meta Description"
                   placeholder="Enter meta description"
                   isRequired={true}
-                  value={data?.seo?.[0]?.metaDescription}
-                  {...register("seo.0.metaDescription")}
+                  // value={data?.seo?.[0]?.metaDescription}
+                  // {...register("seo.0.metaDescription")}
+                  name={metaDetails.metaDescription}
+                  value={metaDetails.metaDescription}
+                  onValueChange={(e) => {
+                    setMetaDetails({
+                      ...metaDetails,
+                      metaDescription: e,
+                    });
+                  }}
                 />
               </CardBody>
             </Card>

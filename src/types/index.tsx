@@ -6,8 +6,8 @@ export interface IFaqProps {
 }
 
 export interface IGallaryProps {
-  images: File[];
-  videoLink: string;
+  images?: File[];
+  videoLink?: string;
 }
 
 export interface IAvailabilityField {

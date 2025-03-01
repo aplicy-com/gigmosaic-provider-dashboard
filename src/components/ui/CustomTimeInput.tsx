@@ -27,6 +27,7 @@ const CustomTimeInput = ({
   startContent,
   endContent,
   onChange,
+  defaultValue,
   value,
 }: CustomTimeInputProps) => {
   return (
@@ -42,6 +43,7 @@ const CustomTimeInput = ({
       onChange={onChange}
       startContent={startContent}
       endContent={endContent}
+      defaultValue={defaultValue}
       className="bg-transparent"
     />
   );

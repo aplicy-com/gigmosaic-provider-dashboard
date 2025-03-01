@@ -4,6 +4,7 @@ import { ReactNode } from "react";
 interface CustomInputProps {
   label: string;
   placeholder?: string;
+  name?: string;
   size?: "sm" | "md" | "lg";
   radius?: "none" | "sm" | "md" | "lg" | "full";
   color?:
@@ -41,6 +42,7 @@ const CustomNumberInput = ({
   labelPlacement = "outside",
   description = "",
   errorMessage = "",
+  name = "",
   isWheelDisabled = false,
   isInvalid = false,
   defaultValue = 0,
@@ -58,6 +60,7 @@ const CustomNumberInput = ({
       label={label}
       placeholder={placeholder}
       size={size}
+      name={name}
       radius={radius}
       color={color}
       variant={variant}

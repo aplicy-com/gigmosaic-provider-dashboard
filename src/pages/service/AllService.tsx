@@ -8,7 +8,6 @@ import { IoSearchSharp } from "react-icons/io5";
 import { useNavigate } from "react-router-dom";
 import CustomPagination from "../../components/ui/CustomPagination";
 import { useState } from "react";
-import DataTable from "../../components/ui/ServiceCardList";
 import ServiceCardList from "../../components/ui/ServiceCardList";
 
 const AllService = () => {

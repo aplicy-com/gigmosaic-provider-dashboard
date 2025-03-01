@@ -8,7 +8,7 @@ import { Link } from "react-router-dom";
 import CustomButton from "./CustomButton";
 
 const ServiceCardList = () => {
-  const isOffers = false;
+  //   const isOffers = false;
   const isActive = true;
 
   return (

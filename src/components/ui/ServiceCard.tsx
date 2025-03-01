@@ -1,6 +1,7 @@
 import { Card, CardBody, CardHeader, Image } from "@heroui/react";
 import { SlLocationPin } from "react-icons/sl";
-import { FaRegEdit, FaRegHeart } from "react-icons/fa";
+import { FaRegEdit } from "react-icons/fa";
+// import {FaRegHeart } from "react-icons/fa";
 import { FaStar } from "react-icons/fa6";
 import { Link } from "react-router-dom";
 import { GrStatusGood } from "react-icons/gr";
@@ -10,7 +11,7 @@ import CustomButton from "./CustomButton";
 import { TbRosetteDiscountCheckFilled } from "react-icons/tb";
 
 const ServiceCard = () => {
-  const isOffers = false;
+  //   const isOffers = false;
   const isActive = true;
 
   return (

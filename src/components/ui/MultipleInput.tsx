@@ -199,13 +199,26 @@ interface ItemField {
   id: number;
   serviceItem: string;
   price: number;
-  images: File | null;
+  images: string | File | null;
 }
 
+// interface MultipleInputProps {
+//   onChangeValude: (values: ItemField[] ) => void;
+//   value?: ItemField[];
+//   isUpdate?: boolean;
+// }
+
+// interface MultipleInputProps {
+//   onChangeValude: (values: ItemField[]) => void;
+//   value?: ItemField[];
+//   isUpdate?: boolean;
+// }
 interface MultipleInputProps {
-  onChangeValude: (values: ItemField[]) => void;
-  value: ItemField[];
-  isUpdate: boolean;
+  onChangeValude: (
+    values: { serviceItem: string; price: number; images: File | null }[]
+  ) => void;
+  value?: { serviceItem: string; price: number; images: File | null }[];
+  isUpdate?: boolean;
 }
 
 const MultipleInput = ({
@@ -226,6 +239,7 @@ const MultipleInput = ({
 
   const setvalueToField = async () => {
     if (!isUpdate) return;
+    if (!value) return;
     if (value?.length > 0) {
       setFields(value);
     }
@@ -263,6 +277,13 @@ const MultipleInput = ({
     );
   };
 
+  // const handleImageChange = (id: number, file: File | null) => {
+  //   setFields(
+  //     fields.map((field) =>
+  //       field.id === id ? { ...field, images: file } : field
+  //     )
+  //   );
+  // };
   const handleImageChange = (id: number, file: File | null) => {
     setFields(
       fields.map((field) =>

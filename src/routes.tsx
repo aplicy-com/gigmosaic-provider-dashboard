@@ -4,6 +4,7 @@ import Error404Page from "./pages/Error404Page";
 import AddService from "./pages/service/AddService";
 import AllService from "./pages/service/AllService";
 import EditService from "./pages/service/EditService";
+import AddStaff from "./pages/staff/AddStaff";
 
 const userRole = "Admin";
 
@@ -20,20 +21,8 @@ const routes = [
     ),
   },
 
-  // {
-  //   path: "/service",
-  //   name: "My Service",
-  //   element: (
-  //     <ProtectedRoute
-  //       element={AddService}
-  //       allowedRoles={["Admin"]}
-  //       userRole={userRole}
-  //     />
-  //   ),
-  // },
-
   {
-    path: "/service/all",
+    path: "/service/all-service",
     name: "All Service",
     element: (
       <ProtectedRoute
@@ -45,7 +34,7 @@ const routes = [
   },
 
   {
-    path: "/service/add",
+    path: "/service/add-service",
     name: "Add Service",
     element: (
       <ProtectedRoute
@@ -57,7 +46,19 @@ const routes = [
   },
 
   {
-    path: "/service/edit/:id",
+    path: "/staff/all-staff",
+    name: "All Staff",
+    element: (
+      <ProtectedRoute
+        element={AddStaff}
+        allowedRoles={["Admin"]}
+        userRole={userRole}
+      />
+    ),
+  },
+
+  {
+    path: "/service/edit-service/:id",
     name: "Update Service",
     element: (
       <ProtectedRoute

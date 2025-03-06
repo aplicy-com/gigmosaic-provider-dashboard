@@ -198,7 +198,7 @@ const AddService = () => {
         radius: "md",
         color: "success",
       });
-      navigate("/service/all");
+      navigate("/service/all-service");
     } catch (error) {
       if (error instanceof ValidationError) {
         console.log("Validation Errors:", error.inner);

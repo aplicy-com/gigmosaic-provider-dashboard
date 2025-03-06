@@ -14,7 +14,7 @@ import Loading from "../../components/ui/Loading";
 
 const AllService = () => {
   const navigate = useNavigate();
-  const [isListView, setIsListView] = useState<boolean>(true);
+  const [isListView, setIsListView] = useState<boolean>(false);
   const [currentPage, setCurrentPage] = useState<number>(1);
 
   const { data, isLoading } = useFetchAllService({
@@ -22,20 +22,22 @@ const AllService = () => {
     limit: 8,
   });
 
+  console.log("data: ", data);
+
   const apiData = useMemo(() => data?.services || [], [data]);
   const totalPage = useMemo(() => data?.pages || 1, [data]);
 
   return (
     <>
       {isLoading ? <Loading label="Loading..." /> : <></>}
-      <div className="grid grid-cols-2 gap-2 md:gap-5">
+      <div className="grid sm:grid-cols-2 gap-2 md:gap-5">
         <div className="flex justify-start items-center gap-2 md:gap-4 mb-8 ">
           <CustomInput
             placeholder="Search..."
             type="text"
             size="sm"
             endContent={<IoSearchSharp size={20} />}
-            className="max-w-[300px]"
+            className="sm:max-w-[300px]"
           />
         </div>
 
@@ -45,12 +47,14 @@ const AllService = () => {
             size="sm"
             startContent={<IoGridOutline size={18} />}
             onPress={() => setIsListView(false)}
+            className="hidden sm:flex"
           />
           <CustomButton
             isIconOnly={true}
             size="sm"
             startContent={<FaList size={18} />}
             onPress={() => setIsListView(true)}
+            className="hidden sm:flex"
           />
           <CustomButton
             label="Add Service"
@@ -58,7 +62,8 @@ const AllService = () => {
             size="sm"
             color="primary"
             startContent={<MdAddCircleOutline size={20} />}
-            onPress={() => navigate("/service/add")}
+            onPress={() => navigate("/service/add-service")}
+            className="-mt-6 sm:mt-0"
           />
         </div>
       </div>
@@ -71,7 +76,7 @@ const AllService = () => {
           </div>
         </>
       ) : (
-        <div className="grid grid-cols-1   lg:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-5">
+        <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-5">
           <ServiceCard data={apiData} />
         </div>
       )}

@@ -30,7 +30,7 @@ const ServiceCardList = ({ data }: { data: any[] }) => {
     return acc;
   }, {} as Record<string, string>);
 
-  console.log("categoryMap: ", categoryMap);
+  console.log("Data: ", data);
 
   return (
     <>
@@ -118,7 +118,7 @@ const ServiceCardList = ({ data }: { data: any[] }) => {
               {/* Action btn */}
               <div className="flex flex-initial justify-between items-end mt-3">
                 <div className="flex flex-initial justify-center items-center gap-3">
-                  <Link to={`/service/edit/${item?.serviceId}`}>
+                  <Link to={`/service/edit-service/${item?.serviceId}`}>
                     <div className="flex flex-initial justify-center items-center hover:underline hover:text-primary">
                       <FaRegEdit className="mr-1" />
                       <small className="font-medium text-gray-600">Edit</small>

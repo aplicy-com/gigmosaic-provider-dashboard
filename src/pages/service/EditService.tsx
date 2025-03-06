@@ -33,13 +33,14 @@ import {
 import CustomButton from "../../components/ui/CustomButton";
 import { serviceInfo } from "../../data/sampleData";
 import { IoCodeSlashOutline } from "react-icons/io5";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import serviceValidation from "../../validation/serviceValidation";
 import { ValidationError } from "yup";
 import { useUpdateServiceMutation } from "../../hooks/mutations/useUpdateData";
 
 const EditService = () => {
   const { id } = useParams();
+  const navigate = useNavigate();
   const { handleSubmit, register } = useForm<IServiceProps>({});
   const [staff, setStaff] = useState<string[]>([]);
   const [displayStaff, setDisplayStaff] = useState<
@@ -254,6 +255,7 @@ const EditService = () => {
       await console.log("FINAL PAYLOAD UPDATE------: ", formatedData);
       // mutate(formatedData);
       mutate({ id: id, serviceData: formatedData });
+      navigate("/service/all-service");
     } catch (error) {
       if (error instanceof ValidationError) {
         const errors: { [key: string]: string } = {};

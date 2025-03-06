@@ -1,7 +1,6 @@
 import React, { Suspense } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import routes from "./routes.tsx";
-import { Spinner } from "@heroui/react";
 
 const DefaultLayout = React.lazy(() => import("./layout/DefaultLayout"));
 
@@ -10,14 +9,9 @@ const App = () => {
     <BrowserRouter>
       <Suspense
         fallback={
-          <div className="fixed inset-0 flex items-center justify-center backdrop-blur-sm">
-            <Spinner
-              classNames={{ label: "text-foreground text-sm" }}
-              label="Loading..."
-              variant="default"
-              color="success"
-              size="lg"
-            />
+          <div className="fixed inset-0 flex flex-col items-center justify-center bg-gray-100">
+            <div className="w-10 h-10 animate-spin rounded-full border-4 border-t-primary"></div>
+            <p className="mt-3 text-gray-600 text-sm font-medium">Loading...</p>
           </div>
         }
       >

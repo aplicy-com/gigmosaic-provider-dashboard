@@ -57,7 +57,7 @@ const routes = [
   },
 
   {
-    path: "/service/edit",
+    path: "/service/edit/:id",
     name: "Update Service",
     element: (
       <ProtectedRoute

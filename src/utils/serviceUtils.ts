@@ -32,7 +32,7 @@ export const formatServiceData = (
   isActive: boolean,
   isUpdate?: boolean
 ) => {
-  console.log("location+++++++++++++++++++++++++++++++= :", location);
+  console.log("LOCATION001 :", location);
 
   const formattedAvailability = Availability
     ? Availability.reduce((acc, { day, available, from, to, maxBookings }) => {
@@ -75,25 +75,19 @@ export const formatServiceData = (
     location: [
       {
         // address: isUpdate? location?.address || "": location[0]?.address || "",
-        address: isUpdate
-          ? location[0]?.address || ""
-          : location?.address || "",
-        city: isUpdate ? location[0]?.city || "" : location?.city || "",
-        state: isUpdate ? location[0]?.state || "" : location?.state || "",
-        country: isUpdate
-          ? location[0]?.country || ""
-          : location?.country || "",
-        pinCode: isUpdate
-          ? location[0]?.pinCode || ""
-          : location?.pinCode || "",
+        address: isUpdate ? location?.address || "" : location?.address || "",
+        city: isUpdate ? location?.city || "" : location?.city || "",
+        state: isUpdate ? location?.state || "" : location?.state || "",
+        country: isUpdate ? location?.country || "" : location?.country || "",
+        pinCode: isUpdate ? location?.pinCode || "" : location?.pinCode || "",
         googleMapsPlaceId: isUpdate
-          ? location[0]?.googleMapsPlaceId || ""
+          ? location?.googleMapsPlaceId || ""
           : location?.googleMapsPlaceId || "",
         longitude: isUpdate
-          ? location[0]?.longitude || ""
+          ? location?.coordinates?.longitude || ""
           : location?.longitude || 0,
         latitude: isUpdate
-          ? location[0]?.latitude || ""
+          ? location?.coordinates?.latitude || ""
           : location?.latitude || 0,
       },
     ],

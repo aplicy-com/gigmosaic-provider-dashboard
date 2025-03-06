@@ -17,13 +17,16 @@ export const sumbitServiceData = async (data: IServiceProps) => {
   }
 };
 
-export const getAllServiceData = async () => {
+export const getAllServiceData = async ({ page = 1, limit = 8 }) => {
+  console.log("PAGE: ", page);
+  console.log("LIMIT: ", limit);
+  const quary = `?page=${page?.page}&limit=${limit}`;
+  console.log("Quary: ", quary);
   try {
-    const res = await apiClient.get(Path.service);
+    const res = await apiClient.get(`${Path.service}${quary}`);
     return res.data;
   } catch (error: any) {
     console.log("ERROR: ", error);
-    // logger.error(error);
     throw error;
   }
 };

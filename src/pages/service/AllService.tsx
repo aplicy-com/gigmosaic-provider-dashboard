@@ -7,15 +7,27 @@ import CustomInput from "../../components/ui/CustomInput";
 import { IoSearchSharp } from "react-icons/io5";
 import { useNavigate } from "react-router-dom";
 import CustomPagination from "../../components/ui/CustomPagination";
-import { useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import ServiceCardList from "../../components/ui/ServiceCardList";
+import { useFetchAllService } from "../../hooks/queries/useFetchData";
+import Loading from "../../components/ui/Loading";
 
 const AllService = () => {
   const navigate = useNavigate();
   const [isListView, setIsListView] = useState<boolean>(true);
+  const [currentPage, setCurrentPage] = useState<number>(1);
+
+  const { data, isLoading } = useFetchAllService({
+    page: currentPage,
+    limit: 8,
+  });
+
+  const apiData = useMemo(() => data?.services || [], [data]);
+  const totalPage = useMemo(() => data?.pages || 1, [data]);
 
   return (
     <>
+      {isLoading ? <Loading label="Loading..." /> : <></>}
       <div className="grid grid-cols-2 gap-2 md:gap-5">
         <div className="flex justify-start items-center gap-2 md:gap-4 mb-8 ">
           <CustomInput
@@ -55,38 +67,23 @@ const AllService = () => {
       {isListView ? (
         <>
           <div className="grid grid-cols-1 xl:grid-cols-2 gap-3">
-            <ServiceCardList />
-            <ServiceCardList />
-            <ServiceCardList />
-            <ServiceCardList />
-            <ServiceCardList />
-            <ServiceCardList />
-            <ServiceCardList />
-            <ServiceCardList />
-            <ServiceCardList />
-            <ServiceCardList />
+            <ServiceCardList data={apiData} />
           </div>
         </>
       ) : (
         <div className="grid grid-cols-1   lg:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-5">
-          <ServiceCard />
-          <ServiceCard />
-          <ServiceCard />
-          <ServiceCard />
-          <ServiceCard />
-
-          <ServiceCard />
-          <ServiceCard />
-          <ServiceCard />
-          <ServiceCard />
-          <ServiceCard />
-          <ServiceCard />
-          <ServiceCard />
+          <ServiceCard data={apiData} />
         </div>
       )}
 
       <div className="flex justify-end items-end py-5 mt-7">
-        <CustomPagination initialPage={1} total={10} size="md" />
+        <CustomPagination
+          page={currentPage}
+          initialPage={1}
+          total={totalPage}
+          size="md"
+          onChange={setCurrentPage}
+        />
       </div>
     </>
   );

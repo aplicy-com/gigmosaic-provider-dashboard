@@ -301,6 +301,8 @@ const MultipleInput = ({
   };
 
   // console.log("Images: ", fields[0].images);
+  console.log("VALUE001: ", value);
+  console.log("Fields State: ", fields);
 
   return (
     <>

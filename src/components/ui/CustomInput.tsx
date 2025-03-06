@@ -77,8 +77,6 @@ const CustomInput = ({
       startContent={startContent}
       endContent={endContent}
       className={className}
-      minLength={5}
-      maxLength={150}
       {...props}
     />
   );

@@ -749,23 +749,13 @@ const CustomAvailabilityInput = ({
   useEffect(() => {
     // if (!Array.isArray(formattedPayload) && "error" in formattedPayload) {
     if (formattedPayload.isValid === false) {
-      console.log(
-        "DATA is not pass----------------------------------------------------------"
-      );
-      console.log("ERRRRRRRRRRRRRRRRRRRR: ".formattedPayload);
       setErrors(formattedPayload.errors);
       onChangeValue([]);
     } else {
       setErrors("");
-      console.log("ERRRRRRRRRRRRRRRRRRRR: ".formattedPayload);
-      console.log("DATA is passed-----------");
-      console.log("DATA is passed-----------", formattedPayload);
       onChangeValue(fields);
     }
   }, [fields]);
-
-  console.log("AVAILABILITY ERROR formattedPayload: ", formattedPayload);
-  console.log("AVAILABILITY ERROR001: ", errors);
 
   return (
     <>
@@ -779,10 +769,6 @@ const CustomAvailabilityInput = ({
 
       {fields.map((field) => (
         <div key={field.id} className="flex flex-initial gap-6">
-          {/* <p>day: {field?.day}</p>
-          <p>from: {field?.from}</p>
-          <p>to: {field?.to}</p>
-          <p>maxBookings: {field?.maxBookings}</p> */}
           {allDay ? (
             <>
               <div className="max-w-sm">
@@ -796,10 +782,6 @@ const CustomAvailabilityInput = ({
                     handleUpdateField(field.id, { day: value as string })
                   }
                 />
-                <p>day: {field?.day}</p>
-                <p>from: {field?.from}</p>
-                <p>to: {field?.to}</p>
-                <p>maxBookings: {field?.maxBookings}</p>
               </div>
 
               <div className="max-w-[125px]">
@@ -853,10 +835,6 @@ const CustomAvailabilityInput = ({
                     handleUpdateField(field.id, { day: value as string })
                   }
                 />
-                <p>day: {field?.day}</p>
-                <p>from: {field?.from}</p>
-                <p>to: {field?.to}</p>
-                <p>maxBookings: {field?.maxBookings}</p>
               </div>
 
               <div className="max-w-[125px]">

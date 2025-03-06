@@ -5,6 +5,7 @@ import { HeroUIProvider } from "@heroui/react";
 import { PrimeReactProvider } from "primereact/api";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import App from "./App.tsx";
+import ToastProviders from "./components/ui/ToastProviders.tsx";
 
 const queryClient = new QueryClient();
 
@@ -13,7 +14,9 @@ createRoot(document.getElementById("root")!).render(
     <QueryClientProvider client={queryClient}>
       <HeroUIProvider>
         <PrimeReactProvider>
-          <App />
+          <ToastProviders>
+            <App />
+          </ToastProviders>
         </PrimeReactProvider>
       </HeroUIProvider>
     </QueryClientProvider>

@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useForm, Controller, SubmitHandler } from "react-hook-form";
 import CustomInput from "../../components/ui/CustomInput";
 import CustomNumberInput from "../../components/ui/CustomNumberInput";
-import { Card, CardBody, CardHeader, Divider } from "@heroui/react";
+import { addToast, Card, CardBody, CardHeader, Divider } from "@heroui/react";
 import CustomAutocomplete from "../../components/ui/CustomAutocomplete";
 import { IAvailabilityProps, IServiceProps } from "../../types";
 import CustomMultiselectDropdown from "../../components/ui/CustomMultiselectDropdown";
@@ -33,27 +33,23 @@ import {
 import CustomButton from "../../components/ui/CustomButton";
 import { serviceInfo } from "../../data/sampleData";
 import { IoCodeSlashOutline } from "react-icons/io5";
+import { useParams } from "react-router-dom";
+import serviceValidation from "../../validation/serviceValidation";
+import { ValidationError } from "yup";
+import { useUpdateServiceMutation } from "../../hooks/mutations/useUpdateData";
 
 const EditService = () => {
-  const { handleSubmit, register, control } = useForm<IServiceProps>({});
+  const { id } = useParams();
+  const { handleSubmit, register } = useForm<IServiceProps>({});
   const [staff, setStaff] = useState<string[]>([]);
   const [displayStaff, setDisplayStaff] = useState<
     { label: string; id: number }[]
   >([]);
   const [addtionalInfo, setAddtionalInfo] = useState<ItemField[]>([]);
-  // const [displayAddtionalInfo, setADisplayddtionalInfo] = useState<
-  //   {
-  //     serviceItem: string;
-  //     price: number;
-  //     image: File | null;
-  //     id: number;
-  //     images: string | File;
-  //   }[]
-  // >([]);
   const [displayAddtionalInfo, setADisplayddtionalInfo] = useState<ItemField[]>(
     []
   );
-
+  const [validationError, setValidationError] = useState({});
   const [include, setInclude] = useState<string[]>([]);
   const [serviceOverview, setServiceOverview] = useState<string>("");
   const [faq, setFaq] = useState<IFaqProps[]>([]);
@@ -70,7 +66,6 @@ const EditService = () => {
     useState<IAvailabilityProps[]>();
   const [data, setData] = useState<IServiceProps>();
   const [isAllDay, setIsAllDay] = useState<boolean>(false);
-
   const [displayCategory, setDisplayCategory] = useState();
   const [displaySubCategory, setDisplaySubCategory] = useState();
   const [basicInfo, setBasicInfo] = useState({
@@ -94,26 +89,8 @@ const EditService = () => {
 
   const isUpdate = true;
 
-  const { mutate } = useSumbitServiceMutation();
-  // const convertToMetaKeyword = convertToTagsArray(metaKeyword);
-
-  const [apiData, setApiDataback] = useState<any>([]);
-
-  useEffect(() => {
-    let isMounted = true;
-    fetch("http://localhost:3001/api/test-api")
-      .then((response) => response.json())
-      .then((data) => {
-        if (isMounted) {
-          console.log(data);
-          setApiDataback(data);
-        }
-      });
-
-    return () => {
-      isMounted = false;
-    };
-  }, []);
+  const { mutate, isPending } = useUpdateServiceMutation();
+  const { data: apiData, isLoading } = useFetchServiceDataById(id);
 
   useEffect(() => {
     if (apiData) {
@@ -123,21 +100,12 @@ const EditService = () => {
     }
   }, [apiData]);
 
-  // useEffect(() => {
-  //   fetchDataFromApi();
-  // }, []);
-  // const apiData = serviceInfo;
+  console.log("EDIT API DATA: ", apiData);
 
-  // const { data: apiData } = useFetchServiceDataById("SID_48");   /// backend api call
   const { data: staffData } = useFetchStaff();
   const { data: categoryData } = useFetchCategory();
   const { data: subCategoryData } = useFetchSubCategory();
 
-  // example data fetch by id but
-
-  // console.log("API BACKEND DATA: ", apiData);
-  // console.log("apiData: ", form);
-  // return;
   interface ItemField {
     id: number;
     serviceItem: string;
@@ -156,69 +124,72 @@ const EditService = () => {
   }, [apiData]);
 
   const setApiData = async () => {
-    setBasicInfo({
-      serviceTitle: apiData?.serviceInfo?.serviceTitle,
-      slug: apiData?.serviceInfo?.slug,
-      categoryId: apiData?.serviceInfo?.categoryId,
-      subCategoryId: apiData?.serviceInfo?.subCategoryId,
-      serviceOverview: apiData?.serviceInfo?.serviceOverview,
-      price: apiData?.serviceInfo?.price,
-    });
-    setMetaDetails({
-      metaTitle: apiData?.serviceInfo?.seo?.[0]?.metaTitle,
-      metaDescription: apiData?.serviceInfo?.seo?.[0]?.metaDescription,
-      metaKeywords: apiData?.serviceInfo?.seo?.[0]?.metaKeywords,
-    });
-    setDisplayAvailability(apiData?.serviceInfo?.availability);
-    setIsAllDay(false);
-    setADisplayddtionalInfo(apiData?.serviceInfo?.additionalService);
-    setData(apiData?.serviceInfo);
-    setInclude(apiData?.serviceInfo?.includes);
-    setServiceOverview(apiData?.serviceInfo?.serviceOverview);
-    setFaq(apiData?.serviceInfo?.faq);
-    setDisplayFaq(apiData?.serviceInfo?.faq);
-    setMetaKeyword(
-      apiData?.serviceInfo?.seo?.[0]?.metaKeywords?.join(", ") || ""
-    );
-    setlocation(apiData?.serviceInfo?.location);
-    setIsActive(apiData?.serviceInfo?.isActive);
-    setStaff(apiData?.serviceInfo?.staff);
-    const formatStaff = await formateDataForDropdown(
-      staffData?.staff,
-      "fullName",
-      "staffId"
-    );
-    setDisplayStaff(formatStaff);
-    setDisplayGallaryData(apiData?.serviceInfo?.gallery[0].serviceImages);
-    setLink(apiData?.serviceInfo?.gallery[0].videoLink);
-    console.log("Edit link: ", apiData?.serviceInfo?.gallery[0].videoLink);
-    console.log(
-      "GALLERY DATA: ",
-      apiData?.serviceInfo?.gallery[0].serviceImages
-    );
+    await setLoading(true);
+    try {
+      setBasicInfo({
+        serviceTitle: apiData?.serviceInfo?.serviceTitle,
+        slug: apiData?.serviceInfo?.slug,
+        categoryId: apiData?.serviceInfo?.categoryId,
+        subCategoryId: apiData?.serviceInfo?.subCategoryId,
+        serviceOverview: apiData?.serviceInfo?.serviceOverview,
+        price: apiData?.serviceInfo?.price,
+      });
+      setMetaDetails({
+        metaTitle: apiData?.serviceInfo?.seo?.[0]?.metaTitle,
+        metaDescription: apiData?.serviceInfo?.seo?.[0]?.metaDescription,
+        metaKeywords: apiData?.serviceInfo?.seo?.[0]?.metaKeywords,
+      });
+      setDisplayAvailability(apiData?.serviceInfo?.availability);
+      setIsAllDay(false);
+      setADisplayddtionalInfo(apiData?.serviceInfo?.additionalServices);
+      setData(apiData?.serviceInfo);
+      setInclude(apiData?.serviceInfo?.includes);
+      setServiceOverview(apiData?.serviceInfo?.serviceOverview);
+      setFaq(apiData?.serviceInfo?.faq);
+      setDisplayFaq(apiData?.serviceInfo?.faq);
+      setMetaKeyword(
+        apiData?.serviceInfo?.seo?.[0]?.metaKeywords?.join(", ") || ""
+      );
+      setlocation(apiData?.serviceInfo?.location);
+      setIsActive(apiData?.serviceInfo?.isActive);
+      setStaff(apiData?.serviceInfo?.staff);
+      const formatStaff = await formateDataForDropdown(
+        staffData?.staff,
+        "fullName",
+        "staffId"
+      );
+      setDisplayStaff(formatStaff);
+      setDisplayGallaryData(apiData?.serviceInfo?.gallery[0].serviceImages);
+      setLink(apiData?.serviceInfo?.gallery[0].videoLink);
+      console.log("Edit link: ", apiData?.serviceInfo?.gallery[0].videoLink);
+      console.log(
+        "GALLERY DATA: ",
+        apiData?.serviceInfo?.gallery[0].serviceImages
+      );
 
-    const formtedCategory = formateDataForDropdown(
-      categoryData?.categories,
-      "categoryName",
-      "categoryId"
-    );
+      const formtedCategory = formateDataForDropdown(
+        categoryData?.categories,
+        "categoryName",
+        "categoryId"
+      );
 
-    setDisplayCategory(formtedCategory);
-    console.log("formtedCategory111111111111111111", formtedCategory);
+      setDisplayCategory(formtedCategory);
 
-    const formtedSubCategory = formateDataForDropdown(
-      subCategoryData?.subCategories,
-      "subCategoryName",
-      "subCategoryId"
-    );
-    // console.log("formtedSubCategory1111111111111111111111", formtedSubCategory);
-    setDisplaySubCategory(formtedSubCategory);
+      const formtedSubCategory = formateDataForDropdown(
+        subCategoryData?.subCategories,
+        "subCategoryName",
+        "subCategoryId"
+      );
+      setDisplaySubCategory(formtedSubCategory);
+    } catch (error) {
+      console.log("Error in edit service: ");
+    } finally {
+      setLoading(false);
+    }
   };
 
   const convertMetaKeyword = async (keyword: string) => {
-    console.log("Keyaword: ", keyword);
     const convertToMetaKeyword = convertToTagsArray(keyword);
-    console.log("991: ", convertToMetaKeyword);
     setMetaDetails((prevDetails) => ({
       ...prevDetails,
       metaKeywords: convertToMetaKeyword,
@@ -226,16 +197,28 @@ const EditService = () => {
   };
 
   const onSubmit: SubmitHandler<IServiceProps> = async (data) => {
-    console.log("Location in edit parent: ", location);
     setLoading(true);
-    // console.log("$$$$$$$$$$$$$$$: ", gallaryData);
     try {
+      await serviceValidation.validate(
+        {
+          staff,
+          basicInfo,
+          metaDetails,
+          availability,
+          location,
+          include,
+          faq,
+          gallaryData,
+          addtionalInfo,
+        },
+        { abortEarly: false }
+      );
+
       if (!gallaryData?.images || gallaryData.images.length === 0) {
         console.log("No images found in gallery data.");
         return;
       }
       const formatGallary = await uploadImages(gallaryData);
-      // console.log("GALLARY]]]]]]]]]]]]]]]]]]: ", formatGallary);
 
       const updatedAdditionalInfo = await Promise.all(
         addtionalInfo.map(async (item, index) => {
@@ -254,39 +237,51 @@ const EditService = () => {
           return { ...item, images: "", id: index + 1 };
         })
       );
-
+      await console.log("LOCATION001: ", location);
       const formatedData = await formatServiceData(
-        // data,
-        // staff,
-        // updatedAdditionalInfo,
-        // include,
-        // serviceOverview,
-        // faq,
-        // convertToMetaKeyword,
-        // location,
-        // formatGallary,
-        // availability,
-        // isActive
         basicInfo,
         staff,
         updatedAdditionalInfo,
         include,
-        // serviceOverview,
         faq,
-        // convertToMetaKeyword,
         metaDetails,
         location,
-        // imageUrls,
-        // gallaryData.videoLink,
         formatGallary,
         availability,
         isActive,
         isUpdate
       );
       await console.log("FINAL PAYLOAD UPDATE------: ", formatedData);
-      mutate(formatedData);
+      // mutate(formatedData);
+      mutate({ id: id, serviceData: formatedData });
     } catch (error) {
-      console.log("Error submit: ", error);
+      if (error instanceof ValidationError) {
+        const errors: { [key: string]: string } = {};
+
+        error.inner.forEach((err: ValidationError) => {
+          const path = err.path;
+          const message = err.message;
+
+          const keys = path.split(".");
+          keys.reduce((acc, part, index) => {
+            if (index === keys.length - 1) {
+              acc[part] = message;
+            } else {
+              acc[part] = acc[part] || "";
+            }
+            return acc;
+          }, errors);
+        });
+
+        // addToast({
+        //   title: "Validation Error",
+        //   description: "Fix Validation Errors",
+        //   radius: "md",
+        //   color: "danger",
+        // });
+        console.log("Transformed errors:", errors);
+        setValidationError(errors);
+      }
     } finally {
       setLoading(false);
     }
@@ -319,11 +314,11 @@ const EditService = () => {
       videoLink: gallaryData.videoLink, // Keep video link as it is
     };
   };
-  // console.log("Category..............: ", formtedCategory);
-  console.log("BASIC data------------: ", metaDetails);
+
   return (
     <>
-      {loading ? <Loading label="Submitting..." /> : <></>}
+      {isLoading ? <Loading label="Fetching..." /> : <></>}
+      {isPending ? <Loading label="Updating..." /> : <></>}
       <form onSubmit={handleSubmit(onSubmit)}>
         {/* <form> */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -350,6 +345,12 @@ const EditService = () => {
                     });
                   }}
                 />
+                {validationError?.serviceTitle && (
+                  <small className="text-error -mt-5">
+                    {validationError?.serviceTitle}
+                  </small>
+                )}
+
                 <CustomInput
                   label="Service Slug"
                   isRequired={true}
@@ -364,6 +365,11 @@ const EditService = () => {
                     });
                   }}
                 />
+                {validationError?.slug && (
+                  <small className="text-error -mt-5">
+                    {validationError?.slug}
+                  </small>
+                )}
                 <div className="grid grid-cols-2 gap-4">
                   <CustomAutocomplete
                     label="Category"
@@ -379,6 +385,11 @@ const EditService = () => {
                     }}
                     isRequired={true}
                   />
+                  {validationError?.categoryId && (
+                    <small className="text-error -mt-5">
+                      {validationError?.categoryId}
+                    </small>
+                  )}
                   <CustomAutocomplete
                     label="Sub Category"
                     placeholder="Select subcategory"
@@ -394,6 +405,11 @@ const EditService = () => {
                     }}
                     isRequired={true}
                   />
+                  {validationError?.subCategoryId && (
+                    <small className="text-error -mt-5">
+                      {validationError?.subCategoryId}
+                    </small>
+                  )}
                 </div>
                 <CustomNumberInput
                   label="Price"
@@ -407,6 +423,11 @@ const EditService = () => {
                     });
                   }}
                 />
+                {validationError?.price && (
+                  <small className="text-error -mt-5">
+                    {validationError?.price}
+                  </small>
+                )}
 
                 {/* Staff */}
                 <Divider className="my-1" />
@@ -427,6 +448,11 @@ const EditService = () => {
                   value={include}
                   onChangeValude={setInclude}
                 />
+                {validationError?.include && (
+                  <small className="text-error -mt-5">
+                    {validationError?.include}
+                  </small>
+                )}
                 <Divider className="my-1" />
 
                 {/* Addtional information */}
@@ -447,6 +473,11 @@ const EditService = () => {
                   value={serviceOverview}
                   {...register("serviceOverview")}
                 />
+                {validationError?.serviceOverview && (
+                  <p className="text-error -mt-5">
+                    {validationError?.serviceOverview}
+                  </p>
+                )}
               </CardBody>
             </Card>
 

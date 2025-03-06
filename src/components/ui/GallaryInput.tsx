@@ -239,9 +239,15 @@ interface GallaryInputProps {
   }) => void;
   value?: string[];
   link?: string;
+  error?: any;
 }
 
-const GallaryInput = ({ onChangeValue, value, link }: GallaryInputProps) => {
+const GallaryInput = ({
+  onChangeValue,
+  value,
+  link,
+  error,
+}: GallaryInputProps) => {
   const [images, setImages] = useState<(string | File)[]>(value || []); // Include both URLs and Files
   const [videoLink, setVideoLink] = useState<string>(link || "");
 
@@ -250,8 +256,7 @@ const GallaryInput = ({ onChangeValue, value, link }: GallaryInputProps) => {
     setImages(value || []);
     setVideoLink(link || "");
   }, [value, link]);
-  console.log("Link---------------- ", videoLink);
-  console.log("Linklink ", link);
+
   // Trigger parent update when images/videoLink changes
   useEffect(() => {
     onChangeValue({ images, videoLink });
@@ -324,16 +329,23 @@ const GallaryInput = ({ onChangeValue, value, link }: GallaryInputProps) => {
         )}
       </div>
 
+      {error?.images && (
+        <small className="text-error -mt-5">{error?.images}</small>
+      )}
+
       {/* Video Link Input */}
       <CustomInput
         size="md"
         label="Video Link"
-        type="url"
+        type="text"
         placeholder="https://www.example.com"
         value={videoLink}
         startContent={<BsLink45Deg />}
         onValueChange={setVideoLink}
       />
+      {error?.videoLink && (
+        <small className="text-error -mt-5">{error?.videoLink}</small>
+      )}
     </>
   );
 };

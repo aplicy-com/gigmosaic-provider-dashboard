@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
-import { useForm, Controller, SubmitHandler } from "react-hook-form";
+import { useForm, SubmitHandler } from "react-hook-form";
 import CustomInput from "../../components/ui/CustomInput";
 import CustomNumberInput from "../../components/ui/CustomNumberInput";
-import { Card, CardBody, CardHeader, Divider } from "@heroui/react";
+import { addToast, Card, CardBody, CardHeader, Divider } from "@heroui/react";
 import CustomAutocomplete from "../../components/ui/CustomAutocomplete";
 import { IAvailabilityProps, IServiceProps } from "../../types";
 import CustomMultiselectDropdown from "../../components/ui/CustomMultiselectDropdown";
@@ -30,10 +30,15 @@ import {
   useFetchSubCategory,
 } from "../../hooks/queries/useFetchData";
 import CustomButton from "../../components/ui/CustomButton";
+import serviceValidation from "../../validation/serviceValidation";
+import { ValidationError } from "yup";
+import { useNavigate } from "react-router-dom";
 
 const AddService = () => {
+  const navigate = useNavigate();
   const { handleSubmit } = useForm<IServiceProps>({});
   const [staff, setStaff] = useState<string[]>([]);
+  const [validationError, setValidationError] = useState({});
   const [addtionalInfo, setAddtionalInfo] = useState<
     { serviceItem: string; price: number; images: File | null }[]
   >([]);
@@ -80,10 +85,11 @@ const AddService = () => {
   const { data: categoryData } = useFetchCategory();
   const { data: subCategoryData } = useFetchSubCategory();
 
-  console.log("categoryData: ", categoryData);
-  console.log("AVi------------------: ", availability);
-  console.log("BASIC INFO------------------: ", basicInfo);
-  console.log("META INFO------------------: ", metaDetails);
+  // console.log("categoryData: ", categoryData);
+  // console.log("AVi------------------: ", availability);
+  // console.log("BASIC INFO------------------: ", basicInfo);
+  // console.log("META INFO------------------: ", metaDetails);
+  // console.log("gallaryData gallaryData------------------: ", gallaryData);
 
   useEffect(() => {
     setApiData();
@@ -113,19 +119,37 @@ const AddService = () => {
   };
 
   const convertMetaKeyword = async (keyword: string) => {
-    console.log("Keyaword: ", keyword);
     const convertToMetaKeyword = convertToTagsArray(keyword);
-    console.log("991: ", convertToMetaKeyword);
     setMetaDetails((prevDetails) => ({
       ...prevDetails,
       metaKeywords: convertToMetaKeyword,
+    }));
+    setValidationError((prevErrors) => ({
+      ...prevErrors,
+      metaKeywords: "",
     }));
   };
 
   const onSubmit: SubmitHandler<IServiceProps> = async () => {
     setLoading(true);
-    console.log("VAI-----:", availability);
+    setValidationError({});
+
     try {
+      await serviceValidation.validate(
+        {
+          staff,
+          basicInfo,
+          metaDetails,
+          availability,
+          location,
+          include,
+          faq,
+          gallaryData,
+          addtionalInfo,
+        },
+        { abortEarly: false }
+      );
+
       if (!gallaryData?.images || gallaryData.images.length === 0) {
         console.log("No images found in gallery data.");
         return;
@@ -140,8 +164,6 @@ const AddService = () => {
         videoLink: gallaryData?.videoLink,
       };
 
-      // Upload images inside addtionalInfo
-      console.log("formatGallary: ", formatGallary);
       const updatedAdditionalInfo = await Promise.all(
         addtionalInfo.map(async (item, index) => {
           if (item.images) {
@@ -160,25 +182,58 @@ const AddService = () => {
         staff,
         updatedAdditionalInfo,
         include,
-        // serviceOverview,
         faq,
-        // convertToMetaKeyword,
         metaDetails,
         location,
-        // imageUrls,
-        // gallaryData.videoLink,
         formatGallary,
         availability,
         isActive
       );
       await console.log("FINAL PAYLOAD SUMBIT------: ", formatedData);
-      mutate(formatedData);
+      await mutate(formatedData);
+
+      addToast({
+        title: "Service Added",
+        description: "Service Added Successfully",
+        radius: "md",
+        color: "success",
+      });
+      navigate("/service/all");
     } catch (error) {
-      console.log("Error submit: ", error);
+      if (error instanceof ValidationError) {
+        console.log("Validation Errors:", error.inner);
+
+        const errors: { [key: string]: string } = {};
+
+        error.inner.forEach((err: ValidationError) => {
+          const path = err.path;
+          const message = err.message;
+
+          const keys = path.split(".");
+          keys.reduce((acc, part, index) => {
+            if (index === keys.length - 1) {
+              acc[part] = message;
+            } else {
+              acc[part] = acc[part] || "";
+            }
+            return acc;
+          }, errors);
+        });
+
+        addToast({
+          title: "Validation Error",
+          description: "Fix Validation Errors",
+          radius: "md",
+          color: "danger",
+        });
+        console.log("Transformed errors:", errors);
+        setValidationError(errors);
+      }
     } finally {
       setLoading(false);
     }
   };
+  console.log("ERRORS: ", validationError);
 
   return (
     <>
@@ -190,11 +245,10 @@ const AddService = () => {
               <CardHeader>
                 <p className="text-md font-medium">Basic Information</p>
               </CardHeader>
-
               {/* Basic Information */}
               <CardBody className="gap-6">
                 <Divider className="-my-2" />
-                <CustomInput
+                {/* <CustomInput
                   label="Service Title"
                   isRequired={true}
                   type="text"
@@ -206,7 +260,27 @@ const AddService = () => {
                       serviceTitle: e,
                     });
                   }}
+                  isInvalid={!!validationError?.serviceTitle}
+                  errorMessage={validationError?.serviceTitle}
+                /> */}
+                <CustomInput
+                  label="Service Title"
+                  isRequired={true}
+                  type="text"
+                  placeholder="Enter title"
+                  name="serviceTitle"
+                  onValueChange={(e) => {
+                    setBasicInfo({
+                      ...basicInfo,
+                      serviceTitle: e,
+                    });
+                  }}
                 />
+                {validationError?.serviceTitle && (
+                  <small className="text-error -mt-5">
+                    {validationError?.serviceTitle}
+                  </small>
+                )}
                 <CustomInput
                   label="Service Slug"
                   isRequired={true}
@@ -220,33 +294,52 @@ const AddService = () => {
                     });
                   }}
                 />
+                {validationError?.slug && (
+                  <small className="text-error -mt-5">
+                    {validationError?.slug}
+                  </small>
+                )}
                 <div className="grid grid-cols-2 gap-4">
-                  <CustomAutocomplete
-                    label="Category"
-                    placeholder="Select category"
-                    defaultItems={displayCategory}
-                    width="none"
-                    onSelectionChange={(id) => {
-                      setBasicInfo({
-                        ...basicInfo,
-                        categoryId: id,
-                      });
-                    }}
-                    isRequired={true}
-                  />
-                  <CustomAutocomplete
-                    label="Sub Category"
-                    placeholder="Select subcategory"
-                    defaultItems={displaySubCategory}
-                    width="none"
-                    onSelectionChange={(id) => {
-                      setBasicInfo({
-                        ...basicInfo,
-                        subCategoryId: id,
-                      });
-                    }}
-                    isRequired={true}
-                  />
+                  <div>
+                    <CustomAutocomplete
+                      label="Category"
+                      placeholder="Select category"
+                      defaultItems={displayCategory}
+                      width="none"
+                      onSelectionChange={(id) => {
+                        setBasicInfo({
+                          ...basicInfo,
+                          categoryId: id,
+                        });
+                      }}
+                      isRequired={true}
+                    />
+                    {validationError?.categoryId && (
+                      <small className="text-error -mt-5">
+                        {validationError?.categoryId}
+                      </small>
+                    )}
+                  </div>
+                  <div>
+                    <CustomAutocomplete
+                      label="Sub Category"
+                      placeholder="Select subcategory"
+                      defaultItems={displaySubCategory}
+                      width="none"
+                      onSelectionChange={(id) => {
+                        setBasicInfo({
+                          ...basicInfo,
+                          subCategoryId: id,
+                        });
+                      }}
+                      isRequired={true}
+                    />
+                    {validationError?.subCategoryId && (
+                      <small className="text-error -mt-5">
+                        {validationError?.subCategoryId}
+                      </small>
+                    )}
+                  </div>
                 </div>
                 <CustomNumberInput
                   label="Price"
@@ -259,6 +352,11 @@ const AddService = () => {
                     });
                   }}
                 />
+                {validationError?.price && (
+                  <small className="text-error -mt-5">
+                    {validationError?.price}
+                  </small>
+                )}
 
                 {/* Staff */}
                 <Divider className="my-1" />
@@ -269,11 +367,21 @@ const AddService = () => {
                   options={displayStaff}
                   handleChangevalue={setStaff}
                 />
+                {/* {validationError?.serviceTitle && (
+                  <small className="text-error -mt-5">
+                    {validationError?.serviceTitle}
+                  </small>
+                )} */}
 
                 {/* Include */}
                 <Divider className="my-1" />
                 <p className="text-md font-medium -mt-3">Includes</p>
                 <SingleMultipleInput onChangeValude={setInclude} />
+                {/* {validationError?.include && (
+                  <small className="text-error -mt-5">
+                    {validationError?.include}
+                  </small>
+                )} */}
                 <Divider className="my-1" />
 
                 {/* Addtional information */}
@@ -286,25 +394,20 @@ const AddService = () => {
                 <Divider className="my-1" />
                 <p className="text-md font-medium -mt-3">Service Overview </p>
                 <TextEdior
-                  // onChangeValue={setServiceOverview}
-                  // value={serviceOverview}
                   name={basicInfo.serviceOverview}
-                  // onChange={setBasicInfo}
-                  // {...register("serviceOverview")}
-                  // onChange={(e) => {
-                  //   setBasicInfo({
-                  //     ...basicInfo,
-                  //     serviceOverview: e.target.value,
-                  //   });
-                  // }}
-                  onChangeValue={(value) =>
+                  onChangeValue={(value) => {
                     setBasicInfo((prev) => ({
                       ...prev,
                       serviceOverview: value,
-                    }))
-                  }
+                    }));
+                  }}
                   value={basicInfo.serviceOverview}
                 />
+                {validationError?.serviceOverview && (
+                  <p className="text-error -mt-5">
+                    {validationError?.serviceOverview}
+                  </p>
+                )}
               </CardBody>
             </Card>
 
@@ -320,6 +423,7 @@ const AddService = () => {
                   onChangeValue={(value) =>
                     setGallaryData(value as IGallaryProps)
                   }
+                  error={validationError}
                 />
               </CardBody>
             </Card>
@@ -351,6 +455,26 @@ const AddService = () => {
               <CardBody className="gap-6">
                 <Divider className="-my-2" />
                 <CustomAvailabilityInput onChangeValue={setAvailability} />
+                {validationError?.day && (
+                  <small className="text-error -mt-5">
+                    {validationError?.day}
+                  </small>
+                )}
+                {validationError?.from && (
+                  <small className="text-error -mt-5">
+                    {validationError?.from}
+                  </small>
+                )}
+                {validationError?.to && (
+                  <small className="text-error -mt-5">
+                    {validationError?.to}
+                  </small>
+                )}
+                {validationError?.maxBookings && (
+                  <small className="text-error -mt-5">
+                    {validationError?.maxBookings}
+                  </small>
+                )}
               </CardBody>
             </Card>
 
@@ -363,6 +487,11 @@ const AddService = () => {
               <CardBody className="gap-6">
                 <Divider className="-my-2" />
                 <CustomDubbleInput onChangeValue={setFaq} />
+                {validationError?.serviceTitle && (
+                  <small className="text-error -mt-5">
+                    {validationError?.serviceTitle}
+                  </small>
+                )}
               </CardBody>
             </Card>
 
@@ -379,7 +508,6 @@ const AddService = () => {
                   type="text"
                   placeholder="Enter meta title"
                   isRequired={true}
-                  // {...register("seo.0.metaTitle")}
                   name={metaDetails.metaTitle}
                   onValueChange={(e) => {
                     setMetaDetails({
@@ -388,6 +516,11 @@ const AddService = () => {
                     });
                   }}
                 />
+                {validationError?.metaTitle && (
+                  <small className="text-error -mt-5">
+                    {validationError?.metaTitle}
+                  </small>
+                )}
                 <CustomInput
                   size="md"
                   label="Meta Tag"
@@ -395,24 +528,37 @@ const AddService = () => {
                   placeholder="Enter Tags"
                   description="Enter comma separated tags (Ex: tag1, tag2, tag3)"
                   isRequired={true}
-                  // onValueChange={setMetaKeyword}
                   name={metaDetails.metaKeywords}
                   onValueChange={(value) => convertMetaKeyword(value)}
                 />
-
+                {validationError?.metaKeywords && (
+                  <small className="text-error -mt-5">
+                    {validationError?.metaKeywords}
+                  </small>
+                )}
                 <CustomTextArea
                   label="Meta Description"
                   placeholder="Enter meta description"
                   isRequired={true}
-                  // {...register("seo.0.metaDescription")}
                   name={metaDetails.metaDescription}
                   onValueChange={(e) => {
                     setMetaDetails({
                       ...metaDetails,
                       metaDescription: e,
                     });
+                    // setValidationError((prevErrors) => ({
+                    //   ...prevErrors,
+                    //   metaDescription: "",
+                    // }));
                   }}
+                  // isInvalid={!!validationError?.metaDescription}
+                  // errorMessage={validationError?.metaDescription}
                 />
+                {validationError?.metaDescription && (
+                  <small className="text-error -mt-5">
+                    {validationError?.metaDescription}
+                  </small>
+                )}
               </CardBody>
             </Card>
             <Card radius="none" className="px-3 py-3 mb-5">
@@ -420,7 +566,24 @@ const AddService = () => {
                 <p className="text-md font-medium">Location</p>
               </CardHeader>
 
-              <LocationInputs onChangeValue={setlocation} />
+              <LocationInputs
+                errors={validationError}
+                // onChangeValue={setlocation}
+                onChangeValue={(value) => {
+                  setlocation(value);
+                  // setValidationError((prevErrors) => ({
+                  //   ...prevErrors,
+                  //   location: {
+                  //     ...prevErrors?.location,
+                  //     address: "", // Clear address error
+                  //     country: "",
+                  //     city: "",
+                  //     state: "",
+                  //     pinCode: "",
+                  //   },
+                  // }));
+                }}
+              />
             </Card>
           </div>
         </div>

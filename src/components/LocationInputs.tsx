@@ -11,6 +11,7 @@ import "../css/location.css";
 interface LocationInputsProps {
   onChangeValue: (location: ILocationProps) => void;
   data?: ILocationProps;
+  errors?: any;
 }
 
 export interface ILocationProps {
@@ -24,8 +25,13 @@ export interface ILocationProps {
   googleMapsPlaceId: string;
 }
 
-const LocationInputs = ({ onChangeValue, data }: LocationInputsProps) => {
+const LocationInputs = ({
+  onChangeValue,
+  data,
+  errors,
+}: LocationInputsProps) => {
   const myAPIKey = "03c625d7d60347ef9d650e23be28760f";
+  const [formatedAddress, setFormatedAddress] = useState<string>("");
   const mapRef = useRef<L.Map | null>(null);
   const markerRef = useRef<L.Marker | null>(null);
   const autocompleteRef = useRef<HTMLDivElement | null>(null);
@@ -50,7 +56,7 @@ const LocationInputs = ({ onChangeValue, data }: LocationInputsProps) => {
   //   onChangeValue(location);
   // }, [location]);
 
-  console.log("Value: location: ", location);
+  console.log("Value: location: ", errors);
 
   useEffect(() => {
     if (!mapRef.current) {
@@ -129,6 +135,7 @@ const LocationInputs = ({ onChangeValue, data }: LocationInputsProps) => {
             .then((data) => {
               if (data.features && data.features.length > 0) {
                 const placeId = data.features[0].properties.place_id;
+                // setFormatedAddress(formatted);
                 onChangeValue({
                   address: formatted || "",
                   country: country || "",
@@ -164,7 +171,21 @@ const LocationInputs = ({ onChangeValue, data }: LocationInputsProps) => {
     };
   }, []);
 
-  //   console.log("Location: ", location);
+  useEffect(() => {
+    //set address to location
+    // if (location) {
+    //   onChangeValue(..., address:formatedAddress, location);
+    // }
+
+    // onChangeValue({
+    //   ...location, // Spread existing properties of location
+    //   address: formatedAddress, // Override/add address
+    // });
+    onChangeValue(location);
+  }, [location]);
+
+  console.log("Location: ", location);
+  console.log("formatedAddress: ", formatedAddress);
 
   return (
     <>
@@ -174,119 +195,165 @@ const LocationInputs = ({ onChangeValue, data }: LocationInputsProps) => {
           Address <span className="text-red-400">*</span>
         </label>
         <div>
-          <div
-            ref={autocompleteRef}
-            defaultValue={location?.address}
-            className="relative geoapify-autocomplete-input"
-          ></div>
+          <div>
+            <div
+              ref={autocompleteRef}
+              defaultValue={location?.address}
+              className="relative geoapify-autocomplete-input"
+            ></div>
+            <span className="text-gray-400 text-xs -mt-5">
+              Pleace Select Address
+            </span>
+          </div>
+          {errors?.address && (
+            <span className="text-error mt-5">{errors?.address}</span>
+          )}
         </div>
 
         <div className="grid lg:grid-cols-2 gap-6">
-          <CustomInput
-            label="Country"
-            isRequired={true}
-            type="text"
-            placeholder="Enter country"
-            name={location?.country}
-            value={location?.country}
-            onValueChange={(e) => {
-              setLocation({
-                ...location,
-                country: e,
-              });
-            }}
-          />
-          <CustomInput
-            label="City"
-            isRequired={true}
-            type="text"
-            placeholder="Enter city"
-            name={location?.city}
-            value={location?.city}
-            onValueChange={(e) => {
-              setLocation({
-                ...location,
-                city: e,
-              });
-            }}
-          />
+          <div>
+            <CustomInput
+              label="Country"
+              isRequired={true}
+              type="text"
+              placeholder="Enter country"
+              name={location?.country}
+              value={location?.country}
+              onValueChange={(e) => {
+                setLocation({
+                  ...location,
+                  country: e,
+                });
+              }}
+            />
+            {errors?.country && (
+              <span className="text-error -mt-5">{errors?.country}</span>
+            )}
+          </div>
+
+          <div>
+            <CustomInput
+              label="City"
+              isRequired={true}
+              type="text"
+              placeholder="Enter city"
+              name={location?.city}
+              value={location?.city}
+              onValueChange={(e) => {
+                setLocation({
+                  ...location,
+                  city: e,
+                });
+              }}
+            />
+            {errors?.city && (
+              <small className="text-error -mt-5">{errors?.city}</small>
+            )}
+          </div>
         </div>
 
         <div className="grid lg:grid-cols-2 gap-6">
-          <CustomInput
-            label="State"
-            isRequired={true}
-            type="text"
-            placeholder="Enter state"
-            name={location?.state}
-            value={location?.state}
-            onValueChange={(e) => {
-              setLocation({
-                ...location,
-                state: e,
-              });
-            }}
-          />
-          <CustomInput
-            label="pinCode"
-            isRequired={true}
-            type="text"
-            placeholder="Enter pinCode"
-            name={location?.pinCode}
-            value={location?.pinCode}
-            onValueChange={(e) => {
-              setLocation({
-                ...location,
-                pinCode: e,
-              });
-            }}
-          />
+          <div>
+            <CustomInput
+              label="State"
+              isRequired={true}
+              type="text"
+              placeholder="Enter state"
+              name={location?.state}
+              value={location?.state}
+              onValueChange={(e) => {
+                setLocation({
+                  ...location,
+                  state: e,
+                });
+              }}
+            />
+            {errors?.state && (
+              <small className="text-error -mt-5">{errors?.state}</small>
+            )}
+          </div>
+          <div>
+            <CustomInput
+              label="pinCode"
+              isRequired={true}
+              type="text"
+              placeholder="Enter pinCode"
+              name={location?.pinCode}
+              value={location?.pinCode}
+              onValueChange={(e) => {
+                setLocation({
+                  ...location,
+                  pinCode: e,
+                });
+              }}
+            />
+            {errors?.pinCode && (
+              <small className="text-error -mt-5">{errors?.pinCode}</small>
+            )}
+          </div>
         </div>
 
-        <CustomInput
-          label="Google Maps Place ID"
-          isRequired={false}
-          type="text"
-          placeholder="Enter maps place id"
-          name={location?.googleMapsPlaceId}
-          value={location?.googleMapsPlaceId}
-          onValueChange={(e) => {
-            setLocation({
-              ...location,
-              googleMapsPlaceId: e,
-            });
-          }}
-        />
-
-        <div className="grid lg:grid-cols-2 gap-6">
+        <div>
           <CustomInput
-            label="Latitude"
-            type="number"
+            label="Google Maps Place ID"
             isRequired={false}
-            placeholder="Enter latitude"
-            name={location?.latitude}
-            value={location?.coordinates?.latitude}
+            type="text"
+            placeholder="Enter maps place id"
+            name={location?.googleMapsPlaceId}
+            value={location?.googleMapsPlaceId}
             onValueChange={(e) => {
               setLocation({
                 ...location,
-                latitude: e,
+                googleMapsPlaceId: e,
               });
             }}
           />
-          <CustomInput
-            label="Longitude"
-            type="number"
-            isRequired={false}
-            placeholder="Enter longitude"
-            name={location?.longitude}
-            value={location?.coordinates?.longitude}
-            onValueChange={(e) => {
-              setLocation({
-                ...location,
-                longitude: e,
-              });
-            }}
-          />
+          {errors?.googleMapsPlaceId && (
+            <small className="text-error -mt-5">
+              {errors?.googleMapsPlaceId}
+            </small>
+          )}
+        </div>
+
+        <div className="grid lg:grid-cols-2 gap-6">
+          <div>
+            <CustomInput
+              label="Latitude"
+              type="number"
+              isRequired={false}
+              placeholder="Enter latitude"
+              name={location?.latitude}
+              value={location?.coordinates?.latitude || location?.latitude}
+              onValueChange={(e) => {
+                setLocation({
+                  ...location,
+                  latitude: e,
+                });
+              }}
+            />
+            {errors?.latitude && (
+              <small className="text-error -mt-5">{errors?.latitude}</small>
+            )}
+          </div>
+          <div>
+            <CustomInput
+              label="Longitude"
+              type="number"
+              isRequired={false}
+              placeholder="Enter longitude"
+              name={location?.longitude}
+              value={location?.coordinates?.longitude || location?.longitude}
+              onValueChange={(e) => {
+                setLocation({
+                  ...location,
+                  longitude: e,
+                });
+              }}
+            />
+            {errors?.longitude && (
+              <small className="text-error -mt-5">{errors?.longitude}</small>
+            )}
+          </div>
         </div>
 
         {/* Map Container */}

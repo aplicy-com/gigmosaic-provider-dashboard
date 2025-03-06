@@ -23,7 +23,7 @@
   }
 
   .text-subtitle1 {
-    @apply text-[16px] font-semibold tracking-[0.0px] leading-[1.3] text-gray-800;
+    @apply text-[15px] font-semibold tracking-[0.0px] leading-[1.3] text-gray-800;
   }
 
   .text-subtitle2 {
@@ -59,6 +59,6 @@
   }
 
   .text-error {
-    @apply text-[12px] font-normal text-red-400;
+    @apply text-[12px] font-medium text-red-400;
   }
 }

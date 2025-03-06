@@ -1,5 +1,3 @@
-import React from "react";
-
 const NoDataFound = () => {
   return (
     <section className="flex justify-center md:justify-end items-center ">

@@ -1,4 +1,4 @@
-import React, { ElementType } from "react";
+import React, { ElementType, useMemo } from "react";
 import { Navigate } from "react-router-dom";
 
 interface ProtectedRouteProps {
@@ -16,8 +16,10 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
   console.log("Protected Route Role: ", userRole);
   console.log("Allowed Roles: ", allowedRoles);
 
-  const isAuthorized =
-    allowedRoles.includes(userRole) || allowedRoles.includes("*");
+  const isAuthorized = useMemo(
+    () => allowedRoles.includes(userRole) || allowedRoles.includes("*"),
+    [allowedRoles, userRole]
+  );
 
   console.log("isAuthorized: ", isAuthorized);
 

@@ -43,9 +43,10 @@ const ServiceCard = ({ data }: { data: any[] }) => {
       {data?.map((item: any, index: number) => (
         <div
           key={index}
-          className="cursor-pointer hover:scale-105 transition-all duration-300 ease-in-out"
+          className="cursor-pointer hover:scale-105 transition-all duration-300 ease-in-out w-full h-full"
         >
           <div className="relative">
+            {/* <div className="bg-gray-200 flex justify-center items-center cursor-pointer w-full h-[250px] relative overflow-hidden"> */}
             <div className="bg-gray-200 flex justify-center items-center cursor-pointer w-full h-[250px] relative overflow-hidden">
               <Image
                 src={
@@ -121,7 +122,15 @@ const ServiceCard = ({ data }: { data: any[] }) => {
               <div>
                 <div className="flex items-center justify-between mt-3">
                   <div className="flex flex-initial justify-center items-center gap-3">
-                    <Link to={"/service/edit"}>
+                    {/* <Link to={"/service/edit-service"}>
+                      <div className="flex flex-initial justify-center items-center hover:underline hover:text-primary">
+                        <FaRegEdit className="mr-1" />
+                        <small className="font-medium text-gray-600">
+                          Edit
+                        </small>
+                      </div>
+                    </Link> */}
+                    <Link to={`/service/edit-service/${item?.serviceId}`}>
                       <div className="flex flex-initial justify-center items-center hover:underline hover:text-primary">
                         <FaRegEdit className="mr-1" />
                         <small className="font-medium text-gray-600">

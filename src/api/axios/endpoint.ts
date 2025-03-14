@@ -3,4 +3,5 @@ export const Path = {
   staff: "staff",
   category: "category",
   subcategory: "subcategory",
+  offer: "offers",
 };

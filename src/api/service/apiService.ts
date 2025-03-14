@@ -56,3 +56,13 @@ export const updateServiceData = async (
     throw error;
   }
 };
+
+export const getServicesByProviderId = async (providerId: string) => {
+  try {
+    const res = await apiClient.get(`${Path.service}/provider/${providerId}`);
+    return res.data;
+  } catch (error: any) {
+    console.log("ERROR: ", error);
+    throw error;
+  }
+};

@@ -1,5 +1,5 @@
 import { RxDashboard } from "react-icons/rx";
-import { BiBasketball } from "react-icons/bi";
+import { BiBasketball, BiSolidOffer } from "react-icons/bi";
 
 const _nav = [
   {
@@ -14,6 +14,12 @@ const _nav = [
     icon: <BiBasketball size={18} />,
     allowedRoles: ["Admin"],
   },
+  {
+    name:"All Offers",
+    to:"/offers/all",
+    icon:<BiSolidOffer size={18} />,
+    allowedRoles:["Admin"],
+  }
   // {
   //   name: "Add Service",
   //   to: "/service/add",

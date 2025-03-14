@@ -44,12 +44,15 @@ export interface IServiceProps {
   serviceId: string;
   serviceTitle: string;
   slug: string;
+  price: number;
+  isOffers: boolean;
+  offerPrice: number;
+  priceAfterDiscount: number;
   categoryId: string;
   serviceProvider: string;
   subCategoryId: string;
   duration: number;
   serviceOverview: string;
-  price: number;
   staff: string[];
   includes?: string[];
   isActive: boolean;
@@ -90,4 +93,19 @@ export interface IServiceProps {
       metaDescription: string;
     }
   ];
+}
+
+export interface IOfferProps {
+  offerId: string;
+  providerId: string;
+  serviceId: string;
+  offerTitle: string;
+  offerType: 'FIXED' | 'PERCENTAGE';
+  offerPrice: number;  // This is now the discount value (either fixed amount or percentage)
+  priceAfterDiscount: number;  
+  startDate: Date;
+  endDate: Date;
+  isActive: boolean;
+  createdAt?: Date;
+  updatedAt?: Date;
 }

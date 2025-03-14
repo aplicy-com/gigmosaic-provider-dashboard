@@ -28,13 +28,14 @@ const SidebarLink = ({ items, userRole }: SidebarLinkProps) => {
                   `flex flex-row items-center h-10 px-3 rounded-lg my-1 ${
                     isActive
                       ? "text-primary text-sm  bg-primary bg-opacity-20"
-                      : "text-white text-sm hover:bg-gray-500 hover:bg-opacity-10"
+                      : "text-white text-sm  hover:bg-gray-500 hover:bg-opacity-10"
                   }`
                 }
               >
                 {item.icon && <span>{item.icon}</span>}
                 <span className="ml-3">{item.name}</span>
               </NavLink>
+              {/* <p className=" border-t border-gray-600"></p> */}
             </li>
           );
         })}

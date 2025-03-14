@@ -1,6 +1,7 @@
 import { AiOutlineSlack } from "react-icons/ai";
 import { BsFillPeopleFill } from "react-icons/bs";
 import { RiDashboardHorizontalFill } from "react-icons/ri";
+import { TbRosetteDiscountCheckFilled } from "react-icons/tb";
 
 const _nav = [
   {
@@ -13,6 +14,12 @@ const _nav = [
     name: "Service",
     to: "/service/all-service",
     icon: <AiOutlineSlack size={19} />,
+    allowedRoles: ["Admin"],
+  },
+  {
+    name: "Offers",
+    to: "/offer/all-offer",
+    icon: <TbRosetteDiscountCheckFilled size={18} />,
     allowedRoles: ["Admin"],
   },
   {

@@ -4,7 +4,8 @@ import Error404Page from "./pages/Error404Page";
 import AddService from "./pages/service/AddService";
 import AllService from "./pages/service/AllService";
 import EditService from "./pages/service/EditService";
-import AddStaff from "./pages/staff/AddStaff";
+import AllStaff from "./pages/staff/AllStaff";
+import EditStaffModal from "./pages/staff/EditStaffModal";
 
 const userRole = "Admin";
 
@@ -50,7 +51,31 @@ const routes = [
     name: "All Staff",
     element: (
       <ProtectedRoute
-        element={AddStaff}
+        element={AllStaff}
+        allowedRoles={["Admin"]}
+        userRole={userRole}
+      />
+    ),
+  },
+
+  // {
+  //   path: "/edit-staff/:id",
+  //   name: "Edit Staff",
+  //   element: (
+  //     <ProtectedRoute
+  //       element={EditStaffModal} // <-- Add your component here
+  //       allowedRoles={["Admin"]}
+  //       userRole={userRole}
+  //     />
+  //   ),
+  // },
+
+  {
+    path: "/service/edit-service/:id",
+    name: "Update Service",
+    element: (
+      <ProtectedRoute
+        element={EditService}
         allowedRoles={["Admin"]}
         userRole={userRole}
       />
@@ -58,8 +83,8 @@ const routes = [
   },
 
   {
-    path: "/service/edit-service/:id",
-    name: "Update Service",
+    path: "/offer/all-offer",
+    name: "Offers",
     element: (
       <ProtectedRoute
         element={EditService}

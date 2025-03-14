@@ -3,10 +3,10 @@ import { Path } from "../axios/endpoint";
 import { IServiceProps } from "../../types";
 // import logger from '../utils/logger';
 
-export const sumbitServiceData = async (data: IServiceProps) => {
+export const sumbitStaffData = async (data) => {
   console.log("Running......submit");
   try {
-    const res = await apiClient.post(Path.service, data);
+    const res = await apiClient.post(Path.staff, data);
     console.log("RES: ", res);
     return res.data;
   } catch (error: any) {
@@ -28,9 +28,9 @@ export const getAllStaffData = async () => {
   }
 };
 
-export const getServiceDataById = async (id: string) => {
+export const getStaffById = async (id: string) => {
   try {
-    const res = await apiClient.get(Path.service + `/${id}`);
+    const res = await apiClient.get(Path.staff + `/${id}`);
     return res.data;
   } catch (error: any) {
     console.log("ERROR: ", error);
@@ -39,13 +39,25 @@ export const getServiceDataById = async (id: string) => {
   }
 };
 
-export const updateServiceData = async (
+export const updateStffData = async (
   id: string,
   serviceData: IServiceProps
 ) => {
   try {
     console.log("ID------------------: ", id);
-    const res = await apiClient.put(`${Path.service}/${id}`, serviceData);
+    const res = await apiClient.put(`${Path.staff}/${id}`, serviceData);
+    return res.data;
+  } catch (error: any) {
+    console.log("ERROR: ", error);
+    // logger.error(error);
+    throw error;
+  }
+};
+
+export const deleteStffData = async (id: string) => {
+  try {
+    console.log("ID------------------: ", id);
+    const res = await apiClient.delete(Path.staff + `/${id}`);
     return res.data;
   } catch (error: any) {
     console.log("ERROR: ", error);

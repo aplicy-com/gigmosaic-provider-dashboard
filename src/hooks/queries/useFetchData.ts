@@ -3,7 +3,7 @@ import {
   getAllServiceData,
   getServiceDataById,
 } from "../../api/service/apiService";
-import { getAllStaffData } from "../../api/service/apiStaff";
+import { getAllStaffData, getStaffById } from "../../api/service/apiStaff";
 import {
   getAllCategoryData,
   getCategoryById,
@@ -55,6 +55,16 @@ export const useFetchStaff = () => {
     queryKey: [QueryKey.GET_ALL_STAFF],
     queryFn: getAllStaffData,
     staleTime: 1 * 60 * 1000,
+    refetchOnWindowFocus: false,
+  });
+};
+
+export const useFetchStaffById = (id?: string) => {
+  return useQuery({
+    queryKey: [QueryKey.GET_ALL_STAFF, id],
+    queryFn: () => (id ? getStaffById(id) : Promise.reject("No ID provided")),
+    // staleTime: 1 * 60 * 1000,
+    enabled: !!id,
     refetchOnWindowFocus: false,
   });
 };

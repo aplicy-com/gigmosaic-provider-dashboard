@@ -50,11 +50,16 @@ export const useFetchCategoryById = (id?: string) => {
 };
 
 //GET ALL STAFF
-export const useFetchStaff = () => {
+export const useFetchStaff = (page?: number, limit?: number) => {
+  console.log("Run staff get: ", page, limit);
   return useQuery({
-    queryKey: [QueryKey.GET_ALL_STAFF],
-    queryFn: getAllStaffData,
+    queryKey: [QueryKey.GET_ALL_STAFF, page, limit],
+    queryFn: ({ queryKey }) => {
+      const [_, page, limit] = queryKey as [string, number?, number?];
+      return getAllStaffData({ page, limit });
+    },
     staleTime: 1 * 60 * 1000,
+    placeholderData: keepPreviousData,
     refetchOnWindowFocus: false,
   });
 };
@@ -63,7 +68,7 @@ export const useFetchStaffById = (id?: string) => {
   return useQuery({
     queryKey: [QueryKey.GET_ALL_STAFF, id],
     queryFn: () => (id ? getStaffById(id) : Promise.reject("No ID provided")),
-    // staleTime: 1 * 60 * 1000,
+    staleTime: 1 * 60 * 1000,
     enabled: !!id,
     refetchOnWindowFocus: false,
   });

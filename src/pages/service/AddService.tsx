@@ -192,12 +192,6 @@ const AddService = () => {
       await console.log("FINAL PAYLOAD SUMBIT------: ", formatedData);
       await mutate(formatedData);
 
-      addToast({
-        title: "Service Added",
-        description: "Service Added Successfully",
-        radius: "md",
-        color: "success",
-      });
       navigate("/service/all-service");
     } catch (error) {
       if (error instanceof ValidationError) {

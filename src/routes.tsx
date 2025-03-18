@@ -4,6 +4,7 @@ import Error404Page from "./pages/Error404Page";
 import AddService from "./pages/service/AddService";
 import AllService from "./pages/service/AllService";
 import EditService from "./pages/service/EditService";
+import SingleService from "./pages/service/SingleService";
 import AllStaff from "./pages/staff/AllStaff";
 import EditStaffModal from "./pages/staff/EditStaffModal";
 
@@ -58,17 +59,17 @@ const routes = [
     ),
   },
 
-  // {
-  //   path: "/edit-staff/:id",
-  //   name: "Edit Staff",
-  //   element: (
-  //     <ProtectedRoute
-  //       element={EditStaffModal} // <-- Add your component here
-  //       allowedRoles={["Admin"]}
-  //       userRole={userRole}
-  //     />
-  //   ),
-  // },
+  {
+    path: "/service/:id",
+    name: "Service",
+    element: (
+      <ProtectedRoute
+        element={SingleService}
+        allowedRoles={["Admin"]}
+        userRole={userRole}
+      />
+    ),
+  },
 
   {
     path: "/service/edit-service/:id",

@@ -11,6 +11,12 @@ export const useSumbitServiceMutation = () => {
     mutationFn: sumbitServiceData,
     onSuccess: () => {
       console.log("Service submitted successfully!", "success");
+      addToast({
+        title: "Service Added",
+        description: "Service Added Successfully",
+        radius: "md",
+        color: "success",
+      });
       queryClient.invalidateQueries({ queryKey: [QueryKey.GET_ALL_SERVICE] });
     },
     onError: (error: any) => {

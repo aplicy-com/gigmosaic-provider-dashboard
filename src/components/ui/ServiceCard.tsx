@@ -3,7 +3,7 @@ import { SlLocationPin } from "react-icons/sl";
 import { FaRegEdit } from "react-icons/fa";
 // import {FaRegHeart } from "react-icons/fa";
 import { FaStar } from "react-icons/fa6";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { GrStatusGood } from "react-icons/gr";
 import { FaHeart } from "react-icons/fa";
 import { IoMdCloseCircleOutline } from "react-icons/io";
@@ -14,7 +14,7 @@ import { getCategoryById } from "../../api/service/apiCategory";
 import NoDataFound from "../../pages/NoDataFound";
 
 const ServiceCard = ({ data }: { data: any[] }) => {
-  //   const isOffers = false;
+  const navigate = useNavigate();
 
   const categoryQueries = useQueries({
     queries: data.map((item: any) => ({
@@ -35,13 +35,16 @@ const ServiceCard = ({ data }: { data: any[] }) => {
     return acc;
   }, {} as Record<string, string>);
 
-  console.log("categoryMap: ", categoryMap);
+  const handleNavigate = (id: string) => {
+    navigate(`/service/${id}`);
+  };
 
   return (
     <>
       {data?.length === 0 && <NoDataFound />}
       {data?.map((item: any, index: number) => (
         <div
+          // onClick={() => handleNavigate(item?.serviceId)}
           key={index}
           className="cursor-pointer hover:scale-105 transition-all duration-300 ease-in-out w-full h-full"
         >

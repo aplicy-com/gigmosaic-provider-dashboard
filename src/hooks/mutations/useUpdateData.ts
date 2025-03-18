@@ -47,7 +47,7 @@ export const useUpdateStaffMutation = () => {
         radius: "md",
         color: "success",
       });
-      queryClient.invalidateQueries({ queryKey: [QueryKey.GET_ALL_SERVICE] });
+      queryClient.invalidateQueries({ queryKey: [QueryKey.GET_ALL_STAFF] });
     },
     onError: (error: any) => {
       const errorMessage =

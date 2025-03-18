@@ -1,4 +1,5 @@
 import {
+  addToast,
   Table,
   TableBody,
   TableCell,
@@ -13,11 +14,24 @@ import EditStaffModal from "../../pages/staff/EditStaffModal";
 import CustomButton from "./CustomButton";
 import { RiDeleteBin6Line } from "react-icons/ri";
 import { useDeleteStaffMutation } from "../../hooks/mutations/useDeleteData";
+import ConfirmToast from "./ConfirmToast";
+import CustomPagination from "./CustomPagination";
+import { useMemo, useState } from "react";
+import Loading from "./Loading";
 
 const DataTable = () => {
-  const { data } = useFetchStaff();
+  const [currentPage, setCurrentPage] = useState<number>(1);
   const { mutate } = useDeleteStaffMutation();
-  console.log("Staff Data: ", data);
+
+  const { data, isLoading } = useFetchStaff({
+    page: currentPage,
+    limit: 8,
+  });
+
+  console.log("data: ", data);
+
+  const apiData = useMemo(() => data?.staff || [], [data]);
+  const totalPage = useMemo(() => data?.pages || 1, [data]);
 
   const columns = [
     {
@@ -70,14 +84,33 @@ const DataTable = () => {
     },
   ];
 
-  const handleDelete = (id: string) => {
+  const handleDelete = async (id: string) => {
     console.log("IDD: ", id);
-    if (!id) return;
-    mutate(id);
+    if (!id) {
+      addToast({
+        title: "Error",
+        description: "Staff ID Cannot find in table",
+        radius: "md",
+        color: "danger",
+      });
+      return;
+    }
+    const isConfirmed = await ConfirmToast({
+      title: "Are you sure?",
+      message: "Do you want to delete this user?",
+      type: "warning",
+      confirmText: "Yes, Delete",
+      cancelText: "Cancel",
+    });
+
+    if (isConfirmed) {
+      mutate(id);
+    }
   };
 
   return (
     <>
+      {isLoading ? <Loading label="Loading..." /> : <></>}
       <Table
         isStriped
         selectionMode="single"
@@ -97,7 +130,7 @@ const DataTable = () => {
           )}
         </TableHeader>
         <TableBody emptyContent={"No data to display"}>
-          {data?.staff?.map((item: any) => (
+          {apiData?.map((item: any) => (
             <TableRow key={item?.staffId} className="cursor-pointer">
               <TableCell>{item?.staffId}</TableCell>
               <TableCell>{item?.fullName}</TableCell>
@@ -137,6 +170,16 @@ const DataTable = () => {
           ))}
         </TableBody>
       </Table>
+
+      <div className="flex justify-end items-end py-5 mt-7">
+        <CustomPagination
+          page={currentPage}
+          initialPage={1}
+          total={totalPage}
+          size="md"
+          onChange={setCurrentPage}
+        />
+      </div>
     </>
   );
 };

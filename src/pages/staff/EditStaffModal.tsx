@@ -45,7 +45,7 @@ const EditStaffModal = ({ id }) => {
   } = useForm<FormValues>();
 
   const { data, isLoading: isFetchingStaff } = useFetchStaffById(selectedId);
-  const { mutate, isLoading: isUpdating } = useUpdateStaffMutation();
+  const { mutate, isSuccess } = useUpdateStaffMutation();
 
   const state = [
     { label: "Ontario", id: "ontario" },
@@ -107,7 +107,7 @@ const EditStaffModal = ({ id }) => {
 
   return (
     <>
-      {isUpdating && <Loading label="Updating..." />}
+      {/* {isSuccess && <Loading label="Updating..." />} */}
       <CustomButton
         isIconOnly
         className="bg-transparent"
@@ -289,15 +289,15 @@ const EditStaffModal = ({ id }) => {
                     label="Note"
                     placeholder="Enter some note"
                     {...register("description", {
-                      required: "Description is required",
+                      // required: "Description is required",
                       maxLength: {
                         value: 100,
                         message: "Description must be less than 20 characters",
                       },
-                      minLength: {
-                        value: 3,
-                        message: "Description must be at least 3 characters",
-                      },
+                      // minLength: {
+                      //   value: 3,
+                      //   message: "Description must be at least 3 characters",
+                      // },
                     })}
                     isInvalid={!!errors?.description}
                     errorMessage={errors?.description?.message}

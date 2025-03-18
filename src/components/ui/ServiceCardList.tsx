@@ -4,7 +4,7 @@ import { GrStatusGood } from "react-icons/gr";
 import { IoMdCloseCircleOutline } from "react-icons/io";
 import { SlLocationPin } from "react-icons/sl";
 import { TbRosetteDiscountCheckFilled } from "react-icons/tb";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import CustomButton from "./CustomButton";
 import { useFetchCategoryById } from "../../hooks/queries/useFetchData";
 import { useQueries } from "@tanstack/react-query";
@@ -12,6 +12,8 @@ import { getCategoryById } from "../../api/service/apiCategory";
 import NoDataFound from "../../pages/NoDataFound";
 
 const ServiceCardList = ({ data }: { data: any[] }) => {
+  const navigate = useNavigate();
+
   const categoryQueries = useQueries({
     queries: data.map((item: any) => ({
       queryKey: ["GET_CATEGORY_BY_ID", item.categoryId],
@@ -32,15 +34,20 @@ const ServiceCardList = ({ data }: { data: any[] }) => {
 
   console.log("Data: ", data);
 
+  const handleNavigate = (id: string) => {
+    navigate(`/service/${id}`);
+  };
+
   return (
     <>
       {data?.length === 0 && <NoDataFound />}
       {data?.map((item: any, index: number) => (
         <div
+          // onClick={() => handleNavigate(item?.serviceId)}
           key={index}
           className="flex flex-initial cursor-pointer  transition-all duration-300 ease-in-out"
         >
-          <div className=" bg-gray-200 flex justify-center items-center cursor-pointer max-h-[152px]   w-[308px] relative overflow-hidden">
+          <div className=" bg-gray-200 flex justify-center items-center cursor-pointer max-h-[152px] w-[308px] relative overflow-hidden rounded-sm">
             <Image
               src={
                 item?.gallery?.[0]?.serviceImages?.[0] ||
@@ -50,7 +57,6 @@ const ServiceCardList = ({ data }: { data: any[] }) => {
               className=" object-contain w-full h-full  relative"
               shadow="md"
               isZoomed
-              // loading="lazy"
               radius="none"
             />
           </div>
@@ -154,6 +160,7 @@ const ServiceCardList = ({ data }: { data: any[] }) => {
               </div>
             </CardBody>
           </Card>
+          {/* </Link> */}
         </div>
       ))}
     </>

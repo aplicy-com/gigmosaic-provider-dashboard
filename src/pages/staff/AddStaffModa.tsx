@@ -253,16 +253,17 @@ const AddStaffModa = () => {
                     label="Note"
                     placeholder="Enter some note"
                     {...register("description", {
-                      required: "Description is required",
+                      // required: "Description is required",
                       maxLength: {
                         value: 100,
                         message: "Description must be less than 20 characters",
                       },
-                      minLength: {
-                        value: 3,
-                        message: "Description must be at least 3 characters",
-                      },
+                      // minLength: {
+                      //   value: 3,
+                      //   message: "Description must be at least 3 characters",
+                      // },
                     })}
+                    // value={descriptionValue}
                     isInvalid={!!errors?.description}
                     errorMessage={errors?.description?.message}
                   />

@@ -51,7 +51,6 @@ export const useFetchCategoryById = (id?: string) => {
 
 //GET ALL STAFF
 export const useFetchStaff = (page?: number, limit?: number) => {
-  console.log("Run staff get: ", page, limit);
   return useQuery({
     queryKey: [QueryKey.GET_ALL_STAFF, page, limit],
     queryFn: ({ queryKey }) => {

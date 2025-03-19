@@ -10,6 +10,8 @@ interface CustomInputProps {
   errorMessage?: string;
   description?: string;
   defaultSelectedKey?: string;
+  // selectedKey?: string;
+  selectedKey?: string | undefined;
   defaultItems: { label: string; id: string }[];
   disabledKeys?: string[] | number[];
   isDisabled?: boolean;
@@ -37,6 +39,7 @@ const CustomAutocomplete = ({
   defaultItems = [],
   defaultSelectedKey = "",
   disabledKeys = [],
+  selectedKey = undefined,
   onInputChange,
   onSelectionChange,
   ...props
@@ -56,13 +59,14 @@ const CustomAutocomplete = ({
         size={size}
         defaultItems={defaultItems}
         defaultSelectedKey={defaultSelectedKey}
+        selectedKey={selectedKey}
         placeholder={placeholder}
         disabledKeys={disabledKeys}
         isDisabled={isDisabled}
         isRequired={isRequired}
         variant={variant}
         labelPlacement={labelPlacement}
-        allowsCustomValue={true}
+        allowsCustomValue={false}
         description={description}
         errorMessage={errorMessage}
         isInvalid={isInvalid}

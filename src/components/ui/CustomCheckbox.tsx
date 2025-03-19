@@ -12,8 +12,10 @@ interface CustomInputProps {
     | "warning"
     | "danger";
   isDisabled?: boolean;
+  className?: string;
   onValueChange?: (value: boolean) => void;
   isSelected?: boolean;
+  // defaultSelected?: boolean;
 }
 
 const CustomCheckbox = ({
@@ -24,6 +26,8 @@ const CustomCheckbox = ({
   isDisabled = false,
   onValueChange,
   isSelected,
+  className,
+  // defaultSelected = false,
   ...props
 }: CustomInputProps) => {
   return (
@@ -31,7 +35,9 @@ const CustomCheckbox = ({
       size={size}
       radius={radius}
       color={color}
+      className={className}
       isDisabled={isDisabled}
+      // defaultSelected={defaultSelected}
       isSelected={isSelected}
       onValueChange={onValueChange}
       {...props}

@@ -107,7 +107,6 @@ const CustomMultiselectDropdown = ({
   const [selectedids, setSelectedids] = useState<Set<string>>(
     new Set(value?.length ? value : "")
   );
-  // console.log("Staff0000 +++: ", value);
 
   useEffect(() => {
     if (!isUpdate) return;
@@ -129,7 +128,7 @@ const CustomMultiselectDropdown = ({
   useEffect(() => {
     handleChangevalue(selectedidArray);
   }, [selectedidArray, handleChangevalue]);
-  // console.log("selectedidsf0000 +++++: ", selectedids);
+
   return (
     <>
       {selectedLabels.length > 0 ? (

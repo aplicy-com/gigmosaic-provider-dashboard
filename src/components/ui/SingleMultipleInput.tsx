@@ -15,20 +15,13 @@ const SingleMultipleInput = ({
 }: SingleMultipleInputProps) => {
   const [fields, setFields] = useState([{ id: Date.now(), value: "" }]);
 
-  // console.log("Value include00", value);
   useEffect(() => {
-    // if (value?.length < 0) return;
     if (value?.length && fields[0]?.value === "") {
-      // console.log(
-      //   "Empty field-----------------------------------------------------------------------------------"
-      // );
       setFields(
         value.map((item, index) => ({ id: Date.now() + index, value: item }))
       );
     }
   }, [value]);
-
-  // console.log("Field00: ", fields);
 
   const handleAddField = () => {
     setFields([...fields, { id: Date.now(), value: "" }]);
@@ -69,7 +62,7 @@ const SingleMultipleInput = ({
             value={field.value}
             onValueChange={(newValue) => handleValueChange(field.id, newValue)}
           />
-          {fields.length > 1 && ( // Hide the trash button if only one input field remains
+          {fields.length > 1 && (
             <div className="mt-6 cursor-pointer">
               <CustomButton
                 isIconOnly={true}

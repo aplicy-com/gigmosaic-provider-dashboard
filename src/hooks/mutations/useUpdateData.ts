@@ -3,9 +3,11 @@ import { updateServiceData } from "../../api/service/apiService";
 import { addToast } from "@heroui/react";
 import { QueryKey } from "../queryKey";
 import { updateStffData } from "../../api/service/apiStaff";
+import { useNavigate } from "react-router-dom";
 
 export const useUpdateServiceMutation = () => {
   const queryClient = useQueryClient();
+  const navigate = useNavigate();
   return useMutation({
     mutationFn: ({ id, serviceData }: { id: string; serviceData: any }) =>
       updateServiceData(id, serviceData),
@@ -18,6 +20,7 @@ export const useUpdateServiceMutation = () => {
         color: "danger",
       });
       queryClient.invalidateQueries({ queryKey: QueryKey.GET_ALL_SERVICE });
+      navigate("/service/all-service");
     },
     onError: (error: any) => {
       const errorMessage =

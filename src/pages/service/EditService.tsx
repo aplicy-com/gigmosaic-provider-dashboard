@@ -101,8 +101,6 @@ const EditService = () => {
     }
   }, [apiData]);
 
-  console.log("EDIT API DATA: ", apiData);
-
   const { data: staffData } = useFetchStaff();
   const { data: categoryData } = useFetchCategory();
   const { data: subCategoryData } = useFetchSubCategory();
@@ -126,6 +124,7 @@ const EditService = () => {
 
   const setApiData = async () => {
     await setLoading(true);
+    console.log("EDIT API DATA: ", apiData?.serviceInfo);
     try {
       setBasicInfo({
         serviceTitle: apiData?.serviceInfo?.serviceTitle,
@@ -160,20 +159,14 @@ const EditService = () => {
         "staffId"
       );
       setDisplayStaff(formatStaff);
-      setDisplayGallaryData(apiData?.serviceInfo?.gallery[0].serviceImages);
-      setLink(apiData?.serviceInfo?.gallery[0].videoLink);
-      console.log("Edit link: ", apiData?.serviceInfo?.gallery[0].videoLink);
-      console.log(
-        "GALLERY DATA: ",
-        apiData?.serviceInfo?.gallery[0].serviceImages
-      );
+      setDisplayGallaryData(apiData?.serviceInfo?.gallery[0]?.serviceImages);
+      setLink(apiData?.serviceInfo?.gallery[0]?.videoLink);
 
       const formtedCategory = formateDataForDropdown(
         categoryData?.categories,
         "categoryName",
         "categoryId"
       );
-
       setDisplayCategory(formtedCategory);
 
       const formtedSubCategory = formateDataForDropdown(
@@ -182,8 +175,19 @@ const EditService = () => {
         "subCategoryId"
       );
       setDisplaySubCategory(formtedSubCategory);
+      console.log("Category: ", formtedCategory);
+      console.log("Subcategory: ", formtedSubCategory);
+      console.log("Staff: ", formatStaff);
     } catch (error) {
-      console.log("Error in edit service: ");
+      console.error(
+        "Error: Something went wrong while prefilling edit service data"
+      );
+      addToast({
+        title: "Error",
+        description: "Something went wrong while prefilling data",
+        radius: "md",
+        color: "danger",
+      });
     } finally {
       setLoading(false);
     }
@@ -238,7 +242,7 @@ const EditService = () => {
           return { ...item, images: "", id: index + 1 };
         })
       );
-      await console.log("LOCATION001: ", location);
+
       const formatedData = await formatServiceData(
         basicInfo,
         staff,
@@ -253,9 +257,7 @@ const EditService = () => {
         isUpdate
       );
       await console.log("FINAL PAYLOAD UPDATE------: ", formatedData);
-      // mutate(formatedData);
       mutate({ id: id, serviceData: formatedData });
-      navigate("/service/all-service");
     } catch (error) {
       if (error instanceof ValidationError) {
         const errors: { [key: string]: string } = {};
@@ -275,12 +277,6 @@ const EditService = () => {
           }, errors);
         });
 
-        // addToast({
-        //   title: "Validation Error",
-        //   description: "Fix Validation Errors",
-        //   radius: "md",
-        //   color: "danger",
-        // });
         console.log("Transformed errors:", errors);
         setValidationError(errors);
       }
@@ -288,7 +284,7 @@ const EditService = () => {
       setLoading(false);
     }
   };
-  console.log("LoL: ", location);
+
   const uploadImages = async (gallaryData: {
     images: (string | File)[];
     videoLink: string;
@@ -377,6 +373,7 @@ const EditService = () => {
                     label="Category"
                     placeholder="Select category"
                     defaultItems={displayCategory}
+                    // selectedKey={basicInfo?.categoryId}
                     selectedKey={basicInfo?.categoryId}
                     width="none"
                     onSelectionChange={(id) => {
@@ -397,7 +394,7 @@ const EditService = () => {
                     placeholder="Select subcategory"
                     defaultItems={displaySubCategory}
                     selectedKey={basicInfo?.subCategoryId}
-                    defaultSelectedKey={basicInfo.subCategoryId}
+                    // defaultSelectedKey={basicInfo.subCategoryId}
                     width="none"
                     onSelectionChange={(id) => {
                       setBasicInfo({

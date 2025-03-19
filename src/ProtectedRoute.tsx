@@ -13,15 +13,15 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
   userRole,
   ...rest
 }) => {
-  console.log("Protected Route Role: ", userRole);
-  console.log("Allowed Roles: ", allowedRoles);
+  // console.log("Protected Route Role: ", userRole);
+  // console.log("Allowed Roles: ", allowedRoles);
 
   const isAuthorized = useMemo(
     () => allowedRoles.includes(userRole) || allowedRoles.includes("*"),
     [allowedRoles, userRole]
   );
 
-  console.log("isAuthorized: ", isAuthorized);
+  // console.log("isAuthorized: ", isAuthorized);
 
   return isAuthorized ? <Component {...rest} /> : <Navigate to="/" />;
 };

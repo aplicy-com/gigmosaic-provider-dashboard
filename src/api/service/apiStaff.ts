@@ -17,22 +17,9 @@ export const sumbitStaffData = async (data) => {
   }
 };
 
-// export const getAllStaffData = async () => {
-//   try {
-//     const res = await apiClient.get(Path.staff);
-//     return res.data;
-//   } catch (error: any) {
-//     console.log("ERROR: ", error);
-//     // logger.error(error);
-//     throw error;
-//   }
-// };
-
 export const getAllStaffData = async ({ page = 1, limit = 8 }) => {
-  console.log("PAGE: ", page);
-  console.log("LIMIT: ", limit);
   const quary = `?page=${page?.page}&limit=${limit}`;
-  console.log("Quary: ", quary);
+
   try {
     const res = await apiClient.get(`${Path.staff}${quary}`);
     return res.data;

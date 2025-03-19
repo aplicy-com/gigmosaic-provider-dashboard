@@ -10,12 +10,12 @@ import {
 import { FaRegEdit } from "react-icons/fa";
 import CustomButton from "../../components/ui/CustomButton";
 import CustomInput from "../../components/ui/CustomInput";
-import CustomTextArea from "../../components/ui/CustomTextArea";
 import CustomAutocomplete from "../../components/ui/CustomAutocomplete";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { useFetchStaffById } from "../../hooks/queries/useFetchData";
 import { useUpdateStaffMutation } from "../../hooks/mutations/useUpdateData";
 import Loading from "../../components/ui/Loading";
+import CustomCheckbox from "../../components/ui/CustomCheckbox";
 
 type FormValues = {
   fullName: string;
@@ -27,18 +27,16 @@ type FormValues = {
   city: string;
   zipCode: string;
   description: string;
+  status: boolean;
 };
 
 const EditStaffModal = ({ id }) => {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
   const [selectedId, setSelectedId] = useState(null);
-  const [apiState, setState] = useState("");
-  const [apiCountry, setCountry] = useState("");
 
   const {
     register,
     handleSubmit,
-    reset,
     setValue,
     watch,
     formState: { errors },
@@ -47,6 +45,7 @@ const EditStaffModal = ({ id }) => {
   const { data, isLoading: isFetchingStaff } = useFetchStaffById(selectedId);
   const { mutate, isSuccess } = useUpdateStaffMutation();
 
+  // 🔹 State and Country Data
   const state = [
     { label: "Ontario", id: "ontario" },
     { label: "Quebec", id: "quebec" },
@@ -63,51 +62,43 @@ const EditStaffModal = ({ id }) => {
 
   useEffect(() => {
     if (data) {
-      console.log("Data: ", data);
-      console.log("State: ", data.staff.state);
-      console.log("Country: ", data.staff.country);
+      console.log("Data received: ", data);
+
       setValue("fullName", data.staff.fullName || "");
       setValue("email", data.staff.email || "");
       setValue("phoneNumber", data.staff.phoneNumber || "");
       setValue("address", data.staff.address || "");
       setValue("city", data.staff.city || "");
       setValue("zipCode", data.staff.zipCode || "");
-      setValue("description", data.staff.description);
+      setValue("description", data.staff.description || "");
+      setValue("status", data.staff.status || "");
 
       const findState = state.find((item) => item.label === data.staff.state);
-      console.log("state00282: ", state);
-      console.log("Country: ", data.staff.country);
       const findCountry = country.find(
         (item) => item.label === data.staff.country
       );
 
-      console.log("Country001Obj: ", findCountry);
+      console.log("Found Country: ", findCountry?.id);
+      console.log("Found State: ", findState?.id);
 
-      console.log("findCountry: ", findCountry?.id);
-      console.log("findState: ", findState?.id);
-
-      // setState(findState?.id || "");
-      // setCountry(findCountry?.id || "");
-      setValue("state", findState?.id || "");
-      setValue("country", findCountry?.id || "");
+      if (findState) setValue("state", findState.id);
+      if (findCountry) setValue("country", findCountry.id);
     }
-  }, [data, setValue, apiCountry, apiState]);
+  }, [data, setValue]);
 
   const handleOpen = () => {
-    console.log("Open modal: ", id);
     setSelectedId(id);
     onOpen();
   };
 
   const onSubmit: SubmitHandler<FormValues> = (formData) => {
-    console.log("Data update: ", formData);
+    console.log("Final Updating Staff data: ", formData);
     mutate({ id: selectedId, staffData: formData });
     onOpenChange(false);
   };
 
   return (
     <>
-      {/* {isSuccess && <Loading label="Updating..." />} */}
       <CustomButton
         isIconOnly
         className="bg-transparent"
@@ -134,19 +125,6 @@ const EditStaffModal = ({ id }) => {
                         placeholder="Enter name"
                         {...register("fullName", {
                           required: "Name is required",
-                          maxLength: {
-                            value: 30,
-                            message: "Name must be less than 30 characters",
-                          },
-                          minLength: {
-                            value: 2,
-                            message: "Name must be at least 2 characters",
-                          },
-                          pattern: {
-                            value: /^[A-Za-z\s]+$/,
-                            message:
-                              "Name cannot contain numbers or special characters",
-                          },
                         })}
                         isInvalid={!!errors?.fullName}
                         errorMessage={errors?.fullName?.message}
@@ -158,11 +136,6 @@ const EditStaffModal = ({ id }) => {
                         placeholder="Enter email"
                         {...register("email", {
                           required: "Email is required",
-                          pattern: {
-                            value:
-                              /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/,
-                            message: "Enter a valid email address",
-                          },
                         })}
                         isInvalid={!!errors?.email}
                         errorMessage={errors?.email?.message}
@@ -174,18 +147,6 @@ const EditStaffModal = ({ id }) => {
                         placeholder="Enter mobile no"
                         {...register("phoneNumber", {
                           required: "Phone number is required",
-                          pattern: {
-                            value: /^[0-9]+$/,
-                            message: "Only numbers are allowed",
-                          },
-                          minLength: {
-                            value: 7,
-                            message: "Phone number must be at least 7 digits",
-                          },
-                          maxLength: {
-                            value: 15,
-                            message: "Phone number must be less than 15 digits",
-                          },
                         })}
                         isInvalid={!!errors?.phoneNumber}
                         errorMessage={errors?.phoneNumber?.message}
@@ -197,66 +158,46 @@ const EditStaffModal = ({ id }) => {
                         placeholder="Enter address"
                         {...register("address", {
                           required: "Address is required",
-                          maxLength: {
-                            value: 90,
-                            message: "Address must be less than 90 characters",
-                          },
-                          minLength: {
-                            value: 2,
-                            message: "Address must be at least 3 characters",
-                          },
                         })}
                         isInvalid={!!errors?.address}
                         errorMessage={errors?.address?.message}
                       />
                       <CustomAutocomplete
                         label="Country"
-                        defaultItems={country}
-                        // defaultSelectedKey={apiCountry}
                         isRequired
                         placeholder="Enter country"
-                        {...register("country", {
-                          required: "Country is required",
-                        })}
+                        defaultItems={country}
+                        selectedKey={
+                          watch("country") || data?.staff?.country || null
+                        }
+                        onSelectionChange={(id) =>
+                          setValue("country", id, { shouldValidate: true })
+                        }
                         isInvalid={!!errors?.country}
                         errorMessage={errors?.country?.message}
                       />
+
                       <CustomAutocomplete
                         label="State"
-                        defaultItems={state}
-                        // defaultSelectedKey={apiState}
                         isRequired
                         placeholder="Enter state"
-                        {...register("state", {
-                          required: "State is required",
-                          maxLength: {
-                            value: 20,
-                            message: "State must be less than 20 characters",
-                          },
-                          minLength: {
-                            value: 3,
-                            message: "State must be at least 3 characters",
-                          },
-                        })}
+                        defaultItems={state}
+                        selectedKey={
+                          watch("state") || data?.staff?.state || null
+                        }
+                        onSelectionChange={(id) =>
+                          setValue("state", id, { shouldValidate: true })
+                        }
                         isInvalid={!!errors?.state}
                         errorMessage={errors?.state?.message}
                       />
+
                       <CustomInput
                         label="City"
                         type="text"
                         isRequired
                         placeholder="Enter city"
-                        {...register("city", {
-                          required: "City is required",
-                          maxLength: {
-                            value: 20,
-                            message: "City must be less than 20 characters",
-                          },
-                          minLength: {
-                            value: 3,
-                            message: "City must be at least 3 characters",
-                          },
-                        })}
+                        {...register("city", { required: "City is required" })}
                         isInvalid={!!errors?.city}
                         errorMessage={errors?.city?.message}
                       />
@@ -267,49 +208,29 @@ const EditStaffModal = ({ id }) => {
                         placeholder="Enter zipcode"
                         {...register("zipCode", {
                           required: "Zipcode is required",
-                          pattern: {
-                            value: /^[0-9]+$/,
-                            message: "Only numbers are allowed",
-                          },
-                          minLength: {
-                            value: 2,
-                            message: "Zipcode must be at least 2 digits",
-                          },
-                          maxLength: {
-                            value: 15,
-                            message: "Zipcode must be less than 15 digits",
-                          },
                         })}
                         isInvalid={!!errors?.zipCode}
                         errorMessage={errors?.zipCode?.message}
                       />
+
+                      <div className="mt-3">
+                        <CustomCheckbox
+                          label="Active"
+                          onValueChange={(value) =>
+                            setValue("status", value, { shouldValidate: true })
+                          }
+                          size="sm"
+                          isSelected={watch("status")}
+                        />
+                      </div>
                     </div>
                   )}
-                  <CustomTextArea
-                    label="Note"
-                    placeholder="Enter some note"
-                    {...register("description", {
-                      // required: "Description is required",
-                      maxLength: {
-                        value: 100,
-                        message: "Description must be less than 20 characters",
-                      },
-                      // minLength: {
-                      //   value: 3,
-                      //   message: "Description must be at least 3 characters",
-                      // },
-                    })}
-                    isInvalid={!!errors?.description}
-                    errorMessage={errors?.description?.message}
-                  />
                 </ModalBody>
                 <ModalFooter>
                   <CustomButton
                     color="danger"
                     variant="light"
-                    onPress={() => {
-                      onClose();
-                    }}
+                    onPress={onClose}
                     label="Close"
                   />
                   <CustomButton type="submit" label="Submit" color="primary" />

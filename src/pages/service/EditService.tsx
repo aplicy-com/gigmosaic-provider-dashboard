@@ -315,8 +315,8 @@ const EditService = () => {
 
   return (
     <>
-      {isLoading ? <Loading label="Fetching..." /> : <></>}
-      {isPending ? <Loading label="Updating..." /> : <></>}
+      {isLoading && <Loading label="Fetching..." />}
+      {isPending && <Loading label="Updating..." />}
       <form onSubmit={handleSubmit(onSubmit)}>
         {/* <form> */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">

@@ -154,7 +154,7 @@ const DataTable = () => {
                 )}
               </TableCell>
               <TableCell className="flex flex-initial">
-                <EditStaffModal id={item.staffId} />
+                <EditStaffModal id={item.staffId} itemData={item} />
                 <CustomButton
                   type="button"
                   isIconOnly

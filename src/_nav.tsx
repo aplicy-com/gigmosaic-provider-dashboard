@@ -16,12 +16,12 @@ const _nav = [
     icon: <AiOutlineSlack size={19} />,
     allowedRoles: ["Admin"],
   },
-  {
-    name: "Offers",
-    to: "/offer/all-offer",
-    icon: <TbRosetteDiscountCheckFilled size={18} />,
-    allowedRoles: ["Admin"],
-  },
+  // {
+  //   name: "Offers",
+  //   to: "/offer/all-offer",
+  //   icon: <TbRosetteDiscountCheckFilled size={18} />,
+  //   allowedRoles: ["Admin"],
+  // },
   {
     name: "Staff",
     to: "/staff/all-staff",

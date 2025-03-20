@@ -43,9 +43,8 @@ const EditStaffModal = ({ id }) => {
   } = useForm<FormValues>();
 
   const { data, isLoading: isFetchingStaff } = useFetchStaffById(selectedId);
-  const { mutate, isSuccess } = useUpdateStaffMutation();
+  const { mutate } = useUpdateStaffMutation();
 
-  // 🔹 State and Country Data
   const state = [
     { label: "Ontario", id: "ontario" },
     { label: "Quebec", id: "quebec" },
@@ -88,8 +87,14 @@ const EditStaffModal = ({ id }) => {
 
   const handleOpen = () => {
     setSelectedId(id);
-    onOpen();
+    onOpen(); // Open modal immediately
   };
+
+  useEffect(() => {
+    if (isOpen && id) {
+      setSelectedId(id);
+    }
+  }, [isOpen, id]);
 
   const onSubmit: SubmitHandler<FormValues> = (formData) => {
     console.log("Final Updating Staff data: ", formData);

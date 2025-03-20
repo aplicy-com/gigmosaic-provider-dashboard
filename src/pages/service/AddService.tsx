@@ -23,7 +23,6 @@ import {
 import { useSumbitServiceMutation } from "../../hooks/mutations/usePostData";
 import CustomCheckbox from "../../components/ui/CustomCheckbox";
 import { uploadToS3 } from "../../aws/s3FileUpload";
-import Loading from "../../components/ui/Loading";
 import {
   useFetchCategory,
   useFetchStaff,
@@ -33,6 +32,7 @@ import CustomButton from "../../components/ui/CustomButton";
 import serviceValidation from "../../validation/serviceValidation";
 import { ValidationError } from "yup";
 import { useNavigate } from "react-router-dom";
+import Loading from "../../components/ui/Loading";
 
 const AddService = () => {
   const navigate = useNavigate();
@@ -228,10 +228,11 @@ const AddService = () => {
   };
 
   console.log("ERRORS: ", validationError);
+  console.log("Loading: ", loading);
 
   return (
     <>
-      {loading ? <Loading label="Submitting..." /> : <></>}
+      {loading && <Loading label="Submitting..." />}
       <form onSubmit={handleSubmit(onSubmit)}>
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           <div>

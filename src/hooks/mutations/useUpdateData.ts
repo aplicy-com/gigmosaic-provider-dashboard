@@ -17,7 +17,7 @@ export const useUpdateServiceMutation = () => {
         title: "Update Success",
         description: "Service data updated successfully",
         radius: "md",
-        color: "danger",
+        color: "success",
       });
       queryClient.invalidateQueries({ queryKey: QueryKey.GET_ALL_SERVICE });
       navigate("/service/all-service");

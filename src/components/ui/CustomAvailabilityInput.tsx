@@ -81,7 +81,7 @@ const CustomAvailabilityInput = ({
       ]);
     }
   }, [value, isAllDay]);
-  // console.log("PRE FILL DATA00000000000-: ", fields);
+
   const handleAddField = () => {
     setFields([
       ...fields,
@@ -124,22 +124,10 @@ const CustomAvailabilityInput = ({
       },
     ]);
   };
-  // useEffect(() => {
-  // setFields([
-  //   {
-  //     id: Date.now(),
-  //     day: "",
-  //     from: null,
-  //     to: null,
-  //     maxBookings: null,
-  //   },
-  // ]);
-  // }, [allDay]);
 
   const formattedPayload = formatAvailabilityPayload(fields);
 
   useEffect(() => {
-    // if (!Array.isArray(formattedPayload) && "error" in formattedPayload) {
     if (formattedPayload.isValid === false) {
       setErrors(formattedPayload.errors);
       onChangeValue([]);

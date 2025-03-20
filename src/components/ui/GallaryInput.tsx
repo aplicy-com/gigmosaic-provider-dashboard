@@ -231,6 +231,7 @@ import CustomInput from "./CustomInput";
 import { BsLink45Deg } from "react-icons/bs";
 import { IoCloudUploadOutline } from "react-icons/io5";
 import { IoMdClose } from "react-icons/io";
+import { addToast } from "@heroui/react";
 
 interface GallaryInputProps {
   onChangeValue: (value: {
@@ -248,16 +249,14 @@ const GallaryInput = ({
   link,
   error,
 }: GallaryInputProps) => {
-  const [images, setImages] = useState<(string | File)[]>(value || []); // Include both URLs and Files
+  const [images, setImages] = useState<(string | File)[]>(value || []);
   const [videoLink, setVideoLink] = useState<string>(link || "");
 
-  // Update state when backend data changes
   useEffect(() => {
     setImages(value || []);
     setVideoLink(link || "");
   }, [value, link]);
 
-  // Trigger parent update when images/videoLink changes
   useEffect(() => {
     onChangeValue({ images, videoLink });
   }, [images, videoLink]);
@@ -268,6 +267,12 @@ const GallaryInput = ({
 
     if (images.length + selectedFiles.length > 5) {
       console.log("You can only upload up to 5 images.");
+      addToast({
+        title: "Validation Error",
+        description: "You can only upload up to 5 images.",
+        radius: "md",
+        color: "danger",
+      });
       return;
     }
 
@@ -276,6 +281,12 @@ const GallaryInput = ({
     );
 
     if (validFiles.length !== selectedFiles.length) {
+      addToast({
+        title: "Validation Error",
+        description: "Only JPEG and PNG formats are supported.",
+        radius: "md",
+        color: "danger",
+      });
       console.log("Only JPEG and PNG formats are supported.");
     }
 

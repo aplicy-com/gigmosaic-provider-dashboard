@@ -51,6 +51,10 @@ const DataTable = () => {
       label: "Zipcode",
     },
     {
+      key: "address",
+      label: "Address",
+    },
+    {
       key: "city",
       label: "City",
     },
@@ -70,10 +74,7 @@ const DataTable = () => {
       key: "createAt",
       label: "Regi Date",
     },
-    {
-      key: "description",
-      label: "Note",
-    },
+
     {
       key: "status",
       label: "Status",
@@ -136,6 +137,7 @@ const DataTable = () => {
               <TableCell>{item?.fullName}</TableCell>
               <TableCell>{item?.email}</TableCell>
               <TableCell>{item?.zipCode}</TableCell>
+              <TableCell>{item?.address}</TableCell>
               <TableCell>{item?.city}</TableCell>
               <TableCell>{item?.state}</TableCell>
               <TableCell>{item?.country}</TableCell>
@@ -143,7 +145,7 @@ const DataTable = () => {
               <TableCell>
                 {moment(item?.createAt).format("DD/MM/YYYY")}
               </TableCell>
-              <TableCell>View</TableCell>
+              {/* <TableCell>View</TableCell> */}
               <TableCell>
                 {item?.status === true ? (
                   <CustomChip label="Active" color="success" />

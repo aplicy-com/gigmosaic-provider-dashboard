@@ -13,6 +13,7 @@ import CustomTextArea from "../../components/ui/CustomTextArea";
 import CustomAutocomplete from "../../components/ui/CustomAutocomplete";
 import { useForm, SubmitHandler, SubmitErrorHandler } from "react-hook-form";
 import { useSumbitStaffMutation } from "../../hooks/mutations/usePostData";
+import CustomCheckbox from "../../components/ui/CustomCheckbox";
 
 type FormValues = {
   fullName: string;
@@ -23,14 +24,17 @@ type FormValues = {
   state: string;
   city: string;
   zipCode: string;
-  description: string;
+  status: boolean;
 };
 
 const AddStaffModa = () => {
+  // const [isActive, setIsActive] = useState<boolean>(true);
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
   const {
     register,
     handleSubmit,
+    setValue,
+    watch,
     reset,
     formState: { errors },
   } = useForm<FormValues>();
@@ -52,7 +56,7 @@ const AddStaffModa = () => {
   const country = [{ label: "Canada", id: "canada" }];
 
   const onSubmit: SubmitHandler<FormValues> = (data) => {
-    console.log("Run.............");
+    console.log("Final Staff data: ", data);
     console.log(data);
     mutate(data);
     reset();
@@ -175,10 +179,11 @@ const AddStaffModa = () => {
                       isRequired={true}
                       placeholder="Enter country"
                       defaultItems={country}
+                      selectedKey={watch("country") || undefined}
                       width="none"
-                      {...register("country", {
-                        required: "Country is required",
-                      })}
+                      onSelectionChange={(id) => {
+                        setValue("country", id, { shouldValidate: true });
+                      }}
                       isInvalid={!!errors?.country}
                       errorMessage={errors?.country?.message}
                     />
@@ -188,18 +193,11 @@ const AddStaffModa = () => {
                       isRequired={true}
                       placeholder="Enter state"
                       defaultItems={state}
+                      selectedKey={watch("state") || undefined}
                       width="none"
-                      {...register("state", {
-                        required: "State is required",
-                        maxLength: {
-                          value: 20,
-                          message: "State must be less than 20 characters",
-                        },
-                        minLength: {
-                          value: 3,
-                          message: "State must be at least 3 characters",
-                        },
-                      })}
+                      onSelectionChange={(id) => {
+                        setValue("state", id, { shouldValidate: true });
+                      }}
                       isInvalid={!!errors?.state}
                       errorMessage={errors?.state?.message}
                     />
@@ -248,25 +246,16 @@ const AddStaffModa = () => {
                       errorMessage={errors?.zipCode?.message}
                     />
                   </div>
-
-                  <CustomTextArea
-                    label="Note"
-                    placeholder="Enter some note"
-                    {...register("description", {
-                      // required: "Description is required",
-                      maxLength: {
-                        value: 100,
-                        message: "Description must be less than 20 characters",
-                      },
-                      // minLength: {
-                      //   value: 3,
-                      //   message: "Description must be at least 3 characters",
-                      // },
-                    })}
-                    // value={descriptionValue}
-                    isInvalid={!!errors?.description}
-                    errorMessage={errors?.description?.message}
-                  />
+                  <div className="mt-3">
+                    <CustomCheckbox
+                      label="Active"
+                      onValueChange={(value) =>
+                        setValue("status", value, { shouldValidate: true })
+                      }
+                      size="sm"
+                      defaultSelected={true}
+                    />
+                  </div>
                 </ModalBody>
                 <ModalFooter>
                   <CustomButton

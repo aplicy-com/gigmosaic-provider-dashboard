@@ -46,7 +46,6 @@ const AddService = () => {
   const [displayStaff, setDisplayStaff] = useState<
     { label: string; id: number }[]
   >([]);
-  // const [serviceOverview, setServiceOverview] = useState<string>("");
   const [faq, setFaq] = useState<IFaqProps[]>([]);
   const [location, setlocation] = useState<ILocationProps>();
   const [isActive, setIsActive] = useState<boolean>(true);
@@ -78,29 +77,26 @@ const AddService = () => {
     metaDescription: "",
   });
 
-  // const [locationDetails, setLocationDetails] = useState<ILocationProps>()
-
   const { mutate } = useSumbitServiceMutation();
   const { data: staffData } = useFetchStaff();
   const { data: categoryData } = useFetchCategory();
   const { data: subCategoryData } = useFetchSubCategory();
-
-  // console.log("categoryData: ", categoryData);
-  // console.log("AVi------------------: ", availability);
-  // console.log("BASIC INFO------------------: ", basicInfo);
-  // console.log("META INFO------------------: ", metaDetails);
-  // console.log("gallaryData gallaryData------------------: ", gallaryData);
 
   useEffect(() => {
     setApiData();
   }, [staffData]);
 
   const setApiData = async () => {
+    const filteredStaff = staffData?.staff?.filter(
+      (staff: any) => staff.status === true
+    );
+
     const formtedStaff = await formateDataForDropdown(
-      staffData?.staff,
+      filteredStaff,
       "fullName",
       "staffId"
     );
+
     setDisplayStaff(formtedStaff);
 
     const formtedCategory = await formateDataForDropdown(
@@ -116,6 +112,9 @@ const AddService = () => {
       "subCategoryId"
     );
     setDisplaySubCategory(formtedSubCategory);
+
+    console.log("Category: ", formtedCategory);
+    console.log("Subcategory: ", formtedSubCategory);
   };
 
   const convertMetaKeyword = async (keyword: string) => {
@@ -227,6 +226,7 @@ const AddService = () => {
       setLoading(false);
     }
   };
+
   console.log("ERRORS: ", validationError);
 
   return (
@@ -299,6 +299,7 @@ const AddService = () => {
                       label="Category"
                       placeholder="Select category"
                       defaultItems={displayCategory}
+                      selectedKey={basicInfo?.categoryId || undefined}
                       width="none"
                       onSelectionChange={(id) => {
                         setBasicInfo({
@@ -319,6 +320,7 @@ const AddService = () => {
                       label="Sub Category"
                       placeholder="Select subcategory"
                       defaultItems={displaySubCategory}
+                      selectedKey={basicInfo?.subCategoryId || undefined}
                       width="none"
                       onSelectionChange={(id) => {
                         setBasicInfo({
@@ -540,13 +542,7 @@ const AddService = () => {
                       ...metaDetails,
                       metaDescription: e,
                     });
-                    // setValidationError((prevErrors) => ({
-                    //   ...prevErrors,
-                    //   metaDescription: "",
-                    // }));
                   }}
-                  // isInvalid={!!validationError?.metaDescription}
-                  // errorMessage={validationError?.metaDescription}
                 />
                 {validationError?.metaDescription && (
                   <small className="text-error -mt-5">
@@ -562,27 +558,14 @@ const AddService = () => {
 
               <LocationInputs
                 errors={validationError}
-                // onChangeValue={setlocation}
                 onChangeValue={(value) => {
                   setlocation(value);
-                  // setValidationError((prevErrors) => ({
-                  //   ...prevErrors,
-                  //   location: {
-                  //     ...prevErrors?.location,
-                  //     address: "", // Clear address error
-                  //     country: "",
-                  //     city: "",
-                  //     state: "",
-                  //     pinCode: "",
-                  //   },
-                  // }));
                 }}
               />
             </Card>
           </div>
         </div>
 
-        {/* <button type="submit">Submit</button> */}
         <div className="flex flex-initial justify-end items-end my-1 gap-5">
           <CustomButton
             label="Clear"

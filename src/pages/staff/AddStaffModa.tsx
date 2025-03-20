@@ -56,9 +56,20 @@ const AddStaffModa = () => {
   const country = [{ label: "Canada", id: "canada" }];
 
   const onSubmit: SubmitHandler<FormValues> = (data) => {
-    console.log("Final Staff data: ", data);
-    console.log(data);
-    mutate(data);
+    const selectedCountryLabel =
+      country.find((c) => c.id === data.country)?.label || "";
+    const selectedStateLabel =
+      state.find((s) => s.id === data.state)?.label || "";
+
+    const updatedFormData = {
+      ...data,
+      country: selectedCountryLabel,
+      state: selectedStateLabel,
+    };
+
+    console.log("Final Updating Staff data: ", updatedFormData);
+    mutate(updatedFormData);
+
     reset();
     onOpenChange(false);
   };

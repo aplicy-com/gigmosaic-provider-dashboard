@@ -189,20 +189,20 @@
 //                         isInvalid={!!errors?.address}
 //                         errorMessage={errors?.address?.message}
 //                       />
-//                       {/* <CustomAutocomplete
-//                         label="Country"
-//                         isRequired
-//                         placeholder="Enter country"
-//                         defaultItems={country}
-//                         selectedKey={
-//                           watch("country") || data?.staff?.country || null
-//                         }
-//                         onSelectionChange={(id) =>
-//                           setValue("country", id, { shouldValidate: true })
-//                         }
-//                         isInvalid={!!errors?.country}
-//                         errorMessage={errors?.country?.message}
-//                       /> */}
+// {/* <CustomAutocomplete
+//   label="Country"
+//   isRequired
+//   placeholder="Enter country"
+//   defaultItems={country}
+//   selectedKey={
+//     watch("country") || data?.staff?.country || null
+//   }
+//   onSelectionChange={(id) =>
+//     setValue("country", id, { shouldValidate: true })
+//   }
+//   isInvalid={!!errors?.country}
+//   errorMessage={errors?.country?.message}
+// /> */}
 //                       <Controller
 //                         name="country"
 //                         control={control} // control is from useForm
@@ -243,20 +243,20 @@
 //                         )}
 //                       />
 
-//                       {/* <CustomAutocomplete
-//                         label="State"
-//                         isRequired
-//                         placeholder="Enter state"
-//                         defaultItems={state}
-//                         selectedKey={
-//                           watch("state") || data?.staff?.state || null
-//                         }
-//                         onSelectionChange={(id) =>
-//                           setValue("state", id, { shouldValidate: true })
-//                         }
-//                         isInvalid={!!errors?.state}
-//                         errorMessage={errors?.state?.message}
-//                       /> */}
+// {/* <CustomAutocomplete
+//   label="State"
+//   isRequired
+//   placeholder="Enter state"
+//   defaultItems={state}
+//   selectedKey={
+//     watch("state") || data?.staff?.state || null
+//   }
+//   onSelectionChange={(id) =>
+//     setValue("state", id, { shouldValidate: true })
+//   }
+//   isInvalid={!!errors?.state}
+//   errorMessage={errors?.state?.message}
+// /> */}
 
 //                       <CustomInput
 //                         label="City"
@@ -313,6 +313,7 @@
 // };
 
 // export default EditStaffModal;
+
 import { useEffect, useState } from "react";
 import {
   Modal,
@@ -331,6 +332,7 @@ import { useUpdateStaffMutation } from "../../hooks/mutations/useUpdateData";
 import CustomCheckbox from "../../components/ui/CustomCheckbox";
 
 type FormValues = {
+  staffId: string;
   fullName: string;
   email: string;
   phoneNumber: string;
@@ -343,7 +345,7 @@ type FormValues = {
   status: boolean;
 };
 
-const EditStaffModal = ({ itemData }) => {
+const EditStaffModal = ({ itemData }: FormValues) => {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
   const [selectedData, setSelectedData] = useState<FormValues | null>(null);
   const { mutate } = useUpdateStaffMutation();
@@ -388,6 +390,12 @@ const EditStaffModal = ({ itemData }) => {
   // Set form values when modal opens
   useEffect(() => {
     if (selectedData) {
+      const foundCountryId =
+        country.find((item) => item.label === selectedData.country)?.id || "";
+      const foundStateId =
+        state.find((item) => item.label === selectedData.state)?.id || "";
+      console.log("ID COuntry: ", foundCountryId);
+      console.log("ID foundStateId: ", foundStateId);
       reset({
         fullName: selectedData.fullName || "",
         email: selectedData.email || "",
@@ -397,25 +405,44 @@ const EditStaffModal = ({ itemData }) => {
         zipCode: selectedData.zipCode || "",
         description: selectedData.description || "",
         status: selectedData.status || false,
-        country:
-          country.find((item) => item.label === selectedData.country)?.id || "",
-        state:
-          state.find((item) => item.label === selectedData.state)?.id || "",
+        country: foundCountryId, // Convert label to ID
+        state: foundStateId,
+        // country:
+        //   country.find((item) => item.id === selectedData.country)?.id || "",
+        // state: state.find((item) => item.id === selectedData.state)?.id || "",
       });
     }
   }, [selectedData, reset]);
 
   const handleOpen = () => {
-    setSelectedData(itemData); // Set data when edit is clicked
-    onOpen(); // Open modal
+    setSelectedData(itemData);
+    onOpen();
   };
 
+  // const onSubmit: SubmitHandler<FormValues> = (formData) => {
+  //   console.log("Final Updating Staff data: ", formData);
+  //   mutate({ id: selectedData?.staffId || "", staffData: formData });
+  //   onOpenChange(false);
+  // };
   const onSubmit: SubmitHandler<FormValues> = (formData) => {
-    console.log("Final Updating Staff data: ", formData);
-    mutate({ id: selectedData?.staffId, staffData: formData });
+    const selectedCountryLabel =
+      country.find((c) => c.id === formData.country)?.label || "";
+    const selectedStateLabel =
+      state.find((s) => s.id === formData.state)?.label || "";
+
+    const updatedFormData = {
+      ...formData,
+      country: selectedCountryLabel, // Convert ID to Label
+      state: selectedStateLabel, // Convert ID to Label
+    };
+
+    console.log("Final Updating Staff data: ", updatedFormData);
+
+    mutate({ id: selectedData?.staffId || "", staffData: updatedFormData });
     onOpenChange(false);
   };
-  console.log("Data staff: ", selectedData);
+
+  // console.log("Data staff: ", selectedData);
 
   return (
     <>
@@ -471,40 +498,57 @@ const EditStaffModal = ({ itemData }) => {
                   isInvalid={!!errors?.address}
                   errorMessage={errors?.address?.message}
                 />
+
                 <Controller
                   name="country"
                   control={control}
                   rules={{ required: "Country is required" }}
-                  render={({ field }) => (
-                    <CustomAutocomplete
-                      label="Country"
-                      isRequired
-                      placeholder="Enter country"
-                      defaultItems={country}
-                      selectedKey={field.value}
-                      onSelectionChange={field.onChange}
-                      isInvalid={!!errors?.country}
-                      errorMessage={errors?.country?.message}
-                    />
-                  )}
+                  render={({ field }) => {
+                    const selectedCountry = country.find(
+                      (item) => item.label === selectedData?.country
+                    );
+                    return (
+                      <CustomAutocomplete
+                        label="Country"
+                        isRequired
+                        placeholder="Enter country"
+                        defaultItems={country}
+                        // selectedKey={selectedCountry?.id || ""}
+                        selectedKey={watch("country") || null}
+                        onSelectionChange={field.onChange}
+                        isInvalid={!!errors?.country}
+                        errorMessage={errors?.country?.message}
+                      />
+                    );
+                  }}
                 />
+
                 <Controller
                   name="state"
                   control={control}
                   rules={{ required: "State is required" }}
-                  render={({ field }) => (
-                    <CustomAutocomplete
-                      label="State"
-                      isRequired
-                      placeholder="Enter state"
-                      defaultItems={state}
-                      selectedKey={field.value}
-                      onSelectionChange={field.onChange}
-                      isInvalid={!!errors?.state}
-                      errorMessage={errors?.state?.message}
-                    />
-                  )}
+                  render={({ field }) => {
+                    const selectedState = state.find(
+                      (item) => item.label === selectedData?.state
+                    );
+                    return (
+                      <CustomAutocomplete
+                        label="State"
+                        isRequired
+                        placeholder="Enter state"
+                        defaultItems={state}
+                        // selectedKey={
+                        //   selectedData?.state ? selectedState?.id : ""
+                        // }
+                        selectedKey={watch("state") || null}
+                        onSelectionChange={field.onChange}
+                        isInvalid={!!errors?.state}
+                        errorMessage={errors?.state?.message}
+                      />
+                    );
+                  }}
                 />
+
                 <CustomInput
                   label="City"
                   type="text"

@@ -11,7 +11,7 @@ import { FaRegEdit } from "react-icons/fa";
 import CustomButton from "../../components/ui/CustomButton";
 import CustomInput from "../../components/ui/CustomInput";
 import CustomAutocomplete from "../../components/ui/CustomAutocomplete";
-import { useForm, SubmitHandler } from "react-hook-form";
+import { useForm, SubmitHandler, Controller } from "react-hook-form";
 import { useFetchStaffById } from "../../hooks/queries/useFetchData";
 import { useUpdateStaffMutation } from "../../hooks/mutations/useUpdateData";
 import Loading from "../../components/ui/Loading";
@@ -33,17 +33,30 @@ type FormValues = {
 const EditStaffModal = ({ id }) => {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
   const [selectedId, setSelectedId] = useState(null);
+  const { data, isLoading: isFetchingStaff } = useFetchStaffById(selectedId);
+  const { mutate } = useUpdateStaffMutation();
 
   const {
     register,
     handleSubmit,
     setValue,
     watch,
+    control,
     formState: { errors },
-  } = useForm<FormValues>();
-
-  const { data, isLoading: isFetchingStaff } = useFetchStaffById(selectedId);
-  const { mutate } = useUpdateStaffMutation();
+  } = useForm<FormValues>({
+    defaultValues: {
+      fullName: "",
+      email: "",
+      phoneNumber: "",
+      address: "",
+      country: "",
+      state: "",
+      city: "",
+      zipCode: "",
+      description: "",
+      status: false,
+    },
+  });
 
   const state = [
     { label: "Ontario", id: "ontario" },
@@ -61,8 +74,9 @@ const EditStaffModal = ({ id }) => {
 
   useEffect(() => {
     if (data) {
+      let count = 1;
       console.log("Data received: ", data);
-
+      console.log("Count Useeffect: ", ++count);
       setValue("fullName", data.staff.fullName || "");
       setValue("email", data.staff.email || "");
       setValue("phoneNumber", data.staff.phoneNumber || "");
@@ -77,8 +91,8 @@ const EditStaffModal = ({ id }) => {
         (item) => item.label === data.staff.country
       );
 
-      console.log("Found Country: ", findCountry?.id);
-      console.log("Found State: ", findState?.id);
+      // console.log("Found Country: ", findCountry?.id);
+      // console.log("Found State: ", findState?.id);
 
       if (findState) setValue("state", findState.id);
       if (findCountry) setValue("country", findCountry.id);
@@ -102,6 +116,9 @@ const EditStaffModal = ({ id }) => {
     onOpenChange(false);
   };
 
+  let count = 1;
+  console.log("Count Outside: ", ++count);
+
   return (
     <>
       <CustomButton
@@ -120,7 +137,9 @@ const EditStaffModal = ({ id }) => {
                 <ModalHeader>Edit Staff</ModalHeader>
                 <ModalBody>
                   {isFetchingStaff ? (
-                    <Loading label="Loading staff details..." />
+                    <div className="flex justify-center items-center h-40">
+                      <Loading label="Fetching staff details..." />
+                    </div>
                   ) : (
                     <div className="grid grid-cols-2 gap-5">
                       <CustomInput
@@ -167,7 +186,7 @@ const EditStaffModal = ({ id }) => {
                         isInvalid={!!errors?.address}
                         errorMessage={errors?.address?.message}
                       />
-                      <CustomAutocomplete
+                      {/* <CustomAutocomplete
                         label="Country"
                         isRequired
                         placeholder="Enter country"
@@ -180,9 +199,48 @@ const EditStaffModal = ({ id }) => {
                         }
                         isInvalid={!!errors?.country}
                         errorMessage={errors?.country?.message}
+                      /> */}
+                      <Controller
+                        name="country"
+                        control={control} // control is from useForm
+                        rules={{ required: "Country is required" }}
+                        render={({ field }) => (
+                          <CustomAutocomplete
+                            label="Country"
+                            isRequired
+                            placeholder="Enter country"
+                            defaultItems={country}
+                            selectedKey={
+                              field.value || data?.staff?.country || null
+                            }
+                            onSelectionChange={(id) => field.onChange(id)}
+                            isInvalid={!!errors?.country}
+                            errorMessage={errors?.country?.message}
+                          />
+                        )}
                       />
 
-                      <CustomAutocomplete
+                      <Controller
+                        name="state"
+                        control={control} // control is from useForm
+                        rules={{ required: "State is required" }}
+                        render={({ field }) => (
+                          <CustomAutocomplete
+                            label="State"
+                            isRequired
+                            placeholder="Enter state"
+                            defaultItems={state}
+                            selectedKey={
+                              field.value || data?.staff?.state || null
+                            }
+                            onSelectionChange={(id) => field.onChange(id)}
+                            isInvalid={!!errors?.state}
+                            errorMessage={errors?.country?.message}
+                          />
+                        )}
+                      />
+
+                      {/* <CustomAutocomplete
                         label="State"
                         isRequired
                         placeholder="Enter state"
@@ -195,7 +253,7 @@ const EditStaffModal = ({ id }) => {
                         }
                         isInvalid={!!errors?.state}
                         errorMessage={errors?.state?.message}
-                      />
+                      /> */}
 
                       <CustomInput
                         label="City"

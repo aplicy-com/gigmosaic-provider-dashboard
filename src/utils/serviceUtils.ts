@@ -99,7 +99,7 @@ export const formatServiceData = (
     additionalService: updatedAdditionalInfo || [],
     faq: faq || [],
     availability: formattedAvailability,
-    seo: metaDetails,
+    seo: [metaDetails],
   };
 };
 

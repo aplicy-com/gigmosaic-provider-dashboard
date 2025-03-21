@@ -1,4 +1,5 @@
 import Breadcrumb from "./Breadcrumb";
+import LanguageSelect from "./LanguageSelect";
 import Notification from "./Notification";
 import ProfileDropdown from "./ProfileDropdown";
 import { TbWorld } from "react-icons/tb";
@@ -12,11 +13,21 @@ const Header = () => {
             <Breadcrumb />
           </div>
           <div className="flex ml-auto mr-3 justify-center items-center">
-            <div className="flex flex-initial  justify-center items-center mr-8 cursor-pointer">
-              <TbWorld size={25} className="text-gray-500 hover:text-black" />
-              <p className="hover:underline hover:text-primary-700 ml-1 cursor-pointe text-sm">
-                Visit site
-              </p>
+            <a
+              href="https://www.int.gigmosaic.ca/"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <div className="flex flex-initial  justify-center items-center mr-3 cursor-pointer">
+                <TbWorld size={25} className="text-gray-500 hover:text-black" />
+                <p className="hover:underline hover:text-primary-700 ml-1 cursor-pointe text-sm">
+                  Visit site
+                </p>
+              </div>
+            </a>
+
+            <div className=" mr-3">
+              <LanguageSelect />
             </div>
             <Notification />
             <ProfileDropdown />

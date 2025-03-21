@@ -407,9 +407,6 @@ const EditStaffModal = ({ itemData }: FormValues) => {
         status: selectedData.status || false,
         country: foundCountryId, // Convert label to ID
         state: foundStateId,
-        // country:
-        //   country.find((item) => item.id === selectedData.country)?.id || "",
-        // state: state.find((item) => item.id === selectedData.state)?.id || "",
       });
     }
   }, [selectedData, reset]);
@@ -419,11 +416,6 @@ const EditStaffModal = ({ itemData }: FormValues) => {
     onOpen();
   };
 
-  // const onSubmit: SubmitHandler<FormValues> = (formData) => {
-  //   console.log("Final Updating Staff data: ", formData);
-  //   mutate({ id: selectedData?.staffId || "", staffData: formData });
-  //   onOpenChange(false);
-  // };
   const onSubmit: SubmitHandler<FormValues> = (formData) => {
     const selectedCountryLabel =
       country.find((c) => c.id === formData.country)?.label || "";

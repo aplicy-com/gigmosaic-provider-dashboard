@@ -1,12 +1,11 @@
+import { useTranslation } from "react-i18next";
 import CustomAutocomplete from "../components/ui/CustomAutocomplete";
 import { useState } from "react";
 
 const Dashboard = () => {
+  const { t } = useTranslation();
   const [valuew, setValue] = useState("");
   const [selectedKey, setSelectedKey] = useState<string | null>(null);
-
-  console.log("selectedKey", selectedKey);
-  console.log("value", valuew);
 
   const options = [
     {
@@ -23,9 +22,8 @@ const Dashboard = () => {
 
   return (
     <>
-      <p>Dashboard</p>
       <CustomAutocomplete
-        label="Select a pet"
+        label={t("car") || "Car"}
         placeholder="Enter pet name"
         defaultItems={options}
         onSelectionChange={setSelectedKey}

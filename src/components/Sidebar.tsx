@@ -2,6 +2,7 @@ import SidebarLink from "./ui/SidebarLink";
 import navigation from "../_nav";
 import { Link } from "react-router-dom";
 import { version } from "../../package.json";
+import Logo from "../assets/Logo.png";
 
 const userRole = "Admin";
 
@@ -11,7 +12,7 @@ const Sidebar = () => {
       {/* Sidebar Header */}
       <div className="sidebar-header flex items-center justify-center py-4">
         <Link to={"/dashboard"}>
-          <img src="/src/assets/Logo.png" alt="Logo" />
+          <img src={Logo} alt="Logo" />
         </Link>
       </div>
 
@@ -30,7 +31,6 @@ const Sidebar = () => {
             Gigmosaic
           </a>
         </div>
-        {/* <p className="text-gray-400 text-xs">V 1.00</p> */}
         <p className="text-gray-400 text-xs">V {version}</p>
       </div>
     </aside>

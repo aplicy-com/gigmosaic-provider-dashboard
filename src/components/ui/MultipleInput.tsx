@@ -5,6 +5,7 @@ import CustomNumberInput from "./CustomNumberInput";
 import { RiDeleteBin4Line } from "react-icons/ri";
 import { IoIosAddCircleOutline } from "react-icons/io";
 import { IoMdClose } from "react-icons/io";
+import { addToast } from "@heroui/react";
 
 interface ItemField {
   id: number;
@@ -75,6 +76,29 @@ const MultipleInput = ({
   };
 
   const handleImageChange = (id: number, file: File | null) => {
+    //Image size less than 5MB
+    if (file && file.size > 5 * 1024 * 1024) {
+      addToast({
+        title: "Validation Error",
+        description: "Image size should be less than 5MB.",
+        radius: "md",
+        color: "danger",
+      });
+      console.log("Image size should be less than 5MB.");
+      return;
+    }
+
+    if (file && !file.type.includes("image")) {
+      addToast({
+        title: "Validation Error",
+        description: "Only JPEG and PNG formats are supported.",
+        radius: "md",
+        color: "danger",
+      });
+      console.log("Only JPEG and PNG formats are supported.");
+      return;
+    }
+
     setFields(
       fields.map((field) =>
         field.id === id ? { ...field, images: file } : field

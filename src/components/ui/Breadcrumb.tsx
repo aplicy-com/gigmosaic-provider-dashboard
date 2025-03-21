@@ -42,7 +42,6 @@ const Breadcrumb = () => {
   };
 
   const breadcrumbs = getBreadcrumbs(currentLocation);
-  console.log("Breadcrumbs: ", breadcrumbs);
 
   return (
     <Breadcrumbs>

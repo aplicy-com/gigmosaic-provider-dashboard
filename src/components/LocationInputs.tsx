@@ -29,7 +29,7 @@ const LocationInputs = ({
   data,
   errors,
 }: LocationInputsProps) => {
-  const myAPIKey = "03c625d7d60347ef9d650e23be28760f";
+  const myAPIKey = import.meta.env.VITE_GEOLOCATION_API_KEY;
   const mapRef = useRef<L.Map | null>(null);
   const markerRef = useRef<L.Marker | null>(null);
   const autocompleteRef = useRef<HTMLDivElement | null>(null);

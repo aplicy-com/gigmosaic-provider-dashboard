@@ -6,6 +6,7 @@ import { PrimeReactProvider } from "primereact/api";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import App from "./App.tsx";
 import ToastProviders from "./components/ui/ToastProviders.tsx";
+import "./i18n";
 
 const queryClient = new QueryClient();
 

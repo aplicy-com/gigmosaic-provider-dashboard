@@ -19,7 +19,7 @@ export const useFetchAllService = (page?: number, limit?: number) => {
       const [_, page, limit] = queryKey as [string, number?, number?];
       return getAllServiceData({ page, limit });
     },
-    staleTime: 1 * 60 * 1000,
+    staleTime: 5 * 60 * 1000,
     placeholderData: keepPreviousData,
     refetchOnWindowFocus: false,
   });
@@ -31,7 +31,7 @@ export const useFetchServiceDataById = (id?: string) => {
     queryKey: [QueryKey.GET_SERVICE_BY_ID, id],
     queryFn: () =>
       id ? getServiceDataById(id) : Promise.reject("No ID provided"),
-    staleTime: 1 * 60 * 1000,
+    staleTime: 5 * 60 * 1000,
     enabled: !!id,
     refetchOnWindowFocus: false,
   });
@@ -43,7 +43,7 @@ export const useFetchCategoryById = (id?: string) => {
     queryKey: [QueryKey.GET_SERVICE_BY_ID, id],
     queryFn: () =>
       id ? getCategoryById(id) : Promise.reject("No ID provided"),
-    staleTime: 1 * 60 * 1000,
+    staleTime: 5 * 60 * 1000,
     enabled: !!id,
     refetchOnWindowFocus: false,
   });
@@ -57,7 +57,7 @@ export const useFetchStaff = (page?: number, limit?: number) => {
       const [_, page, limit] = queryKey as [string, number?, number?];
       return getAllStaffData({ page, limit });
     },
-    staleTime: 1 * 60 * 1000,
+    staleTime: 5 * 60 * 1000,
     placeholderData: keepPreviousData,
     refetchOnWindowFocus: false,
   });
@@ -67,7 +67,7 @@ export const useFetchStaffById = (id?: string) => {
   return useQuery({
     queryKey: [QueryKey.GET_ALL_STAFF, id],
     queryFn: () => (id ? getStaffById(id) : Promise.reject("No ID provided")),
-    staleTime: 1 * 60 * 1000,
+    staleTime: 5 * 60 * 1000,
     enabled: !!id,
     refetchOnWindowFocus: false,
   });
@@ -78,7 +78,7 @@ export const useFetchCategory = () => {
   return useQuery({
     queryKey: [QueryKey.GET_ALL_CATEGORY],
     queryFn: getAllCategoryData,
-    staleTime: 1 * 60 * 1000,
+    staleTime: 5 * 60 * 1000,
     refetchOnWindowFocus: false,
   });
 };
@@ -88,7 +88,7 @@ export const useFetchSubCategory = () => {
   return useQuery({
     queryKey: [QueryKey.GET_ALL_SUBCATEGORY],
     queryFn: getAllSubCategoryData,
-    staleTime: 1 * 60 * 1000,
+    staleTime: 5 * 60 * 1000,
     refetchOnWindowFocus: false,
   });
 };

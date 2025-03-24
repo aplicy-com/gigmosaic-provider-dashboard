@@ -60,7 +60,7 @@ const routes = [
   },
 
   {
-    path: "/service/:id",
+    path: "/service/:id/:slug",
     name: "Service",
     element: (
       <ProtectedRoute

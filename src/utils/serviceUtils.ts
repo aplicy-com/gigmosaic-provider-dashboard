@@ -41,25 +41,32 @@ export const formatServiceData = (
   console.log("LOCATION001 :", location);
 
   const formattedAvailability = Availability
-    ? Availability.reduce((acc, { day, available, from, to, maxBookings }) => {
-        const fromTime = moment(from, ["HH:mm", "h:mm A"]).format("hh:mm A");
-        const toTime = moment(to, ["HH:mm", "h:mm A"]).format("hh:mm A");
+    ? Availability.reduce(
+        (acc, { day, available = true, from, to, maxBookings }) => {
+          const fromTime = moment(from, ["HH:mm", "h:mm A"]).format("hh:mm A");
+          const toTime = moment(to, ["HH:mm", "h:mm A"]).format("hh:mm A");
 
-        const existingEntry = acc.find((entry) => entry.day === day);
-        const newTimeSlot = { from: fromTime, to: toTime, maxBookings };
+          const existingEntry = acc.find((entry) => entry.day === day);
+          const newTimeSlot = { from: fromTime, to: toTime, maxBookings };
 
-        if (existingEntry) {
-          existingEntry.timeSlots.push(newTimeSlot);
-        } else {
-          acc.push({
-            day,
-            available,
-            timeSlots: [newTimeSlot],
-          });
-        }
+          if (existingEntry) {
+            existingEntry.timeSlots.push(newTimeSlot);
+          } else {
+            acc.push({
+              day,
+              available,
+              timeSlots: [newTimeSlot],
+            });
+          }
 
-        return acc;
-      }, [] as { day: string; available: boolean; timeSlots: { from: string; to: string; maxBookings: number }[] }[])
+          return acc;
+        },
+        [] as {
+          day: string;
+          available: boolean;
+          timeSlots: { from: string; to: string; maxBookings: number }[];
+        }[]
+      )
     : [];
 
   return {

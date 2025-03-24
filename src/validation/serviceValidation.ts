@@ -15,9 +15,6 @@ import {
   stateRule,
   countryRule,
   addressRule,
-  latitudeRule,
-  longitudeRule,
-  googleMapIdRule,
   pincodeRule,
 } from "./ValidationRules";
 

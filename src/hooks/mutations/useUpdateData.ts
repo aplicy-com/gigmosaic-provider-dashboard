@@ -11,7 +11,7 @@ export const useUpdateServiceMutation = () => {
   return useMutation({
     mutationFn: ({ id, serviceData }: { id: string; serviceData: any }) =>
       updateServiceData(id, serviceData),
-    onSuccess: () => {
+    onSuccess: ({ id }: { id: string }) => {
       console.log("Service data updated successfully");
       addToast({
         title: "Update Success",
@@ -19,7 +19,11 @@ export const useUpdateServiceMutation = () => {
         radius: "md",
         color: "success",
       });
-      queryClient.invalidateQueries({ queryKey: QueryKey.GET_ALL_SERVICE });
+      queryClient.invalidateQueries({ queryKey: [QueryKey.GET_ALL_SERVICE] });
+      queryClient.invalidateQueries({
+        queryKey: [QueryKey.GET_SERVICE_BY_ID, id],
+      });
+
       navigate("/service/all-service");
     },
     onError: (error: any) => {

@@ -16,6 +16,7 @@ import "leaflet/dist/leaflet.css";
 import "../../css/location.css";
 import { useEffect, useRef, useState } from "react";
 import { useLocation } from "react-router-dom";
+import LocationPin from "../../assets/location-pin.png";
 
 const SingleService = () => {
   const { state } = useLocation();
@@ -39,7 +40,9 @@ const SingleService = () => {
   }, [data]);
 
   useEffect(() => {
-    if (mapRef.current) return;
+    if (mapRef.current) {
+      mapRef.current.remove();
+    }
 
     mapRef.current = L.map("map").setView([latitude, longitude], 13);
 
@@ -47,9 +50,17 @@ const SingleService = () => {
       attribution: "&copy; OpenStreetMap contributors",
     }).addTo(mapRef.current);
 
-    L.marker([latitude, longitude])
+    const customIcon = L.icon({
+      iconUrl: LocationPin,
+      iconSize: [40, 40],
+      iconAnchor: [20, 40],
+      popupAnchor: [0, -40],
+    });
+
+    L.marker([latitude, longitude], { icon: customIcon })
       .addTo(mapRef.current)
-      .bindPopup("Service Location");
+      .bindPopup(data?.location?.[0]?.address || "Service Location")
+      .openPopup();
 
     return () => {
       if (mapRef.current) {
@@ -128,10 +139,17 @@ const SingleService = () => {
         {/* IMAGE SECTION */}
         <div className="">
           <div className="bg-gray-900 flex justify-center items-center relative rounded-lg">
-            <Image
+            {/* <Image
               src={mainImage}
               className="object-cover w-full h-[300px] sm:h-[400px] xl:h-[500px] "
+            /> */}
+            <Image
+              src={mainImage}
+              srcSet={`${mainImage}?w=1200 1200w, ${mainImage}?w=1500 1500w, ${mainImage}?w=1920 1920w`}
+              sizes="(max-width: 600px) 1200px, (max-width: 1024px) 1500px, 1920px"
+              className="object-cover w-full h-[300px] sm:h-[400px] xl:h-[500px]"
             />
+
             <div className="absolute top-0 left-0 p-2 z-20">
               <small className=" bg-gray-300 text-gray-600  px-2 py-1 rounded-md font-medium">
                 {category || "Unknown Category"}

@@ -67,6 +67,8 @@ const AddService = () => {
     price: 0,
   });
 
+  console.log("basicInfo", basicInfo.categoryId);
+
   const [metaDetails, setMetaDetails] = useState<{
     metaTitle: string;
     metaKeywords: string[];
@@ -85,6 +87,24 @@ const AddService = () => {
   useEffect(() => {
     setApiData();
   }, [staffData]);
+
+  useEffect(() => {
+    if (basicInfo.categoryId) {
+      const subcategoryList = subCategoryData?.subCategories.filter(
+        (subCategory: any) => subCategory.categoryId === basicInfo.categoryId
+      );
+
+      console.log("Filtered subcategoryList: ", subcategoryList);
+      const formattedSubCategory = formateDataForDropdown(
+        subcategoryList,
+        "subCategoryName",
+        "subCategoryId"
+      );
+      setDisplaySubCategory(formattedSubCategory);
+    } else {
+      setDisplaySubCategory([]);
+    }
+  }, [basicInfo.categoryId, subCategoryData]);
 
   const setApiData = async () => {
     const filteredStaff = staffData?.staff?.filter(
@@ -105,16 +125,6 @@ const AddService = () => {
       "categoryId"
     );
     setDisplayCategory(formtedCategory);
-
-    const formtedSubCategory = await formateDataForDropdown(
-      subCategoryData?.subCategories,
-      "subCategoryName",
-      "subCategoryId"
-    );
-    setDisplaySubCategory(formtedSubCategory);
-
-    console.log("Category: ", formtedCategory);
-    console.log("Subcategory: ", formtedSubCategory);
   };
 
   const convertMetaKeyword = async (keyword: string) => {
@@ -151,6 +161,7 @@ const AddService = () => {
 
       if (!gallaryData?.images || gallaryData.images.length === 0) {
         console.log("No images found in gallery data.");
+        setLoading(false); // Set loading to false after validation
         return;
       }
 
@@ -243,21 +254,7 @@ const AddService = () => {
               {/* Basic Information */}
               <CardBody className="gap-6">
                 <Divider className="-my-2" />
-                {/* <CustomInput
-                  label="Service Title"
-                  isRequired={true}
-                  type="text"
-                  placeholder="Enter title"
-                  name={basicInfo.serviceTitle}
-                  onValueChange={(e) => {
-                    setBasicInfo({
-                      ...basicInfo,
-                      serviceTitle: e,
-                    });
-                  }}
-                  isInvalid={!!validationError?.serviceTitle}
-                  errorMessage={validationError?.serviceTitle}
-                /> */}
+
                 <CustomInput
                   label="Service Title"
                   isRequired={true}
@@ -320,6 +317,7 @@ const AddService = () => {
                     <CustomAutocomplete
                       label="Sub Category"
                       placeholder="Select subcategory"
+                      description="First select category"
                       defaultItems={displaySubCategory}
                       selectedKey={basicInfo?.subCategoryId || undefined}
                       width="none"

@@ -137,6 +137,8 @@ const CustomAvailabilityInput = ({
     }
   }, [fields]);
 
+  console.log("ALL DATE: ----------------------------", allDay, !allDay);
+
   return (
     <>
       <div>

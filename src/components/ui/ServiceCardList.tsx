@@ -34,8 +34,10 @@ const ServiceCardList = ({ data }: { data: any[] }) => {
 
   console.log("Data: ", data);
 
-  const handleNavigate = (id: string) => {
-    navigate(`/service/${id}`);
+  const handleNavigate = (id: string, item: any) => {
+    navigate(`/service/${id}/${item.slug}`, {
+      state: { serviceData: item },
+    });
   };
 
   return (
@@ -43,11 +45,13 @@ const ServiceCardList = ({ data }: { data: any[] }) => {
       {data?.length === 0 && <NoDataFound />}
       {data?.map((item: any, index: number) => (
         <div
-          // onClick={() => handleNavigate(item?.serviceId)}
           key={index}
           className="flex flex-initial cursor-pointer  transition-all duration-300 ease-in-out"
         >
-          <div className=" bg-gray-200 flex justify-center items-center cursor-pointer max-h-[152px] w-[308px] relative overflow-hidden rounded-sm">
+          <div
+            onClick={() => handleNavigate(item?.serviceId, item)}
+            className=" bg-gray-200 flex justify-center items-center cursor-pointer max-h-[152px] w-[308px] relative overflow-hidden rounded-sm"
+          >
             <Image
               src={
                 item?.gallery?.[0]?.serviceImages?.[0] ||

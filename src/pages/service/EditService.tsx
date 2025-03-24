@@ -140,6 +140,13 @@ const EditService = () => {
         metaKeywords: apiData?.serviceInfo?.seo?.[0]?.metaKeywords,
       });
       setDisplayAvailability(apiData?.serviceInfo?.availability);
+      console.log(
+        "AVAIALBILITY: ",
+        apiData?.serviceInfo?.availability?.map((item) => item.alldate)
+      );
+      // setIsAllDay(
+      //   apiData?.serviceInfo?.availability?.map((item) => item.alldate)
+      // );
       setIsAllDay(false);
       setADisplayddtionalInfo(apiData?.serviceInfo?.additionalServices);
       setData(apiData?.serviceInfo);

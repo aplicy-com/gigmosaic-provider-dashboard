@@ -26,7 +26,6 @@ const ServiceCard = ({ data }: { data: any[] }) => {
     })),
   });
 
-  // Create a map of category IDs to their names
   const categoryMap = categoryQueries.reduce((acc, query, index) => {
     const categoryId = data[index]?.categoryId;
     if (query.data) {
@@ -35,8 +34,10 @@ const ServiceCard = ({ data }: { data: any[] }) => {
     return acc;
   }, {} as Record<string, string>);
 
-  const handleNavigate = (id: string) => {
-    navigate(`/service/${id}`);
+  const handleNavigate = (id: string, item: any, category: string) => {
+    navigate(`/service/${id}/${item.slug}`, {
+      state: { serviceData: item, category: category },
+    });
   };
 
   return (
@@ -44,13 +45,20 @@ const ServiceCard = ({ data }: { data: any[] }) => {
       {data?.length === 0 && <NoDataFound />}
       {data?.map((item: any, index: number) => (
         <div
-          // onClick={() => handleNavigate(item?.serviceId)}
           key={index}
           className="cursor-pointer hover:scale-105 transition-all duration-300 ease-in-out w-full h-full"
         >
-          <div className="relative">
-            {/* <div className="bg-gray-200 flex justify-center items-center cursor-pointer w-full h-[250px] relative overflow-hidden"> */}
-            <div className="bg-gray-200 flex justify-center items-center cursor-pointer w-full h-[250px] relative overflow-hidden">
+          <div
+            className="relative"
+            onClick={() =>
+              handleNavigate(
+                item?.serviceId,
+                item,
+                categoryMap[item.categoryId]
+              )
+            }
+          >
+            <div className="bg-gray-900 flex justify-center items-center cursor-pointer w-full h-[250px] relative overflow-hidden">
               <Image
                 src={
                   item?.gallery?.[0]?.serviceImages?.[0] ||
@@ -84,7 +92,7 @@ const ServiceCard = ({ data }: { data: any[] }) => {
                 <SlLocationPin size={12} className="mr-1" />
                 {item?.location?.map((loc: string, index: number) => (
                   <small key={index} className="text-caption">
-                    {loc?.address || "No Location"}
+                    {`${loc?.city || ""} ${loc?.state || ""} `.trim()}
                   </small>
                 ))}
               </div>

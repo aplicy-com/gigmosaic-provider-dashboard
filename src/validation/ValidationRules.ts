@@ -117,7 +117,7 @@ export const metaDescriptionRule = yup
   .typeError("Meta Description  must be a valid text")
   .required("Meta Description is required")
   .min(3, "Meta Description is too short")
-  .max(160, "Meta Description is too long");
+  .max(160, "Meta Description must be less than 160");
 
 export const metaKeywordsRule = yup
   .array()

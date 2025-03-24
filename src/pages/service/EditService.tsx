@@ -228,6 +228,7 @@ const EditService = () => {
 
       if (!gallaryData?.images || gallaryData.images.length === 0) {
         console.log("No images found in gallery data.");
+        setLoading(false);
         return;
       }
       const formatGallary = await uploadImages(gallaryData);
@@ -323,7 +324,7 @@ const EditService = () => {
   return (
     <>
       {isLoading && <Loading label="Fetching..." />}
-      {isPending && <Loading label="Updating..." />}
+      {loading && <Loading label="Updating..." />}
       <form onSubmit={handleSubmit(onSubmit)}>
         {/* <form> */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">

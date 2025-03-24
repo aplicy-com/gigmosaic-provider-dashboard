@@ -31,7 +31,7 @@ export const useFetchServiceDataById = (id?: string) => {
     queryKey: [QueryKey.GET_SERVICE_BY_ID, id],
     queryFn: () =>
       id ? getServiceDataById(id) : Promise.reject("No ID provided"),
-    staleTime: 5 * 60 * 1000,
+    // staleTime: 5 * 60 * 1000,
     enabled: !!id,
     refetchOnWindowFocus: false,
   });

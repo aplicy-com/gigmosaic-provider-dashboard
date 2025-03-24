@@ -6,6 +6,7 @@ import "@geoapify/geocoder-autocomplete/styles/minimal.css";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 import "../css/location.css";
+import LocationPin from "../assets/location-pin.png";
 
 interface LocationInputsProps {
   onChangeValue: (location: ILocationProps) => void;
@@ -65,7 +66,7 @@ const LocationInputs = ({
   useEffect(() => {
     if (!mapRef.current) {
       mapRef.current = L.map("map", { zoomControl: false }).setView(
-        [38.9088, -77.0234], // Default location
+        [38.9088, -77.0234],
         12
       );
 
@@ -86,10 +87,9 @@ const LocationInputs = ({
         .addTo(mapRef.current);
     }
 
-    // ✅ Update marker when prefilled data is available
     if (data?.coordinates?.latitude && data?.coordinates?.longitude) {
-      const lat = parseFloat(data.coordinates?.latitude);
-      const lon = parseFloat(data.coordinates?.longitude);
+      const lat = parseFloat(data?.coordinates?.latitude);
+      const lon = parseFloat(data?.coordinates?.longitude);
 
       if (!isNaN(lat) && !isNaN(lon)) {
         mapRef.current.setView([lat, lon], 15); // Move the map to the new location
@@ -99,14 +99,20 @@ const LocationInputs = ({
           markerRef.current.remove();
         }
 
+        const customIcon = L.icon({
+          iconUrl: LocationPin,
+          iconSize: [40, 40],
+          iconAnchor: [20, 40],
+          popupAnchor: [0, -40],
+        });
+
         // Add a new marker
-        markerRef.current = L.marker([lat, lon]).addTo(mapRef.current);
+        markerRef.current = L.marker([lat, lon], { icon: customIcon })
+          .addTo(mapRef.current)
+          .bindPopup(data.address)
+          .openPopup();
       }
     }
-
-    // console.log("Location Data 002: ", data); // Check the entire `data` object
-    // const address = data?.address || "";
-    // console.log("Address from data: ", address);
 
     // Initialize Geocoder Autocomplete only once
     if (autocompleteRef.current && !autocompleteRef.current.hasChildNodes()) {
@@ -117,7 +123,6 @@ const LocationInputs = ({
       );
 
       autocompleteInput.setValue(address);
-      console.log("------------------------------------------");
       console.log("Address ", address);
 
       autocompleteInput.on("select", (location) => {
@@ -132,7 +137,18 @@ const LocationInputs = ({
         }
 
         // Set new marker
-        markerRef.current = L.marker([lat, lon]).addTo(mapRef.current);
+
+        const customIcon = L.icon({
+          iconUrl: LocationPin,
+          iconSize: [40, 40],
+          iconAnchor: [20, 40],
+          popupAnchor: [0, -40],
+        });
+
+        markerRef.current = L.marker([lat, lon], { icon: customIcon })
+          .addTo(mapRef.current)
+          .bindPopup(formatted)
+          .openPopup();
         mapRef.current.panTo([lat, lon]);
 
         // Get place ID via reverse geocoding
@@ -167,9 +183,6 @@ const LocationInputs = ({
           .catch((error) => console.error("Error fetching place ID:", error));
       });
 
-      // console.log("Autocomplete Input: ", autocompleteInput);
-      // console.log("Autocomplete address: ", address);
-
       autocompleteInput.on("input", (e: any) => {
         console.log("Typing Address Value: ", e);
 
@@ -196,9 +209,6 @@ const LocationInputs = ({
   useEffect(() => {
     onChangeValue(location);
   }, [location]);
-
-  // console.log("Location Inputs: ", location);
-  // console.log("Address21022: ", address);
 
   return (
     <>

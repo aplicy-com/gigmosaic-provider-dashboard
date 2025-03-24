@@ -71,7 +71,7 @@ export const formatServiceData = (
 
   return {
     serviceTitle: basicInfo.serviceTitle || "",
-    slug: basicInfo.slug || "",
+    slug: (basicInfo?.slug || "").trim().replace(/\s+/g, "_"),
     categoryId: basicInfo.categoryId || "",
     subCategoryId: basicInfo.subCategoryId || "",
     serviceOverview: basicInfo?.serviceOverview || "",

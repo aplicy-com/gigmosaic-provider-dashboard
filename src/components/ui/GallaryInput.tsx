@@ -48,34 +48,48 @@ const GallaryInput = ({
         });
         return;
       }
+
+      if (!["image/jpeg", "image/png"].includes(file.type)) {
+        addToast({
+          title: "Validation Error",
+          description: "Only JPEG and PNG formats are supported.",
+          radius: "md",
+          color: "danger",
+        });
+        console.log("Only JPEG and PNG formats are supported.");
+        return;
+      }
+
+      // Check image dimensions (500px by 300px)
+      const image = new Image();
+      const objectUrl = URL.createObjectURL(file);
+      image.src = objectUrl;
+
+      image.onload = () => {
+        if (image.width < 500 || image.height < 300) {
+          addToast({
+            title: "Validation Error",
+            description: "Minimum image size is 500px x 300px.",
+            radius: "md",
+            color: "danger",
+          });
+          return;
+        }
+
+        // If all validations pass, add the file to images
+        setImages((prevImages) => [...prevImages, file]);
+      };
+
+      // Handle image load error
+      image.onerror = () => {
+        addToast({
+          title: "Validation Error",
+          description: "Invalid image file.",
+          radius: "md",
+          color: "danger",
+        });
+      };
     });
-
-    if (images.length + selectedFiles.length > 5) {
-      console.log("You can only upload up to 5 images.");
-      addToast({
-        title: "Validation Error",
-        description: "You can only upload up to 5 images.",
-        radius: "md",
-        color: "danger",
-      });
-      return;
-    }
-
-    const validFiles = selectedFiles.filter((file) =>
-      ["image/jpeg", "image/png"].includes(file.type)
-    );
-
-    if (validFiles.length !== selectedFiles.length) {
-      addToast({
-        title: "Validation Error",
-        description: "Only JPEG and PNG formats are supported.",
-        radius: "md",
-        color: "danger",
-      });
-      console.log("Only JPEG and PNG formats are supported.");
-    }
-
-    setImages((prevImages) => [...prevImages, ...validFiles]);
   };
 
   const deleteImage = (index: number) => {
@@ -85,6 +99,10 @@ const GallaryInput = ({
   return (
     <>
       {/* Image Upload Section */}
+      <small className="-mt-2 -mb-4 text-gray-400 text-xs">
+        Minimum image size is 500px x 300px and maximum file size is 5mb.
+      </small>
+
       <div className="flex flex-initial gap-5 relative">
         {images.map((item, index) => (
           <div
@@ -133,6 +151,7 @@ const GallaryInput = ({
       <CustomInput
         size="md"
         label="Video Link"
+        description="Only YouTube link are supported."
         type="text"
         placeholder="https://www.example.com"
         value={videoLink}

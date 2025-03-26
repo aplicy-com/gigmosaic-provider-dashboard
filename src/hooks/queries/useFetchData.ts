@@ -78,7 +78,7 @@ export const useFetchCategory = () => {
   return useQuery({
     queryKey: [QueryKey.GET_ALL_CATEGORY],
     queryFn: getAllCategoryData,
-    staleTime: 5 * 60 * 1000,
+    // staleTime: 5 * 60 * 1000,
     refetchOnWindowFocus: false,
   });
 };
@@ -88,7 +88,7 @@ export const useFetchSubCategory = () => {
   return useQuery({
     queryKey: [QueryKey.GET_ALL_SUBCATEGORY],
     queryFn: getAllSubCategoryData,
-    staleTime: 5 * 60 * 1000,
+    // staleTime: 5 * 60 * 1000,
     refetchOnWindowFocus: false,
   });
 };

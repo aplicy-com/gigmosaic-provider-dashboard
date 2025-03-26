@@ -67,8 +67,6 @@ const AddService = () => {
     price: 0,
   });
 
-  console.log("basicInfo", basicInfo.categoryId);
-
   const [metaDetails, setMetaDetails] = useState<{
     metaTitle: string;
     metaKeywords: string[];
@@ -90,6 +88,8 @@ const AddService = () => {
 
   useEffect(() => {
     if (basicInfo.categoryId) {
+      console.log("Category ID: ", basicInfo.categoryId);
+      console.log("Subcategory data: ", subCategoryData);
       const subcategoryList = subCategoryData?.subCategories.filter(
         (subCategory: any) => subCategory.categoryId === basicInfo.categoryId
       );

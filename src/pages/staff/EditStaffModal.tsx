@@ -475,8 +475,23 @@ const EditStaffModal = ({ itemData }: FormValues) => {
                   type="text"
                   isRequired
                   placeholder="Enter mobile no"
+                  // {...register("phoneNumber", {
+                  //   required: "Phone number is required",
+                  // })}
                   {...register("phoneNumber", {
                     required: "Phone number is required",
+                    pattern: {
+                      value: /^[0-9]+$/,
+                      message: "Only numbers are allowed",
+                    },
+                    minLength: {
+                      value: 7,
+                      message: "Phone number must be at least 7 digits",
+                    },
+                    maxLength: {
+                      value: 15,
+                      message: "Phone number must be less than 15 digits",
+                    },
                   })}
                   isInvalid={!!errors?.phoneNumber}
                   errorMessage={errors?.phoneNumber?.message}

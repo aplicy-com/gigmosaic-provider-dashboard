@@ -18,6 +18,7 @@ export const useSumbitServiceMutation = () => {
         color: "success",
       });
       queryClient.invalidateQueries({ queryKey: [QueryKey.GET_ALL_SERVICE] });
+      queryClient.invalidateQueries({ queryKey: [QueryKey.GET_ALL_STAFF] });
     },
     onError: (error: any) => {
       console.error("Failed to submit service data:", error);

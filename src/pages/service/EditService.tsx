@@ -122,6 +122,28 @@ const EditService = () => {
     }
   }, [apiData]);
 
+  useEffect(() => {
+    console.log("Category data: ", categoryData);
+    console.log("Subcategory data: ", subCategoryData);
+    if (basicInfo.categoryId) {
+      console.log("Category ID: ", basicInfo.categoryId);
+      console.log("Subcategory data: ", subCategoryData);
+      const subcategoryList = subCategoryData?.subCategories.filter(
+        (subCategory: any) => subCategory.categoryId === basicInfo.categoryId
+      );
+
+      console.log("Filtered subcategoryList: ", subcategoryList);
+      const formattedSubCategory = formateDataForDropdown(
+        subcategoryList,
+        "subCategoryName",
+        "subCategoryId"
+      );
+      setDisplaySubCategory(formattedSubCategory);
+    } else {
+      setDisplaySubCategory([]);
+    }
+  }, [basicInfo.categoryId]);
+
   const setApiData = async () => {
     await setLoading(true);
     console.log("EDIT API DATA: ", apiData?.serviceInfo);
@@ -144,9 +166,7 @@ const EditService = () => {
         "AVAIALBILITY: ",
         apiData?.serviceInfo?.availability?.map((item) => item.alldate)
       );
-      // setIsAllDay(
-      //   apiData?.serviceInfo?.availability?.map((item) => item.alldate)
-      // );
+
       setIsAllDay(false);
       setADisplayddtionalInfo(apiData?.serviceInfo?.additionalServices);
       setData(apiData?.serviceInfo);
@@ -176,14 +196,28 @@ const EditService = () => {
       );
       setDisplayCategory(formtedCategory);
 
+      const subcategoryList = subCategoryData?.subCategories.filter(
+        (subCategory: any) =>
+          subCategory.categoryId === apiData?.serviceInfo?.categoryId
+      );
+
+      console.log("subcategoryList:", subcategoryList);
+
       const formtedSubCategory = formateDataForDropdown(
         subCategoryData?.subCategories,
         "subCategoryName",
         "subCategoryId"
       );
-      setDisplaySubCategory(formtedSubCategory);
+
+      const formtedSubCategory2 = formateDataForDropdown(
+        subcategoryList,
+        "subCategoryName",
+        "subCategoryId"
+      );
+      console.log("Subcategory00345: ", formtedSubCategory2);
+      setDisplaySubCategory(formtedSubCategory2);
       console.log("Category: ", formtedCategory);
-      console.log("Subcategory: ", formtedSubCategory);
+      console.log("Subcategory001: ", formtedSubCategory);
       console.log("Staff: ", formatStaff);
     } catch (error) {
       console.error(

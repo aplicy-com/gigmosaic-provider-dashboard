@@ -87,6 +87,8 @@ const AddService = () => {
   }, [staffData]);
 
   useEffect(() => {
+    console.log("Category data: ", categoryData);
+    console.log("Subcategory data: ", subCategoryData);
     if (basicInfo.categoryId) {
       console.log("Category ID: ", basicInfo.categoryId);
       console.log("Subcategory data: ", subCategoryData);

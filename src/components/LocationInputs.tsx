@@ -210,6 +210,8 @@ const LocationInputs = ({
     onChangeValue(location);
   }, [location]);
 
+  console.log("Location Inputs: ", location);
+
   return (
     <>
       <CardBody className="gap-6">
@@ -346,7 +348,7 @@ const LocationInputs = ({
               isRequired={false}
               placeholder="Enter latitude"
               name={location?.latitude}
-              value={location?.latitude}
+              value={location?.latitude || location?.coordinates?.latitude}
               onValueChange={(e) => {
                 setLocation({
                   ...location,
@@ -365,7 +367,7 @@ const LocationInputs = ({
               isRequired={false}
               placeholder="Enter longitude"
               name={location?.longitude}
-              value={location?.longitude}
+              value={location?.longitude || location?.coordinates?.longitude}
               onValueChange={(e) => {
                 setLocation({
                   ...location,

@@ -86,6 +86,8 @@ const AddService = () => {
     setApiData();
   }, [staffData]);
 
+  console.log("Is Active: ", isActive);
+
   useEffect(() => {
     console.log("Category data: ", categoryData);
     console.log("Subcategory data: ", subCategoryData);
@@ -140,6 +142,7 @@ const AddService = () => {
       metaKeywords: "",
     }));
   };
+  console.log("addtionalInfo:", addtionalInfo);
 
   const onSubmit: SubmitHandler<IServiceProps> = async () => {
     setLoading(true);
@@ -163,7 +166,7 @@ const AddService = () => {
 
       if (!gallaryData?.images || gallaryData.images.length === 0) {
         console.log("No images found in gallery data.");
-        setLoading(false); // Set loading to false after validation
+        setLoading(false);
         return;
       }
 
@@ -188,7 +191,6 @@ const AddService = () => {
           return { ...item, images: "", id: index + 1 };
         })
       );
-
       const formatedData = await formatServiceData(
         basicInfo,
         staff,
@@ -203,8 +205,6 @@ const AddService = () => {
       );
       await console.log("FINAL PAYLOAD SUMBIT------: ", formatedData);
       await mutate(formatedData);
-
-      navigate("/service/all-service");
     } catch (error) {
       if (error instanceof ValidationError) {
         console.log("Validation Errors:", error.inner);
@@ -373,12 +373,10 @@ const AddService = () => {
                 {/* Include */}
                 <Divider className="my-1" />
                 <p className="text-md font-medium -mt-3">Includes</p>
-                <SingleMultipleInput onChangeValude={setInclude} />
-                {/* {validationError?.include && (
-                  <small className="text-error -mt-5">
-                    {validationError?.include}
-                  </small>
-                )} */}
+                <SingleMultipleInput
+                  onChangeValude={setInclude}
+                  error={validationError}
+                />
                 <Divider className="my-1" />
 
                 {/* Addtional information */}
@@ -483,12 +481,15 @@ const AddService = () => {
 
               <CardBody className="gap-6">
                 <Divider className="-my-2" />
-                <CustomDubbleInput onChangeValue={setFaq} />
-                {validationError?.serviceTitle && (
+                <CustomDubbleInput
+                  onChangeValue={setFaq}
+                  error={validationError?.faq}
+                />
+                {/* {validationError?.faq && (
                   <small className="text-error -mt-5">
-                    {validationError?.serviceTitle}
+                    {validationError?.faq}
                   </small>
-                )}
+                )} */}
               </CardBody>
             </Card>
 

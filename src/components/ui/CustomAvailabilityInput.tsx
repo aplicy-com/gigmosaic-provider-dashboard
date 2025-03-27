@@ -9,6 +9,7 @@ import CustomButton from "./CustomButton";
 import { IoTrashBin } from "react-icons/io5";
 import { IAvailabilityField } from "../../types";
 import { formatAvailabilityPayload } from "../../utils/serviceUtils";
+import { RiDeleteBin4Line } from "react-icons/ri";
 
 interface AvailabilityInputProps {
   onChangeValue: (value: IAvailabilityField[]) => void;
@@ -143,7 +144,9 @@ const CustomAvailabilityInput = ({
     <>
       <div>
         <CustomCheckbox
+          isDisabled={true}
           label="All Day"
+          className="cursor-not-allowed"
           isSelected={allDay}
           onValueChange={chnageDatStatus}
         />
@@ -156,6 +159,7 @@ const CustomAvailabilityInput = ({
               <div className="max-w-sm">
                 <CustomAutocomplete
                   label="Day"
+                  isRequired={true}
                   placeholder="All Day"
                   defaultItems={[{ label: "All Day", id: "all-date" }]}
                   startContent={<CiCalendar size={20} />}
@@ -170,6 +174,7 @@ const CustomAvailabilityInput = ({
                 <label className="block text-sm">From</label>
                 <input
                   type="time"
+                  required
                   className="w-full px-3 py-1 text-sm mt-1 border-2 rounded-lg focus:ring focus:ring-blue-200"
                   value={field.from ? convertTo24HourFormat(field.from) : ""}
                   onChange={(e) =>
@@ -184,6 +189,7 @@ const CustomAvailabilityInput = ({
                 <label className="block text-sm font-medium">To</label>
                 <input
                   type="time"
+                  required
                   className="w-full px-3 py-1 text-sm mt-1 border-2 rounded-lg focus:ring focus:ring-blue-200"
                   value={field.to ? convertTo24HourFormat(field.to) : ""}
                   onChange={(e) =>
@@ -197,6 +203,7 @@ const CustomAvailabilityInput = ({
               <div className="max-w-[125px]">
                 <CustomNumberInput
                   label="Slot"
+                  isRequired={true}
                   value={field.maxBookings}
                   onValueChange={(value) =>
                     handleUpdateField(field.id, { maxBookings: Number(value) })
@@ -209,6 +216,7 @@ const CustomAvailabilityInput = ({
               <div className="max-w-sm">
                 <CustomAutocomplete
                   label="Day"
+                  isRequired={true}
                   placeholder="Select Days"
                   defaultItems={days}
                   startContent={<CiCalendar size={20} />}
@@ -223,6 +231,7 @@ const CustomAvailabilityInput = ({
                 <label className="block text-sm font-medium">From</label>
                 <input
                   type="time"
+                  required
                   className="w-full px-3 py-1 text-sm mt-1 border-2 rounded-lg focus:ring focus:ring-blue-200"
                   value={field.from ? convertTo24HourFormat(field.from) : ""}
                   onChange={(e) =>
@@ -237,6 +246,7 @@ const CustomAvailabilityInput = ({
                 <label className="block text-sm font-medium">To</label>
                 <input
                   type="time"
+                  required
                   className="w-full px-3 py-1 text-sm mt-1 border-2 rounded-lg focus:ring focus:ring-blue-200"
                   value={field.to ? convertTo24HourFormat(field.to) : ""}
                   onChange={(e) =>
@@ -250,6 +260,7 @@ const CustomAvailabilityInput = ({
               <div className="max-w-[125px]">
                 <CustomNumberInput
                   label="Slot"
+                  isRequired={true}
                   value={field.maxBookings}
                   onValueChange={(value) =>
                     handleUpdateField(field.id, { maxBookings: Number(value) })
@@ -265,7 +276,7 @@ const CustomAvailabilityInput = ({
                 variant="light"
                 onPress={() => handleRemoveField(field.id)}
               >
-                <IoTrashBin size={20} className="text-red-400" />
+                <RiDeleteBin4Line size={20} className="text-red-400" />
               </CustomButton>
             </div>
           )}

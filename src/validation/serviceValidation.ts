@@ -16,6 +16,10 @@ import {
   countryRule,
   addressRule,
   pincodeRule,
+  latitudeRule,
+  longitudeRule,
+  faqRule,
+  additionalInfoRule,
 } from "./ValidationRules";
 
 const serviceValidation = yup.object().shape({
@@ -40,10 +44,14 @@ const serviceValidation = yup.object().shape({
     country: countryRule,
     pinCode: pincodeRule,
     address: addressRule,
-    // latitude: latitudeRule,
-    // longitude: longitudeRule,
-    // googleMapsPlaceId: googleMapIdRule,
+    latitude: latitudeRule,
+    longitude: longitudeRule,
   }),
+
+  faq: faqRule,
+
+  // addtionalInfo: additionalInfoRule,
+
   availability: yup.array().of(
     yup.object().shape({
       day: yup.string().required("Day is required"),
@@ -59,31 +67,19 @@ const serviceValidation = yup.object().shape({
   include: yup
     .array()
     .nullable()
-    .of(yup.string().min(3, "Include must be at least 3 characters long")),
+    .of(yup.string().min(3, "Include must be at least 3 characters long"))
+    .test("min-items", " At least one include is required", (value) => {
+      return (
+        value === null ||
+        value.length === 0 ||
+        value.every((item) => item.length >= 3)
+      );
+    }),
 
   gallaryData: yup.object().shape({
     images: yup.array().ensure().min(1, "At least one image is required"),
-    videoLink: yup.string().url("Enter valid url").nullable(),
+    videoLink: yup.string().url("Enter valid YouTube video link").nullable(),
   }),
-
-  // faq: yup.array().of(
-  //   yup.object().shape({
-  //     question: yup
-  //       .string()
-  //       .min(3, "Question must be at least 3 characters")
-  //       .when("answer", {
-  //         is: (answer: string | undefined) => Boolean(answer), // If answer exists
-  //         then: yup.string().required("Question is required"),
-  //       }),
-  //     answer: yup
-  //       .string()
-  //       .min(3, "Answer must be at least 3 characters")
-  //       .when("question", {
-  //         is: (question: string | undefined) => Boolean(question), // If question exists
-  //         then: yup.string().required("Answer is required"),
-  //       }),
-  //   })
-  // ),
 });
 
 export default serviceValidation;

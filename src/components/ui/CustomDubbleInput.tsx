@@ -13,12 +13,14 @@ interface SingleMultipleInputProps {
   onChangeValue: (faq: FAQ[]) => void;
   value?: FAQ[];
   isUpdate?: boolean;
+  error?: string;
 }
 
 const CustomDoubleInput = ({
   onChangeValue,
   value,
   isUpdate = false,
+  error,
 }: SingleMultipleInputProps) => {
   const [fields, setFields] = useState<FAQ[]>([{ question: "", answer: "" }]);
   // console.log("FAQ--------------FAQ: ", value);
@@ -98,6 +100,7 @@ const CustomDoubleInput = ({
           )}
         </div>
       ))}
+      {error && <small className="text-error -mt-4">{error}</small>}
 
       <div className="-mt-3">
         <CustomButton

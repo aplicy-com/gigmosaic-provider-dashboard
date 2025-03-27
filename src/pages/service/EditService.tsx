@@ -589,6 +589,7 @@ const EditService = () => {
                   isUpdate={true}
                   value={displayFaq}
                   onChangeValue={setFaq}
+                  error={validationError?.faq}
                 />
               </CardBody>
             </Card>

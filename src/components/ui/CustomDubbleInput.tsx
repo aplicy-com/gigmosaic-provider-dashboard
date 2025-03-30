@@ -23,7 +23,6 @@ const CustomDoubleInput = ({
   error,
 }: SingleMultipleInputProps) => {
   const [fields, setFields] = useState<FAQ[]>([{ question: "", answer: "" }]);
-  // console.log("FAQ--------------FAQ: ", value);
 
   useEffect(() => {
     onChangeValue(fields);
@@ -31,8 +30,7 @@ const CustomDoubleInput = ({
     if (value) {
       setFields(value);
     }
-  }, [value]);
-  // console.log("FAQ00--------------FAQ00: ", fields);
+
   const handleAddField = () => {
     setFields([...fields, { question: "", answer: "" }]);
   };

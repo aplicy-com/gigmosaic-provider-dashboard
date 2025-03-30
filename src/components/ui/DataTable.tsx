@@ -28,7 +28,7 @@ const DataTable = () => {
     limit: 8,
   });
 
-  console.log("data: ", data);
+;
 
   const apiData = useMemo(() => data?.staff || [], [data]);
   const totalPage = useMemo(() => data?.pages || 1, [data]);
@@ -86,7 +86,7 @@ const DataTable = () => {
   ];
 
   const handleDelete = async (id: string) => {
-    console.log("IDD: ", id);
+
     if (!id) {
       addToast({
         title: "Error",

@@ -123,7 +123,7 @@ const LocationInputs = ({
       );
 
       autocompleteInput.setValue(address);
-      console.log("Address ", address);
+
 
       autocompleteInput.on("select", (location) => {
         if (!mapRef.current) return;
@@ -184,7 +184,7 @@ const LocationInputs = ({
       });
 
       autocompleteInput.on("input", (e: any) => {
-        console.log("Typing Address Value: ", e);
+
 
         if (e !== undefined) {
           setLocation((prevState) => ({
@@ -210,7 +210,7 @@ const LocationInputs = ({
     onChangeValue(location);
   }, [location]);
 
-  console.log("Location Inputs: ", location);
+
 
   return (
     <>

@@ -38,7 +38,7 @@ export const formatServiceData = (
   isActive: boolean,
   isUpdate?: boolean
 ) => {
-  console.log("LOCATION001 :", location);
+
 
   const formattedAvailability = Availability
     ? Availability.reduce(
@@ -188,14 +188,12 @@ export const formatAvailabilityPayload = (fields: IAvailabilityField[]) => {
 
     // Check if the new slot overlaps with existing ones
     if (isTimeOverlap(availabilityMap[day].timeSlots, newSlot)) {
-      console.log("Error: Time slots cannot overlap.");
       errors.push("Time slots cannot overlap.");
       continue; // Skip adding this slot
     }
 
     // Check if end time is later than start time
     if (!toTime.isAfter(fromTime)) {
-      console.log("Error: End time must be later than start time.");
       errors.push("End time must be later than start time.");
       continue; // Skip adding this slot
     }

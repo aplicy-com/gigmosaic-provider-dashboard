@@ -12,7 +12,6 @@ export const useSumbitServiceMutation = () => {
   return useMutation({
     mutationFn: sumbitServiceData,
     onSuccess: () => {
-      console.log("Service submitted successfully!", "success");
       addToast({
         title: "Service Added",
         description: "Service Added Successfully",
@@ -35,7 +34,7 @@ export const useSumbitServiceMutation = () => {
         radius: "md",
         color: "danger",
       });
-      console.log("useSumbitServiceMutation :", errorMessage);
+      console.error("useSumbitServiceMutation :", errorMessage);
     },
   });
 };
@@ -46,7 +45,6 @@ export const useSumbitStaffMutation = () => {
   return useMutation({
     mutationFn: sumbitStaffData,
     onSuccess: () => {
-      console.log("Staff submitted successfully!", "success");
       queryClient.invalidateQueries({ queryKey: [QueryKey.GET_ALL_STAFF] });
     },
     onError: (error: any) => {
@@ -62,7 +60,7 @@ export const useSumbitStaffMutation = () => {
         radius: "md",
         color: "danger",
       });
-      console.log("useSumbitServiceMutation :", errorMessage);
+      console.error("useSumbitServiceMutation :", errorMessage);
     },
   });
 };

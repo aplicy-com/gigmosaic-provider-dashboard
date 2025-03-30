@@ -123,16 +123,11 @@ const EditService = () => {
   }, [apiData]);
 
   useEffect(() => {
-    console.log("Category data: ", categoryData);
-    console.log("Subcategory data: ", subCategoryData);
     if (basicInfo.categoryId) {
-      console.log("Category ID: ", basicInfo.categoryId);
-      console.log("Subcategory data: ", subCategoryData);
       const subcategoryList = subCategoryData?.subCategories.filter(
         (subCategory: any) => subCategory.categoryId === basicInfo.categoryId
       );
 
-      console.log("Filtered subcategoryList: ", subcategoryList);
       const formattedSubCategory = formateDataForDropdown(
         subcategoryList,
         "subCategoryName",
@@ -146,7 +141,6 @@ const EditService = () => {
 
   const setApiData = async () => {
     await setLoading(true);
-    console.log("EDIT API DATA: ", apiData?.serviceInfo);
     try {
       setBasicInfo({
         serviceTitle: apiData?.serviceInfo?.serviceTitle,
@@ -162,10 +156,6 @@ const EditService = () => {
         metaKeywords: apiData?.serviceInfo?.seo?.[0]?.metaKeywords,
       });
       setDisplayAvailability(apiData?.serviceInfo?.availability);
-      console.log(
-        "AVAIALBILITY: ",
-        apiData?.serviceInfo?.availability?.map((item) => item.alldate)
-      );
 
       setIsAllDay(false);
       setADisplayddtionalInfo(apiData?.serviceInfo?.additionalServices);
@@ -201,8 +191,6 @@ const EditService = () => {
           subCategory.categoryId === apiData?.serviceInfo?.categoryId
       );
 
-      console.log("subcategoryList:", subcategoryList);
-
       const formtedSubCategory = formateDataForDropdown(
         subCategoryData?.subCategories,
         "subCategoryName",
@@ -214,11 +202,7 @@ const EditService = () => {
         "subCategoryName",
         "subCategoryId"
       );
-      console.log("Subcategory00345: ", formtedSubCategory2);
       setDisplaySubCategory(formtedSubCategory2);
-      console.log("Category: ", formtedCategory);
-      console.log("Subcategory001: ", formtedSubCategory);
-      console.log("Staff: ", formatStaff);
     } catch (error) {
       console.error(
         "Error: Something went wrong while prefilling edit service data"
@@ -261,7 +245,7 @@ const EditService = () => {
       );
 
       if (!gallaryData?.images || gallaryData.images.length === 0) {
-        console.log("No images found in gallery data.");
+        console.error("No images found in gallery data.");
         setLoading(false);
         return;
       }
@@ -298,7 +282,7 @@ const EditService = () => {
         isActive,
         isUpdate
       );
-      await console.log("FINAL PAYLOAD UPDATE------: ", formatedData);
+      // await console.log("FINAL PAYLOAD UPDATE------: ", formatedData);
       mutate({ id: id, serviceData: formatedData });
     } catch (error) {
       if (error instanceof ValidationError) {
@@ -319,7 +303,7 @@ const EditService = () => {
           }, errors);
         });
 
-        console.log("Transformed errors:", errors);
+        console.error("Transformed errors:", errors);
         setValidationError(errors);
       }
     } finally {

@@ -49,18 +49,8 @@ const SingleMultipleInput = ({
       onChangeValude([]);
     }
   }, [fields, onChangeValude]);
-  console.log(
-    "Error02: ",
-    error?.include && Array.isArray(error?.include)
-      ? error?.include[0]
-      : "No include error found"
-  );
 
-  // Object?.keys(error).forEach((key) => {
-  //   if (key.startsWith("include")) {
-  //     console.log(`Error for ${key}: ${error[key]}`);
-  //   }
-  // });
+
 
   return (
     <>

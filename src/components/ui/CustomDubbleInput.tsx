@@ -24,12 +24,19 @@ const CustomDoubleInput = ({
 }: SingleMultipleInputProps) => {
   const [fields, setFields] = useState<FAQ[]>([{ question: "", answer: "" }]);
 
+  // useEffect(() => {
+  //   onChangeValue(fields);
+  //   if (!isUpdate) return;
+  //   if (value) {
+  //     setFields(value);
+  //   }
   useEffect(() => {
     onChangeValue(fields);
     if (!isUpdate) return;
     if (value) {
       setFields(value);
     }
+  }, [value]);
 
   const handleAddField = () => {
     setFields([...fields, { question: "", answer: "" }]);

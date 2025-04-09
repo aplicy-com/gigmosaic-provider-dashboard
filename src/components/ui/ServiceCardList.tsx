@@ -32,7 +32,6 @@ const ServiceCardList = ({ data }: { data: any[] }) => {
     return acc;
   }, {} as Record<string, string>);
 
-  console.log("Data: ", data);
 
   const handleNavigate = (id: string, item: any) => {
     navigate(`/service/${id}/${item.slug}`, {
@@ -50,7 +49,7 @@ const ServiceCardList = ({ data }: { data: any[] }) => {
         >
           <div
             onClick={() => handleNavigate(item?.serviceId, item)}
-            className=" bg-gray-200 flex justify-center items-center cursor-pointer max-h-[152px] w-[308px] relative overflow-hidden rounded-sm"
+            className=" bg-gray-900 flex justify-center items-center cursor-pointer max-h-[152px] w-[308px] relative overflow-hidden rounded-sm"
           >
             <Image
               src={

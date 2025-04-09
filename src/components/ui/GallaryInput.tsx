@@ -39,7 +39,7 @@ const GallaryInput = ({
 
     selectedFiles.forEach((file) => {
       if (file.size > 5 * 1024 * 1024) {
-        console.log("File size should be less than 5mb.");
+        console.error("File size should be less than 5mb.");
         addToast({
           title: "Validation Error",
           description: "File size should be less than 5mb.",
@@ -56,7 +56,7 @@ const GallaryInput = ({
           radius: "md",
           color: "danger",
         });
-        console.log("Only JPEG and PNG formats are supported.");
+        console.error("Only JPEG and PNG formats are supported.");
         return;
       }
 

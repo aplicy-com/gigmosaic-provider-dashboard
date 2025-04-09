@@ -123,7 +123,7 @@ const LocationInputs = ({
       );
 
       autocompleteInput.setValue(address);
-      console.log("Address ", address);
+
 
       autocompleteInput.on("select", (location) => {
         if (!mapRef.current) return;
@@ -184,7 +184,7 @@ const LocationInputs = ({
       });
 
       autocompleteInput.on("input", (e: any) => {
-        console.log("Typing Address Value: ", e);
+
 
         if (e !== undefined) {
           setLocation((prevState) => ({
@@ -210,7 +210,7 @@ const LocationInputs = ({
     onChangeValue(location);
   }, [location]);
 
-  console.log("Location Inputs: ", location);
+
 
   return (
     <>
@@ -344,11 +344,13 @@ const LocationInputs = ({
           <div>
             <CustomInput
               label="Latitude"
-              type="number"
+              type="text"
               isRequired={false}
               placeholder="Enter latitude"
               name={location?.latitude}
-              value={location?.latitude || location?.coordinates?.latitude}
+              value={
+                location?.latitude ?? location?.coordinates?.latitude ?? ""
+              }
               onValueChange={(e) => {
                 setLocation({
                   ...location,
@@ -363,11 +365,13 @@ const LocationInputs = ({
           <div>
             <CustomInput
               label="Longitude"
-              type="number"
+              type="text"
               isRequired={false}
               placeholder="Enter longitude"
               name={location?.longitude}
-              value={location?.longitude || location?.coordinates?.longitude}
+              value={
+                location?.longitude ?? location?.coordinates?.longitude ?? ""
+              }
               onValueChange={(e) => {
                 setLocation({
                   ...location,

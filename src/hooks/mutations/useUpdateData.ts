@@ -12,7 +12,6 @@ export const useUpdateServiceMutation = () => {
     mutationFn: ({ id, serviceData }: { id: string; serviceData: any }) =>
       updateServiceData(id, serviceData),
     onSuccess: ({ id }: { id: string }) => {
-      console.log("Service data updated successfully");
       addToast({
         title: "Update Success",
         description: "Service data updated successfully",
@@ -36,7 +35,7 @@ export const useUpdateServiceMutation = () => {
         radius: "md",
         color: "danger",
       });
-      console.log("useUpdateServiceMutation 001:", errorMessage);
+      console.error("useUpdateServiceMutation 001:", errorMessage);
     },
   });
 };
@@ -47,7 +46,6 @@ export const useUpdateStaffMutation = () => {
     mutationFn: ({ id, staffData }: { id: string; staffData: any }) =>
       updateStffData(id, staffData),
     onSuccess: () => {
-      console.log("Service data updated successfully");
       addToast({
         title: "Update Success",
         description: "Staff data updated successfully",
@@ -66,7 +64,7 @@ export const useUpdateStaffMutation = () => {
         radius: "md",
         color: "danger",
       });
-      console.log("useUpdateServiceMutation 001:", errorMessage);
+      console.error("useUpdateServiceMutation 001:", errorMessage);
     },
   });
 };

@@ -22,7 +22,7 @@ const AllService = () => {
     limit: 8,
   });
 
-  console.log("data: ", data);
+
 
   const apiData = useMemo(() => data?.services || [], [data]);
   const totalPage = useMemo(() => data?.pages || 1, [data]);

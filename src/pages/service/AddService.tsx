@@ -86,17 +86,14 @@ const AddService = () => {
     setApiData();
   }, [staffData]);
 
+
+
   useEffect(() => {
-    console.log("Category data: ", categoryData);
-    console.log("Subcategory data: ", subCategoryData);
     if (basicInfo.categoryId) {
-      console.log("Category ID: ", basicInfo.categoryId);
-      console.log("Subcategory data: ", subCategoryData);
       const subcategoryList = subCategoryData?.subCategories.filter(
         (subCategory: any) => subCategory.categoryId === basicInfo.categoryId
       );
 
-      console.log("Filtered subcategoryList: ", subcategoryList);
       const formattedSubCategory = formateDataForDropdown(
         subcategoryList,
         "subCategoryName",
@@ -141,6 +138,7 @@ const AddService = () => {
     }));
   };
 
+
   const onSubmit: SubmitHandler<IServiceProps> = async () => {
     setLoading(true);
     setValidationError({});
@@ -162,8 +160,8 @@ const AddService = () => {
       );
 
       if (!gallaryData?.images || gallaryData.images.length === 0) {
-        console.log("No images found in gallery data.");
-        setLoading(false); // Set loading to false after validation
+        console.error("No images found in gallery data.");
+        setLoading(false);
         return;
       }
 
@@ -188,7 +186,6 @@ const AddService = () => {
           return { ...item, images: "", id: index + 1 };
         })
       );
-
       const formatedData = await formatServiceData(
         basicInfo,
         staff,
@@ -201,13 +198,11 @@ const AddService = () => {
         availability,
         isActive
       );
-      await console.log("FINAL PAYLOAD SUMBIT------: ", formatedData);
+      // await console.log("FINAL PAYLOAD SUMBIT------: ", formatedData);
       await mutate(formatedData);
-
-      navigate("/service/all-service");
     } catch (error) {
       if (error instanceof ValidationError) {
-        console.log("Validation Errors:", error.inner);
+        // console.error("Validation Errors:", error.inner);
 
         const errors: { [key: string]: string } = {};
 
@@ -232,7 +227,7 @@ const AddService = () => {
           radius: "md",
           color: "danger",
         });
-        console.log("Transformed errors:", errors);
+        // console.error("Transformed errors:", errors);
         setValidationError(errors);
       }
     } finally {
@@ -240,8 +235,6 @@ const AddService = () => {
     }
   };
 
-  console.log("ERRORS: ", validationError);
-  console.log("Loading: ", loading);
 
   return (
     <>
@@ -373,12 +366,10 @@ const AddService = () => {
                 {/* Include */}
                 <Divider className="my-1" />
                 <p className="text-md font-medium -mt-3">Includes</p>
-                <SingleMultipleInput onChangeValude={setInclude} />
-                {/* {validationError?.include && (
-                  <small className="text-error -mt-5">
-                    {validationError?.include}
-                  </small>
-                )} */}
+                <SingleMultipleInput
+                  onChangeValude={setInclude}
+                  error={validationError}
+                />
                 <Divider className="my-1" />
 
                 {/* Addtional information */}
@@ -483,12 +474,15 @@ const AddService = () => {
 
               <CardBody className="gap-6">
                 <Divider className="-my-2" />
-                <CustomDubbleInput onChangeValue={setFaq} />
-                {validationError?.serviceTitle && (
+                <CustomDubbleInput
+                  onChangeValue={setFaq}
+                  error={validationError?.faq}
+                />
+                {/* {validationError?.faq && (
                   <small className="text-error -mt-5">
-                    {validationError?.serviceTitle}
+                    {validationError?.faq}
                   </small>
-                )}
+                )} */}
               </CardBody>
             </Card>
 

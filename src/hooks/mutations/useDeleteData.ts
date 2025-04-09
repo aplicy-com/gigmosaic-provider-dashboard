@@ -8,7 +8,6 @@ export const useDeleteStaffMutation = () => {
   return useMutation({
     mutationFn: (id: string) => deleteStffData(id),
     onSuccess: () => {
-      console.log("Staff data deleted successfully");
       addToast({
         title: "Delete Success",
         description: "Staff data deleted successfully",

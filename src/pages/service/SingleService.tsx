@@ -29,7 +29,7 @@ const SingleService = () => {
   const [mainImage, setMainImage] = useState(
     data?.gallery?.[0]?.serviceImages?.[0]
   );
-  console.log("Single Data: ", data);
+
 
   useEffect(() => {
     const videoLink = data?.gallery?.[0]?.videoLink;

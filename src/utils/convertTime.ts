@@ -12,7 +12,7 @@ export const convertTimeToReadble = (value: TimeInputValue | null) => {
       return formattedTime;
     }
   } catch (error) {
-    console.log(
+    console.error(
       "Something went wrong while converting time to readable format: ",
       error
     );

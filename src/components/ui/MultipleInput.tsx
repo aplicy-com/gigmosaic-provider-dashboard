@@ -84,7 +84,7 @@ const MultipleInput = ({
         radius: "md",
         color: "danger",
       });
-      console.log("Image size should be less than 5MB.");
+      console.error("Image size should be less than 5MB.");
       return;
     }
 
@@ -95,7 +95,7 @@ const MultipleInput = ({
         radius: "md",
         color: "danger",
       });
-      console.log("Only JPEG and PNG formats are supported.");
+      console.error("Only JPEG and PNG formats are supported.");
       return;
     }
 

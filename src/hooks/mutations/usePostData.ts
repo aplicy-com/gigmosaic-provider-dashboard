@@ -3,14 +3,15 @@ import { sumbitServiceData } from "../../api/service/apiService";
 import { addToast } from "@heroui/react";
 import { QueryKey } from "../queryKey";
 import { sumbitStaffData } from "../../api/service/apiStaff";
+import { useNavigate } from "react-router-dom";
 
 // SERVICE
 export const useSumbitServiceMutation = () => {
   const queryClient = useQueryClient();
+  const navigate = useNavigate();
   return useMutation({
     mutationFn: sumbitServiceData,
     onSuccess: () => {
-      console.log("Service submitted successfully!", "success");
       addToast({
         title: "Service Added",
         description: "Service Added Successfully",
@@ -18,7 +19,7 @@ export const useSumbitServiceMutation = () => {
         color: "success",
       });
       queryClient.invalidateQueries({ queryKey: [QueryKey.GET_ALL_SERVICE] });
-      queryClient.invalidateQueries({ queryKey: [QueryKey.GET_ALL_STAFF] });
+      navigate("/service/all-service");
     },
     onError: (error: any) => {
       console.error("Failed to submit service data:", error);
@@ -28,12 +29,12 @@ export const useSumbitServiceMutation = () => {
         "An error occurred while submitting service data.";
 
       addToast({
-        title: "Validation Error",
+        title: "Error",
         description: errorMessage,
         radius: "md",
         color: "danger",
       });
-      console.log("useSumbitServiceMutation :", errorMessage);
+      console.error("useSumbitServiceMutation :", errorMessage);
     },
   });
 };
@@ -44,7 +45,6 @@ export const useSumbitStaffMutation = () => {
   return useMutation({
     mutationFn: sumbitStaffData,
     onSuccess: () => {
-      console.log("Staff submitted successfully!", "success");
       queryClient.invalidateQueries({ queryKey: [QueryKey.GET_ALL_STAFF] });
     },
     onError: (error: any) => {
@@ -60,7 +60,7 @@ export const useSumbitStaffMutation = () => {
         radius: "md",
         color: "danger",
       });
-      console.log("useSumbitServiceMutation :", errorMessage);
+      console.error("useSumbitServiceMutation :", errorMessage);
     },
   });
 };

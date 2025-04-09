@@ -7,11 +7,13 @@ import { IoIosAddCircleOutline } from "react-icons/io";
 interface SingleMultipleInputProps {
   onChangeValude: (values: string[]) => void;
   value: string[];
+  error?: { [key: string]: string };
 }
 
 const SingleMultipleInput = ({
   onChangeValude,
   value,
+  error,
 }: SingleMultipleInputProps) => {
   const [fields, setFields] = useState([{ id: Date.now(), value: "" }]);
 
@@ -48,6 +50,8 @@ const SingleMultipleInput = ({
     }
   }, [fields, onChangeValude]);
 
+
+
   return (
     <>
       {fields.map((field) => (
@@ -75,6 +79,22 @@ const SingleMultipleInput = ({
           )}
         </div>
       ))}
+      {error && (
+        <>
+          {Object?.keys(error)
+            .map((key) => {
+              if (key.startsWith("include")) {
+                return (
+                  <small key={key} className="text-red-500 -my-2">
+                    {error[key]}
+                  </small>
+                );
+              }
+              return null;
+            })
+            .find(Boolean)}{" "}
+        </>
+      )}
 
       <div className="-mt-3">
         <CustomButton
